@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     flexi_admin (0.0.5)
-      actionview (~> 7.1)
-      activesupport (~> 7.1)
+      actionview (>= 7.1, < 9)
+      activesupport (>= 7.1, < 9)
       slim-rails
       view_component (= 3.20)
       will_paginate
