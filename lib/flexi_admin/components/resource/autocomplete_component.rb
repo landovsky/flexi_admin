@@ -6,11 +6,12 @@ module FlexiAdmin::Components::Resource
     include FlexiAdmin::Components::Helpers::ResourceHelper
 
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
-                :name, :html_options, :path, :width, :value
+                :name, :html_options, :path, :width, :value,
+                :disabled_empty_custom_message
 
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
-                  value: nil, **html_options)
+                  value: nil, disabled_empty_custom_message: nil, **html_options)
       @resource = resource
       @scope = scope
       @parent = parent
@@ -25,6 +26,7 @@ module FlexiAdmin::Components::Resource
       @style = html_options.delete(:style)
       @disabled = html_options.key?(:disabled) ? html_options[:disabled] : false
       @name = html_options[:name] || resource_input_name
+      @disabled_empty_custom_message = disabled_empty_custom_message || 'žádný zdroj'
 
       validate_action!
     end

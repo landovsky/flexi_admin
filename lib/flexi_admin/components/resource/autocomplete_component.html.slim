@@ -2,8 +2,11 @@
   - if disabled && data_list?
     = value
   - elsif disabled && !data_list?
+    - if resource.present?
       a href="#{resource_path(resource)}" data-turbo-frame="_top" = resource&.try(:ac_title) || resource&.try(:title)
       /= helpers.link_to resource&.ac_title, resource_path(resource), data: { turbo_frame: '_top' }
+    - else
+      span.text-muted = disabled_empty_custom_message
   - else
     .input-group style="width: #{width || '100%'}"
       .input-group-text id="button-addon1"
