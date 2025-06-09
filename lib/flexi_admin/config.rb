@@ -3,7 +3,11 @@
 module FlexiAdmin
   class Config
     class Store
-      attr_accessor :namespace, :module_namespace
+      attr_accessor :namespace, :module_namespace, :paginate_per
+
+      def initialize
+        @paginate_per = 15
+      end
     end
 
     class << self
@@ -15,6 +19,7 @@ module FlexiAdmin
 
       def configure
         yield(configuration)
+        WillPaginate.per_page = configuration.paginate_per
       end
     end
   end
