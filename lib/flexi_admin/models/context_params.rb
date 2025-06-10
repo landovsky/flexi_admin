@@ -88,7 +88,7 @@ module FlexiAdmin::Models
     end
 
     def per_page
-      params[:per_page] || 13
+      params[:per_page]
     end
 
     def page
