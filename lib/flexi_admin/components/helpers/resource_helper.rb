@@ -57,11 +57,15 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
   #   binding.pry if Rails.env.development?
   end
 
-  def resources_path(**params)
+  def resources_path(parent: nil, **params)
+    if scope.include?('/')
+      parent_key = scope.split('/').first.singularize + '_id'
+      parent_id = parent&.id || params[parent_key.to_sym] || params[:id]
+      params = params.merge(parent_key => parent_id) if parent_id
+    end
+    params = params.except(:id, :controller, :action)
     path = namespaced_path('namespace', scope_plural)
-    route_exists_in_main_app?(path) ? main_app.send(path, params:) : helpers.send(path, params:)
-  # rescue => e
-  #   binding.pry if Rails.env.development?
+    route_exists_in_main_app?(path) ? main_app.send(path, params) : helpers.send(path, params)
   end
 
   def resource_input_name
@@ -92,6 +96,6 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
   end
 
   def paginate(resource, per_page: 10)
-    resource.paginate(page: params[:page], per_page:)
+    resource.paginate(page: params[:page], per_page: per_page)
   end
 end

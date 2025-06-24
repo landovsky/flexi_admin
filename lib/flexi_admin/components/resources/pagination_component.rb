@@ -50,7 +50,7 @@ module FlexiAdmin::Components::Resources
                       .merge(page: page_number, per_page:, frame: context.scope)
                       .to_params
 
-      resources_path(**params.merge)
+      resources_path(parent: @parent, **params.merge)
     end
 
     def paginated_resources
