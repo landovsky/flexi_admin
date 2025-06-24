@@ -91,7 +91,7 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
     end
   end
 
-  def paginate(resource, per_page: 10)
-    resource.paginate(page: params[:page], per_page:)
+  def paginate(resource, per_page: WillPaginate.per_page)
+    resource.paginate(page: params[:page], per_page: per_page)
   end
 end
