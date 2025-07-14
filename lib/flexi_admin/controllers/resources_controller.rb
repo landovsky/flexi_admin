@@ -37,11 +37,11 @@ module FlexiAdmin::Controllers::ResourcesController
       format.html do
         component_class = namespaced_class('namespace', resource_class.name, "IndexPageComponent")
         puts "component_class: #{component_class}"
-        render component_class.new(resources, context_params: context_params, scope: resource_class.to_s.downcase)
+        render component_class.new(resources, context_params: context_params, scope: resource_class.model_name.plural)
       end
       format.turbo_stream do
         component_class = namespaced_class('namespace', resource_class.name, "ResourcesComponent")
-        render turbo_stream: turbo_stream.replace(target, component_class.new(resources, context_params: context_params, scope: resource_class.to_s.downcase))
+        render turbo_stream: turbo_stream.replace(target, component_class.new(resources, context_params: context_params, scope: resource_class.model_name.plural))
       end
     end
   end
@@ -106,7 +106,7 @@ module FlexiAdmin::Controllers::ResourcesController
     respond_to do |format|
       format.html do
         component ||= namespaced_class('namespace', resource_class.name, "Show", "PageComponent")
-        render component.new(@resource, context_params:, scope: resource_class.to_s.downcase)
+        render component.new(@resource, context_params:, scope: resource_class.model_name.plural)
       end
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(context_params.frame)
