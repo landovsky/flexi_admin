@@ -4,10 +4,11 @@ h1 = title
 
 div data-scope="#{scope}"
   div.py-3
-    .d-flex.justify-content-between
+    .d-flex
       - if show_search
-        div style="width: 330px"
-          = search
+        = search
+      - if filter
+        = filter
       div
         = actions
   = content
