@@ -1,13 +1,5 @@
 .autocomplete [data-controller="#{ disabled ? '' : 'autocomplete' }"]
-  - if disabled && data_list?
-    = value
-  - elsif disabled && !data_list?
-    - if resource.present?
-      a href="#{resource_path(resource)}" data-turbo-frame="_top" = resource&.try(:ac_title) || resource&.try(:title)
-      /= helpers.link_to resource&.ac_title, resource_path(resource), data: { turbo_frame: '_top' }
-    - else
-      span.text-muted = disabled_empty_custom_message
-  - else
+  - unless disabled
     .input-group style="width: #{width || '100%'}"
       .input-group-text id="button-addon1"
         i.bi class="#{icon_class}"
@@ -29,5 +21,31 @@
         i.bi.bi-x-circle.me-2
       .loading-icon.d-none data-autocomplete-target="loadingIcon"
         .icon
-
       ul.collapse.show data-autocomplete-target="list"
+  - else
+    = form_with url: '', method: :get, local: true, html: { class: 'w-100' } do
+      .input-group style="width: #{width || '100%'}"
+        .input-group-text id="button-addon1"
+          i.bi class="#{icon_class}"
+
+        = text_field_tag name, resource&.ac_title,
+                          class: 'form-control',
+                          placeholder: 'hledat',
+                          'aria-describedby': 'button-addon1',
+                          value: ,
+                          required:,
+                          **autocomplete_options
+        .invalid-feedback.d-none
+        - if select?
+          input [type="hidden"
+                name="#{name}"
+                data-autocomplete-target="resourceId"
+                value="#{resource&.id}"]
+        .clear-icon.d-none data-autocomplete-target="clearIcon" data-action="click->autocomplete#clear"
+          i.bi.bi-x-circle.me-2
+        .loading-icon.d-none data-autocomplete-target="loadingIcon"
+          .icon
+        ul.collapse.show data-autocomplete-target="list"
+        button.btn.btn-outline-primary.ms-2 type="submit"
+          i.bi.bi-search.me-1
+          | Hledat
