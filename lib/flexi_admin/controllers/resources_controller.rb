@@ -184,7 +184,7 @@ module FlexiAdmin::Controllers::ResourcesController
 
     flash[result.result] = FlexiAdmin::Models::Toast.new(result.message)
 
-    reload_page
+    result.redirect_to.present? ? redirect_to_path(result.redirect_to) : reload_page
   end
 
   def autocomplete(includes: nil)
