@@ -5,6 +5,8 @@ module FlexiAdmin::Components::Resource
   class AutocompleteComponent < FlexiAdmin::Components::BaseComponent
     include FlexiAdmin::Components::Helpers::ResourceHelper
 
+    ALLOWED_ACTIONS = %i[select show input].freeze
+
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
                 :name, :html_options, :path, :width, :value,
                 :disabled_empty_custom_message
@@ -93,7 +95,7 @@ module FlexiAdmin::Components::Resource
     end
 
     def validate_action!
-      return if %i[select show input].include?(@action)
+      return if ALLOWED_ACTIONS.include?(@action)
 
       raise "Invalid action: #{@action}"
     end
