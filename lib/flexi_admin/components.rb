@@ -50,6 +50,7 @@ require_relative "components/form/text_input_component"
 
 # Resource Components
 require_relative "components/resource/autocomplete_component"
+require_relative "components/resource/filter_component"
 require_relative "components/resource/button_select_component"
 require_relative "components/resource/form_component"
 require_relative "components/resource/form_element_component"

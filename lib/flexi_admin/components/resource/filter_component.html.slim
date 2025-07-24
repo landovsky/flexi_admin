@@ -1,0 +1,48 @@
+.filters
+  - active_filters = @params.to_h.except('controller', 'action').select { |k, v| v.present? }
+  - filter_label_lookup = {}
+  - filter_configs.each do |filter|
+    - filter_label_lookup[filter[:name].to_s] = filter[:options].index_by { |o| o[:value].to_s }
+  - if active_filters.any?
+    .mb-2.w-100
+      | Aktivní filtry:
+      - active_filters.each do |k, v|
+        - values = v.is_a?(Array) ? v : [v]
+        - values.each do |val|
+          - label = filter_label_lookup[k]&.dig(val.to_s, :label) || val
+          - new_params = @params.deep_dup
+          - if new_params[k].is_a?(Array)
+            - new_params[k] = new_params[k] - [val]
+            - new_params.delete(k) if new_params[k].empty?
+          - else
+            - new_params.delete(k)
+          span.badge.bg-primary.text-white.mx-1
+            = "#{field_labels[k] || k.humanize}: #{label}"
+            = link_to helpers.url_for(params: new_params), class: 'text-white ms-1', title: "Odebrat filtr" do
+              i.bi.bi-x
+  .form-bar.w-100
+    = form_with url: '', method: :get, local: true, html: { class: 'd-flex align-items-center flex-row flex-wrap gap-2 w-100 filter-bar', style: '' } do
+      - if search_field
+        .flex-grow-1
+          = search_field
+      - filter_configs.each do |filter|
+        - custom_label = field_labels[filter[:name].to_s] || filter[:label]
+        - if filter[:multiple]
+          .flex-shrink-0(style="min-width: 180px;")
+            .dropdown
+              button.btn.btn-outline-secondary.form-control.dropdown-toggle type="button" id="#{filter[:dropdown_id]}" data-bs-toggle="dropdown" aria-expanded="false"
+                = custom_label
+              .dropdown-menu.p-2 aria-labelledby="#{filter[:dropdown_id]}" style="max-height: 300px; overflow-y: auto; min-width: 220px;"
+                - filter[:options].each do |opt|
+                  label.form-check-label.dropdown-item
+                    = check_box_tag "#{filter[:name]}[]", opt[:value], Array(filter[:current_value]).include?(opt[:value].to_s), class: 'form-check-input'
+                    = opt[:label]
+        - else
+          .flex-shrink-0(style="min-width: 180px;")
+            - select_classes = ['form-select']
+            - select_classes << 'is-active' if filter[:current_value].present?
+            label.form-label.mb-0 = custom_label
+            = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), class: select_classes.join(' '), include_blank: true
+      .ms-auto.d-flex.gap-2
+        = button_tag t('flexi_admin.filters.submit', default: 'Filtrovat'), type: :submit, class: 'btn btn-outline-primary'
+        = button_tag t('flexi_admin.filters.cancel', default: 'Zrušit'), type: 'reset', class: 'btn btn-outline-secondary', onclick: "this.form.querySelectorAll('select').forEach(s => s.value = ''); this.form.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false); this.form.submit(); return false;"

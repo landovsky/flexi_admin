@@ -5,6 +5,7 @@ module FlexiAdmin::Components::Resources
     attr_reader :resources, :context_params, :scope, :title, :show_search, :subtitle
 
     renders_one :search
+    renders_one :filter
     renders_one :actions
 
     def initialize(resources, context_params:, scope:, show_search: true, title: nil, subtitle: nil)
