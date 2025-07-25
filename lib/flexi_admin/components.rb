@@ -24,6 +24,7 @@ require_relative "components/base_component"
 
 # Nav Components
 require_relative "components/nav/floating_toc_component"
+require_relative "components/nav/breadcrumbs_component"
 
 # Helpers
 require_relative "components/helpers/action_button_helper"

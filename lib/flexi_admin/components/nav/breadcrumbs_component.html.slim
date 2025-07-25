@@ -1,0 +1,9 @@
+nav.breadcrumbs aria-label="breadcrumb"
+  ol.breadcrumb
+    - breadcrumbs.each_with_index do |crumb, idx|
+      - if idx < breadcrumbs.size - 1
+        li.breadcrumb-item
+          = helpers.link_to crumb[:label], crumb[:url], "data-turbo-frame": "_top"
+      - else
+        li.breadcrumb-item.active aria-current="page"
+          = crumb[:label]
