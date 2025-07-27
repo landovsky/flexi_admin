@@ -78,13 +78,22 @@ module FlexiAdmin::Controllers::ResourcesController
   def create
     authorize! :create, resource_class if defined?(CanCan)
 
-    create_service = begin
-      namespaced_class('namespace', resource_class.model_name.plural.camelize, "Services", "Create")
-    rescue NameError
-      FlexiAdmin::Services::CreateResource
-    end
+    result = nil
+    if defined?(:create_service)
+      Rails.logger.debug "ResourcesController: #{__method__} using custom controller create_service."
+      result = create_service(resource_class:, params: resource_params)
+    else
+      create_service = begin
+        class_name = namespaced_class('namespace', resource_class.model_name.plural.camelize, "Services", "Create")
+        Rails.logger.debug "ResourcesController: #{__method__} using class_name: #{class_name}"
+        class_name
+      rescue NameError
+        Rails.logger.debug "ResourcesController: #{__method__} using generic FlexiAdmin::Services::CreateResource"
+        FlexiAdmin::Services::CreateResource
+      end
 
-    result = create_service.run(resource_class:, params: resource_params)
+      result = create_service.run(resource_class:, params: resource_params)
+    end
 
     if result.valid?
       path_segments = if FlexiAdmin::Config.configuration.namespace.present?
@@ -125,13 +134,24 @@ module FlexiAdmin::Controllers::ResourcesController
     @resource = resource_class.find(params[:id])
     authorize! :update, @resource if defined?(CanCan)
 
-    update_service = begin
-      namespaced_class('namespace', 'namespace',"#{resource_class.model_name.plural.camelize}", "Services", "Update")
-    rescue NameError
-      FlexiAdmin::Services::UpdateResource
+    result = nil
+    if result = try(:update_service, resource: @resource, params: resource_params)
+      Rails.logger.debug "ResourcesController: #{__method__} using custom controller update_service."
+      result = update_service(resource: @resource, params: resource_params)
+    else
+      update_service = begin
+        class_name = namespaced_class('namespace', 'namespace',"#{resource_class.model_name.plural.camelize}", "Services", "Update")
+        Rails.logger.debug "ResourcesController: #{__method__} using class_name: #{class_name}"
+
+        class_name
+      rescue NameError
+        Rails.logger.debug "ResourcesController: #{__method__} using generic FlexiAdmin::Services::UpdateResource"
+        FlexiAdmin::Services::UpdateResource
+      end
+
+      result = update_service.run(resource: @resource, params: resource_params)
     end
 
-    result = update_service.run(resource: @resource, params: resource_params)
 
     if result.valid?
       render_edit_resource_form(disabled: disabled?(true))
