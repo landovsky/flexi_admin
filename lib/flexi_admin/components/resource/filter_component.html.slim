@@ -1,4 +1,4 @@
-.filters
+.filters.w-100
   - active_filters = @params.to_h.except('controller', 'action').select { |k, v| v.present? }
   - filter_label_lookup = {}
   - filter_configs.each do |filter|
@@ -43,6 +43,6 @@
             - select_classes << 'is-active' if filter[:current_value].present?
             label.form-label.mb-0 = custom_label
             = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), class: select_classes.join(' '), include_blank: true
-      .ms-auto.d-flex.gap-2
+      .ms-auto.d-flex.gap-2.flex-grow-1
         = button_tag t('flexi_admin.filters.submit', default: 'Filtrovat'), type: :submit, class: 'btn btn-outline-primary'
         = button_tag t('flexi_admin.filters.cancel', default: 'Zrušit'), type: 'reset', class: 'btn btn-outline-secondary', onclick: "this.form.querySelectorAll('select').forEach(s => s.value = ''); this.form.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false); this.form.submit(); return false;"
