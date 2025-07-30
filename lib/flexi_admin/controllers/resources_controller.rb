@@ -79,9 +79,9 @@ module FlexiAdmin::Controllers::ResourcesController
     authorize! :create, resource_class if defined?(CanCan)
 
     result = nil
-    if defined?(:create_service)
+    if respond_to?(:create_service)
       Rails.logger.debug "ResourcesController: #{__method__} using custom controller create_service."
-      result = create_service(resource_class:, params: resource_params)
+      result = create_service(resource: parent_instance, params: resource_params)
     else
       create_service = begin
         class_name = namespaced_class('namespace', resource_class.model_name.plural.camelize, "Services", "Create")
@@ -96,13 +96,7 @@ module FlexiAdmin::Controllers::ResourcesController
     end
 
     if result.valid?
-      path_segments = if FlexiAdmin::Config.configuration.namespace.present?
-        [FlexiAdmin::Config.configuration.namespace.to_sym, result.resource]
-      else
-        result.resource
-      end
-
-      redirect_to_path path_segments
+      redirect_to_path resource_path(result.resource)
     else
       render_new_resource_form(result.resource)
     end
