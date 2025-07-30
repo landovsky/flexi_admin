@@ -5,13 +5,15 @@ module FlexiAdmin::Components::Resources::GridView
     include FlexiAdmin::Components::Helpers::LinkHelper
 
     attr_accessor :resource, :title, :header, :description, :image
+    attr_reader :context
 
-    def initialize(resource, title, header, description, image)
+    def initialize(resource, title, header, description, image, context = nil)
       @resource = resource
       @title = title
       @header = header
       @description = description
       @image = image
+      @context = context
     end
 
     def media_attachment
