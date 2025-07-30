@@ -11,7 +11,14 @@ module FlexiAdmin::Components::Resource
       @filters = filters
       @search_field = search_field
       @field_labels = field_labels.with_indifferent_access
-      @params = params.to_h.with_indifferent_access
+      # tech-debt: handle params conversion
+      if params.respond_to?(:to_unsafe_h)
+        @params = params.to_unsafe_h.with_indifferent_access
+      elsif params.respond_to?(:to_h)
+        @params = params.to_h.with_indifferent_access
+      else
+        @params = params.with_indifferent_access
+      end
     end
 
     def filter_configs
