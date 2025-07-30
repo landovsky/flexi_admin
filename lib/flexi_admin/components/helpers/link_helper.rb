@@ -2,17 +2,20 @@
 
 module FlexiAdmin::Components::Helpers::LinkHelper
   def navigate_to(title, resource)
-    path_segments = nil
-    path_segments = if resource.is_a?(String)
-                      resource
-                    elsif FlexiAdmin::Config.configuration.namespace.present?
-                      [FlexiAdmin::Config.configuration.namespace.to_sym, resource]
-                    else
-                      resource
-                    end
-
-    helpers.link_to title, path_segments, "data-turbo-frame": "_top"
-  # content_tag(:a, title, href: resource, "data-turbo-frame": "_top")
+    parent = context&.options&.dig(:parent)
+    namespace = FlexiAdmin::Config.configuration.namespace
+    if resource.is_a?(String)
+      helpers.link_to title, resource, "data-turbo-frame": "_top"
+    else
+      path_segments = if parent.present? && parent.class != resource.class
+                        namespace.present? ? [namespace.to_sym, parent, resource] : [parent, resource]
+                      elsif namespace.present?
+                        [namespace.to_sym, resource]
+                      else
+                        resource
+                      end
+      helpers.link_to title, helpers.polymorphic_path(path_segments), "data-turbo-frame": "_top"
+    end
   rescue StandardError => e
     binding.pry if Rails.env.development?
   end

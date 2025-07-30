@@ -12,6 +12,8 @@ module FlexiAdmin::Components::Nav
 
     def breadcrumbs
       segments = path.split("/").reject(&:blank?)
+      return [] if segments.size <= 1
+
       crumbs = []
       url = ""
       segments.each_with_index do |segment, idx|
@@ -24,7 +26,7 @@ module FlexiAdmin::Components::Nav
           label ||= record&.try(:name)
           label ||= "#{model_class_name} ##{segment}"
           url += "/#{segment}"
-          crumbs << { label:, url: url.dup }
+          crumbs << { label: label, url: url.dup }
         elsif !segment.match?(/\A\d+\z/)
           # For collection, use plural segment for display and I18n lookup
           plural_segment = segment
@@ -39,7 +41,7 @@ module FlexiAdmin::Components::Nav
                     plural_segment.titleize
                   end
           url += "/#{segment}"
-          crumbs << { label:, url: url.dup }
+          crumbs << { label: label, url: url.dup }
         end
       end
       crumbs
