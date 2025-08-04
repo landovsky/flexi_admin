@@ -2,7 +2,7 @@
 
 module FlexiAdmin::Components::Helpers::LinkHelper
   def navigate_to(title, resource)
-    parent = context&.options&.dig(:parent)
+    parent = context&.options&.dig(:parent) || parent_from_params
     namespace = FlexiAdmin::Config.configuration.namespace
     if resource.is_a?(String)
       helpers.link_to title, resource, "data-turbo-frame": "_top"
@@ -18,5 +18,16 @@ module FlexiAdmin::Components::Helpers::LinkHelper
     end
   rescue StandardError => e
     binding.pry if Rails.env.development?
+  end
+
+  private
+
+  def parent_from_params
+    return nil if context&.params&.parent.blank?
+
+    gid = URI.decode_www_form_component(context.params.parent)
+    GlobalID::Locator.locate(gid)
+  rescue StandardError
+    nil
   end
 end
