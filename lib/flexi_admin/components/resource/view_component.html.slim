@@ -14,9 +14,14 @@
       .btn-group
         .btn.btn-outline-primary [data-controller="form"
                                   data-form-resource-path-value="#{edit_resource_path(resource)}"
-                                  data-action="click->form#enable"]
+                                  data-action="click->form#enable"
+                                  disabled="#{disable_buttons}"
+                                  data-tooltip="#{disabled_message}"
+                                  class="#{disable_buttons ? 'disabled btn-with-tooltip' : ''}"]
           i.bi.bi-pencil-square
-        .btn.btn-outline-danger
+        .btn.btn-outline-danger [disabled="#{disable_buttons}"
+                                 data-tooltip="#{disabled_message}"
+                                 class="#{disable_buttons ? 'disabled btn-with-tooltip' : ''}"]
           i.bi.bi-trash
 
 .row.g-0.my-2.mb-4
