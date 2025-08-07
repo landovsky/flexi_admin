@@ -1,5 +1,5 @@
 .filters.w-100
-  - active_filters = @params.to_h.except('controller', 'action').select { |k, v| v.present? }
+  - active_filters = @params.to_h.except('controller', 'action', 'subdomain').select { |k, v| v.present? }
   - filter_label_lookup = {}
   - filter_configs.each do |filter|
     - filter_label_lookup[filter[:name].to_s] = filter[:options].index_by { |o| o[:value].to_s }
