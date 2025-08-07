@@ -14,10 +14,13 @@ module FlexiAdmin::Components::Helpers::LinkHelper
                       else
                         resource
                       end
-      helpers.link_to title, helpers.polymorphic_path(path_segments), "data-turbo-frame": "_top"
+      begin
+        helpers.link_to title, helpers.polymorphic_path(path_segments), "data-turbo-frame": "_top"
+      rescue NoMethodError
+        without_parent = path_segments.without(parent)
+        helpers.link_to title, helpers.polymorphic_path(without_parent), "data-turbo-frame": "_top"
+      end
     end
-  rescue StandardError => e
-    binding.pry if Rails.env.development?
   end
 
   private
