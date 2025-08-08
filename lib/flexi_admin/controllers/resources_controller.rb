@@ -32,7 +32,8 @@ module FlexiAdmin::Controllers::ResourcesController
   end
 
   def render_index(resources, target: nil)
-    target ||= context_params.frame
+    target = target || (fa_sorting_active? ? resource_class.model_name.plural : context_params.frame)
+
     respond_to do |format|
       format.html do
         component_class = namespaced_class('namespace', resource_class.name, "IndexPageComponent")
@@ -261,6 +262,10 @@ module FlexiAdmin::Controllers::ResourcesController
 
   def fa_sorted?
     fa_sort.present? && fa_order.present? && fa_order != "default"
+  end
+
+  def fa_sorting_active?
+    fa_sort.present? && fa_order.present?
   end
 
   def fa_sort
