@@ -14,12 +14,15 @@ module FlexiAdmin::Components::Helpers::LinkHelper
                       else
                         resource
                       end
-      begin
-        helpers.link_to title, helpers.polymorphic_path(path_segments), "data-turbo-frame": "_top"
+
+      result_path = begin
+        helpers.polymorphic_path(path_segments)
       rescue NoMethodError
         without_parent = path_segments.without(parent)
-        helpers.link_to title, helpers.polymorphic_path(without_parent), "data-turbo-frame": "_top"
+        helpers.polymorphic_path(without_parent.empty? ? path_segments : without_parent)
       end
+
+      helpers.link_to title, result_path, "data-turbo-frame": "_top"
     end
   end
 
