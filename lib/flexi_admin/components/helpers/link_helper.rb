@@ -19,7 +19,9 @@ module FlexiAdmin::Components::Helpers::LinkHelper
         helpers.polymorphic_path(path_segments)
       rescue NoMethodError
         without_parent = path_segments.without(parent)
-        helpers.polymorphic_path(without_parent.empty? ? path_segments : without_parent)
+        raise if without_parent.empty?
+
+        helpers.polymorphic_path(without_parent)
       end
 
       helpers.link_to title, result_path, "data-turbo-frame": "_top"
