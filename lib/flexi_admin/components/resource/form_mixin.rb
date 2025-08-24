@@ -61,8 +61,11 @@ module FlexiAdmin::Components::Resource
       render_standard_field(:text, attr_name, value, html_options)
     end
 
-    def number_field(attr_name, label: nil, value: nil, **html_options)
-      render_standard_field(:number, attr_name, value, html_options)
+    def number_field(attr_name, label: nil, value: nil, step: 0.01, **html_options)
+      field = render_standard_field(:number, attr_name, value, html_options.merge(step: step.to_s))
+      field_wrapper = render_field_wrapper(field, attr_name)
+
+      inline ? field_wrapper : render_form_row(attr_name, field_wrapper, label:, required: html_options[:required])
     end
 
     def checkbox_field(attr_name, label: nil, checked: nil, **html_options)
