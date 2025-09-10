@@ -292,6 +292,9 @@ module FlexiAdmin::Controllers::ResourcesController
     end.compact
 
     modules.join("::").constantize
+  rescue NameError => e
+    Rails.logger.warn "Failed to find class: #{modules.join("::")}"
+    raise "Failed to find class: #{modules.join("::")}"
   end
 
   def deserialize_and_apply_custom_scope(resource_class, scope_key)
