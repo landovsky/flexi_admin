@@ -20,5 +20,11 @@ module FlexiAdmin::Components::Resource
     def divider
       content_tag :div, "", class: "dropdown-divider"
     end
+
+    def title
+      resource.title
+    rescue NoMethodError
+      "#{resource.class.name}: title method not implemented"
+    end
   end
 end
