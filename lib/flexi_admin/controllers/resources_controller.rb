@@ -183,7 +183,8 @@ module FlexiAdmin::Controllers::ResourcesController
     # Unscoped is needed to get the resources that are not deleted, archived, etc.
     # It should be ok, since we control the ids in the frontend
     @resources = resource_class.unscoped.where(id: ids)
-    authorize! :edit, @resources if defined?(CanCan)
+
+    authorize! :edit, @resources.presence || resource_class if defined?(CanCan)
 
     # TODO: improve this
     params.merge!(current_user: current_user)
