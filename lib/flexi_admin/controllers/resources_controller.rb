@@ -184,7 +184,7 @@ module FlexiAdmin::Controllers::ResourcesController
     # It should be ok, since we control the ids in the frontend
     @resources = resource_class.unscoped.where(id: ids)
 
-    authorize! :edit, @resources.presence || resource_class if defined?(CanCan)
+    authorize! :edit, @resources.presence&.base_class || resource_class if defined?(CanCan)
 
     # TODO: improve this
     params.merge!(current_user: current_user)
