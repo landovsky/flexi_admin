@@ -1,42 +1,54 @@
 nav data-controller="pagination"
-  ul.pagination.m-0.p-0
-    li.page-item class="#{paginated_resources.previous_page ? '' : 'disabled'}"
-      - if paginated_resources.previous_page
-        /= helpers.link_to page_path(paginated_resources.previous_page),
-                  class: 'page-link',
-                  data: { action: 'click->pagination#paginate',
-                          resource_path: page_path(paginated_resources.previous_page) } do
-        a.page-link [href=page_path(paginated_resources.previous_page)
-                     data-action="click->pagination#paginate"
-                     data-resource-path=page_path(paginated_resources.previous_page)]
-          '←
-      - else
-        span.page-link ←
+  .d-flex.justify-content-between.align-items-center
+    .pagination-wrapper
+      ul.pagination.m-0.p-0
+        li.page-item class="#{paginated_resources.previous_page ? '' : 'disabled'}"
+          - if paginated_resources.previous_page
+            /= helpers.link_to page_path(paginated_resources.previous_page),
+                      class: 'page-link',
+                      data: { action: 'click->pagination#paginate',
+                              resource_path: page_path(paginated_resources.previous_page) } do
+            a.page-link [href=page_path(paginated_resources.previous_page)
+                         data-action="click->pagination#paginate"
+                         data-resource-path=page_path(paginated_resources.previous_page)]
+              '←
+          - else
+            span.page-link ←
 
-    - limited_pages.each do |page|
-      - if page == paginated_resources.current_page
-        li.page-item.active
-          span.page-link = page
-      - else
-        li.page-item
-          /= helpers.link_to page_path(page),
-                    class: 'page-link',
-                    data: { action: 'click->pagination#paginate',
-                            resource_path: page_path(page) } do
-          a.page-link [href=page_path(page)
-                       data-action="click->pagination#paginate"
-                       data-resource-path=page_path(page)]
-            = page
+        - limited_pages.each do |page|
+          - if page == paginated_resources.current_page
+            li.page-item.active
+              span.page-link = page
+          - else
+            li.page-item
+              /= helpers.link_to page_path(page),
+                        class: 'page-link',
+                        data: { action: 'click->pagination#paginate',
+                                resource_path: page_path(page) } do
+              a.page-link [href=page_path(page)
+                           data-action="click->pagination#paginate"
+                           data-resource-path=page_path(page)]
+                = page
 
-    li.page-item class="#{paginated_resources.next_page ? '' : 'disabled'}"
-      - if paginated_resources.next_page
-        /= helpers.link_to page_path(paginated_resources.next_page),
-                  class: 'page-link',
-                  data: { action: 'click->pagination#paginate',
-                          resource_path: page_path(paginated_resources.next_page) } do
-        a.page-link [href=page_path(paginated_resources.next_page)
-                     data-action="click->pagination#paginate"
-                     data-resource-path=page_path(paginated_resources.next_page)]
-          '→
-      - else
-        span.page-link →
+        li.page-item class="#{paginated_resources.next_page ? '' : 'disabled'}"
+          - if paginated_resources.next_page
+            /= helpers.link_to page_path(paginated_resources.next_page),
+                      class: 'page-link',
+                      data: { action: 'click->pagination#paginate',
+                              resource_path: page_path(paginated_resources.next_page) } do
+            a.page-link [href=page_path(paginated_resources.next_page)
+                         data-action="click->pagination#paginate"
+                         data-resource-path=page_path(paginated_resources.next_page)]
+              '→
+          - else
+            span.page-link →
+
+    .per-page-selector
+      .d-flex.align-items-center.gap-2
+        / label.form-label.mb-0.small Per page:
+        = select_tag 'per_page',
+                     options_for_select(FlexiAdmin::Config.configuration.paginate_per_options.map { |opt| [opt, opt] }, per_page || FlexiAdmin::Config.configuration.paginate_per),
+                     class: 'form-select ms-2',
+                     style: 'width: auto;',
+                     data: { action: 'change->pagination#changePerPage',
+                       'per-page-path': per_page_path('__PER_PAGE__') }
