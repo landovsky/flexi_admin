@@ -4,6 +4,10 @@ module FlexiAdmin
   class Engine < ::Rails::Engine
     isolate_namespace FlexiAdmin
 
+    initializer "flexi_admin.locale" do
+      config.i18n.load_path += Dir[root.join('config', 'locales', '*.yml')]
+    end
+
     initializer "flexi_admin.assets" do |app|
       app.config.assets.precompile += %w[flexi_admin_main.scss flexi_admin.js]
       app.config.assets.paths << root.join("app/flexi_admin/javascript")

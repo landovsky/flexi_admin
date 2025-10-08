@@ -1,0 +1,6 @@
+en:
+  flexi_admin:
+    messages:
+      destroy:
+        success: "%{resource} was successfully deleted."
+        failure: "Failed to delete %{resource}."
