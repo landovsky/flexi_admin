@@ -5,16 +5,17 @@ module FlexiAdmin::Components::Resource
     include FlexiAdmin::Components::Helpers::ResourceHelper
     include FlexiAdmin::Components::Helpers::ActionHelper
 
-    attr_reader :context, :resource, :disable_buttons, :disabled_message
+    attr_reader :context, :resource, :disable_buttons, :disabled_message, :delete_confirm_message
 
     renders_one :form
     renders_one :actions
 
-    def initialize(context, disable_buttons: nil, disabled_message: nil)
+    def initialize(context, disable_buttons: nil, disabled_message: nil, delete_confirm_message: nil)
       @context = context
       @resource = context.resource
       @disable_buttons = disable_buttons
       @disabled_message = disabled_message
+      @delete_confirm_message = delete_confirm_message
     end
 
     def divider
