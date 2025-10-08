@@ -155,6 +155,28 @@ module FlexiAdmin::Controllers::ResourcesController
     end
   end
 
+  def destroy
+    @resource = resource_class.find(params[:id])
+    authorize! :destroy, @resource if defined?(CanCan)
+
+    if @resource.destroy
+      success_message = I18n.t('flexi_admin.messages.destroy.success',
+                               resource: resource_class.model_name.human)
+      flash[:success] = FlexiAdmin::Models::Toast.new(success_message)
+
+      namespace = FlexiAdmin::Config.configuration.namespace
+      path_segments = namespace.present? ? [namespace.to_sym, resource_class] : [resource_class]
+      index_path = polymorphic_path(path_segments)
+
+      redirect_to_path index_path
+    else
+      error_message = I18n.t('flexi_admin.messages.destroy.failure',
+                            resource: resource_class.model_name.human)
+      flash[:error] = FlexiAdmin::Models::Toast.new(error_message)
+      render_toasts
+    end
+  end
+
   def render_edit_resource_form(disabled: true)
     respond_to do |format|
       format.html do
