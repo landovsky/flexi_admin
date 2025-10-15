@@ -21,9 +21,9 @@
             = link_to helpers.url_for(params: new_params), class: 'text-white ms-1', title: "Odebrat filtr" do
               i.bi.bi-x
   .form-bar.w-100
-    = form_with url: '', method: :get, local: true, html: { class: 'd-flex align-items-center flex-row flex-wrap gap-2 w-100 filter-bar', style: '' } do
+    = form_with url: '', method: :get, local: true, html: { class: 'd-flex align-items-center flex-row flex-wrap gap-2 w-100 filter-bar', style: '', data: { controller: 'filter-auto-submit' } } do
       - if search_field
-        .flex-grow-1
+        div(style="flex: 1 1 auto; min-width: 250px; max-width: 500px;" data-action="focusout->filter-auto-submit#submitOnBlur")
           = search_field
       - filter_configs.each do |filter|
         - custom_label = field_labels[filter[:name].to_s] || filter[:label]
@@ -32,7 +32,7 @@
             .dropdown
               button.btn.btn-outline-secondary.form-control.dropdown-toggle type="button" id="#{filter[:dropdown_id]}" data-bs-toggle="dropdown" aria-expanded="false"
                 = custom_label
-              .dropdown-menu.p-2 aria-labelledby="#{filter[:dropdown_id]}" style="max-height: 300px; overflow-y: auto; min-width: 220px;"
+              .dropdown-menu.p-2 aria-labelledby="#{filter[:dropdown_id]}" style="max-height: 300px; overflow-y: auto; min-width: 220px;" data-action="click->filter-auto-submit#handleDropdownChange:stop"
                 - filter[:options].each do |opt|
                   label.form-check-label.dropdown-item
                     = check_box_tag "#{filter[:name]}[]", opt[:value], Array(filter[:current_value]).include?(opt[:value].to_s), class: 'form-check-input me-2'
@@ -42,7 +42,6 @@
             - select_classes = ['form-select']
             - select_classes << 'is-active' if filter[:current_value].present?
             label.form-label.mb-0 = custom_label
-            = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), class: select_classes.join(' '), include_blank: true
-      .ms-auto.d-flex.gap-2.flex-grow-1
-        = button_tag t('flexi_admin.filters.submit', default: 'Filtrovat'), type: :submit, class: 'btn btn-outline-primary'
+            = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), class: select_classes.join(' '), include_blank: true, onchange: 'this.form.submit();'
+      .d-flex.gap-2
         = button_tag t('flexi_admin.filters.cancel', default: 'Zrušit'), type: 'button', class: 'btn btn-outline-secondary', onclick: "window.location = window.location.pathname;"

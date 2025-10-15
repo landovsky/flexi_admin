@@ -43,7 +43,7 @@ module FlexiAdmin::Components::Resource
           options: opts,
           multiple: multiple,
           current_value: params[filter_name],
-          dropdown_id: "dropdown-#{filter_name}-#{object_id}"
+          dropdown_id: "dropdown-#{filter_name}"
         }
       end
     end
