@@ -31,12 +31,19 @@ module FlexiAdmin::Models
       end
     end
 
-    attr_reader :params
+    attr_reader :params, :request_params
 
     def initialize(params)
-      @params = params.to_h.with_indifferent_access.each_with_object({}) do |(key, value), acc|
-        acc[self.class.params_map.invert[key.to_s]] = value
+      params_hash = params.to_h.with_indifferent_access
+
+      @params = params_hash.each_with_object({}) do |(key, value), acc|
+        if self.class.params_map.invert[key.to_s]
+          acc[self.class.params_map.invert[key.to_s]] = value
+        end
       end.with_indifferent_access
+
+      excluded_keys = FlexiAdmin::Controllers::ResourcesController::DEFAULT_CONTROLLER_PARAMS_KEYS
+      @request_params = params_hash.except(*self.class.params_map.values, *excluded_keys).with_indifferent_access
     end
 
     def [](key)
@@ -54,7 +61,9 @@ module FlexiAdmin::Models
 
       new_params = new_params.transform_keys { |key| self.class.params_map[key.to_sym] || key.to_sym }
 
-      self.class.new(new_params)
+      combined_params = new_params.merge(@request_params)
+
+      self.class.new(combined_params)
     end
 
     def with_parent(parent_instance)
@@ -71,12 +80,17 @@ module FlexiAdmin::Models
     def except(*keys)
       new_params = @params.dup.except(*keys)
       new_params = new_params.transform_keys { |key| self.class.params_map.invert[key.to_s] }
-      self.class.new(new_params)
+
+      combined_params = new_params.merge(@request_params)
+
+      self.class.new(combined_params)
     end
 
     def to_params
-      self.class.params_map.map { |k, v| [v, params[k]] }
+      context_params = self.class.params_map.map { |k, v| [v, params[k]] }
           .reject { |_k, v| v.blank? }.to_h
+
+      context_params.merge(@request_params)
     end
 
     def to_path(path)

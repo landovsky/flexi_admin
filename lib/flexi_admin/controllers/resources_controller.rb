@@ -2,6 +2,8 @@
 
 module FlexiAdmin::Controllers::ResourcesController
   extend ActiveSupport::Concern
+
+  DEFAULT_CONTROLLER_PARAMS_KEYS = %i[controller action subdomain commit button].freeze
   # rescue_from RuntimeError, with: :handle_runtime_error
 
   included do
@@ -64,9 +66,20 @@ module FlexiAdmin::Controllers::ResourcesController
   end
 
   def context_permitted_params
-    @context_permitted_params ||= params.permit(*FlexiAdmin::Models::ContextParams.permitted_params_keys)
-  end
+    @context_permitted_params ||= begin
+      permitted_keys = FlexiAdmin::Models::ContextParams.permitted_params_keys.dup
 
+      array_param_keys = params.select { |_k, v| v.is_a?(Array) }.keys
+      array_params = array_param_keys.map { |k| { k => [] } }
+      scalar_params = params.except(:controller, *DEFAULT_CONTROLLER_PARAMS_KEYS).keys - array_param_keys
+
+      params.permit(
+        *permitted_keys,
+        *scalar_params,
+        *array_params
+      )
+    end
+  end
 
   def handle_runtime_error(error)
     return BugTracker.notify(error) if true
