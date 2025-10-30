@@ -32,9 +32,9 @@ module FlexiAdmin::Components::Nav
           plural_segment = segment
           model_class_name = segment.singularize.camelize
           model_class = model_class_name.safe_constantize
-          label = if model_class && model_class.respond_to?(:breadcrumb_title)
+          label = if model_class.is_a?(Class) && model_class.respond_to?(:breadcrumb_title)
                     model_class.breadcrumb_title
-                  elsif model_class
+                  elsif model_class.is_a?(Class) && model_class.respond_to?(:model_name)
                     I18n.t("activerecord.models.#{model_class.model_name.i18n_key}.few",
                            default: model_class.model_name.human)
                   else
