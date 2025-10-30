@@ -280,7 +280,20 @@ module FlexiAdmin::Controllers::ResourcesController
   end
 
   def resource_class
-    controller_name.classify.constantize
+    controller_path = self.class.name.deconstantize
+    config_namespace = FlexiAdmin::Config.configuration.namespace&.camelize
+
+    if config_namespace.present? && controller_path.start_with?(config_namespace)
+      if controller_path == config_namespace
+        controller_name.classify.constantize
+      else
+        module_path = controller_path.sub(/^#{Regexp.escape(config_namespace)}::/, '')
+        class_name = "#{module_path}::#{controller_name.classify}"
+        Object.const_get(class_name)
+      end
+    else
+      controller_name.classify.constantize
+    end
   end
 
   def fa_sorted?
@@ -310,8 +323,14 @@ module FlexiAdmin::Controllers::ResourcesController
   def namespaced_class(*segments)
     config_namespace = FlexiAdmin::Config.configuration.namespace&.camelize
 
-    modules = segments.compact.map do |segment|
-      segment == 'namespace' ? config_namespace : segment
+    modules = segments.compact.flat_map do |segment|
+      if segment == 'namespace'
+        config_namespace
+      elsif segment.include?('::')
+        segment.split('::')
+      else
+        segment
+      end
     end.compact
 
     modules.join("::").constantize
