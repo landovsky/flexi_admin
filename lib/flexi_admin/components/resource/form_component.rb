@@ -17,7 +17,7 @@ module FlexiAdmin::Components::Resource
       if defined?(CanCan)
         raise ResourceOrScopeNotDefinedError, "Resource or scope is not defined" if resource.blank? && scope.blank?
 
-        resource_to_check = resource.presence || scope.singularize.camelcase.constantize
+        resource_to_check = resource.presence || self.class.class_name || scope.singularize.camelcase.constantize
 
         !helpers.current_ability&.can?(:update, resource_to_check) || @disabled
       else
