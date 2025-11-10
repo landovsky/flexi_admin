@@ -88,6 +88,7 @@ require_relative "components/resources/list_view_component"
 # Bulk Action Components
 require_relative "components/resources/bulk_action/modal_component"
 require_relative "components/resources/bulk_action/button_component"
+require_relative "components/resources/bulk_action/row_action_button_component"
 
 # Helper Components
 require_relative "components/helpers/custom_scope_registry"

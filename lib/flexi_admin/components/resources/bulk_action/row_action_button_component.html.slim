@@ -1,0 +1,7 @@
+button [class="#{css_classes}"
+        data-action="click->bulk-action#requestModal"
+        data-scope="#{context.scope}"
+        data-url-with-id="#{scoped_url_with_modal_id}"]
+  - if button_icon.present?
+    i.bi.me-2 class="#{button_icon_class}"
+  = button_text

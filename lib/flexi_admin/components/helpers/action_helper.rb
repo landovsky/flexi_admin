@@ -9,4 +9,11 @@ module FlexiAdmin::Components::Helpers::ActionHelper
                                                                               disabled:,
                                                                               selection_dependent:)
   end
+
+  def action_button(item, action_component, **options)
+    render FlexiAdmin::Components::Resources::BulkAction::RowActionButtonComponent.new(item,
+                                                                                       context,
+                                                                                       action_component,
+                                                                                       **options)
+  end
 end

@@ -7,6 +7,7 @@ module FlexiAdmin::Components::Resources
     include FlexiAdmin::Components::Helpers::ValueFormatter
     include FlexiAdmin::Components::Helpers::Selectable
     include FlexiAdmin::Components::Helpers::LinkHelper
+    include FlexiAdmin::Components::Helpers::ActionHelper
 
     class Column < Struct.new(:attribute, :value, :options)
       def width
