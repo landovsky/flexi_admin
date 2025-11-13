@@ -4,3 +4,6 @@ en:
       destroy:
         success: "%{resource} was successfully deleted."
         failure: "Failed to delete %{resource}."
+    form:
+      add_row_button: "Add Row"
+      remove_row_button: "Remove"
