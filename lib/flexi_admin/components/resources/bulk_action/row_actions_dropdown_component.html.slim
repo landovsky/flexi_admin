@@ -1,0 +1,15 @@
+.d-flex.gap-2
+  - if primary_action?
+    = primary_action
+
+  .dropdown
+    button.btn.btn-sm.btn-outline-secondary [type="button"
+                                              id="#{dropdown_id}"
+                                              data-bs-toggle="dropdown"
+                                              aria-expanded="false"]
+      i.bi.bi-three-dots-vertical
+
+    ul.dropdown-menu [aria-labelledby="#{dropdown_id}"]
+      - dropdown_actions.each do |action|
+        li
+          = action

@@ -7,14 +7,20 @@ module FlexiAdmin::Components::Resources::BulkAction
     include FlexiAdmin::Components::Helpers::UrlHelper
     include FlexiAdmin::Components::Helpers::IconHelper
 
-    attr_reader :item, :context, :modal_class, :options
+    attr_reader :item, :context, :modal_class, :options, :dropdown_mode, :hide_icon
 
-    def initialize(item, context, modal_class, **options)
+    def initialize(item, context, modal_class, dropdown: false, hide_icon: false, **options)
       super(nil)
       @item = item
       @context = context
       @modal_class = modal_class
+      @dropdown_mode = dropdown
+      @hide_icon = hide_icon
       @options = options
+    end
+
+    def dropdown_mode?
+      @dropdown_mode
     end
 
     def button_text
@@ -27,6 +33,10 @@ module FlexiAdmin::Components::Resources::BulkAction
 
     def button_icon_class
       modal_class.button_icon_class if button_icon.present?
+    end
+
+    def show_icon?
+      !@hide_icon && button_icon.present?
     end
 
     def scoped_url_with_modal_id
@@ -50,7 +60,11 @@ module FlexiAdmin::Components::Resources::BulkAction
     end
 
     def css_classes
-      classes = %w[btn btn-sm btn-outline-primary]
+      if dropdown_mode?
+        classes = %w[dropdown-item]
+      else
+        classes = %w[btn btn-sm btn-outline-primary]
+      end
       classes.concat(options[:class].split) if options[:class]
       classes.join(" ")
     end
