@@ -172,6 +172,39 @@ module FlexiAdmin::Components::Resource
       end
     end
 
+    def add_row_button(container:, template_selector: '.form-row', label: I18n.t('flexi_admin.form.add_row_button'), icon: 'plus', classes: '')
+      button = if icon.present?
+        content_tag(:button, class: 'btn btn-outline-secondary ' + classes, type: 'button',
+                    data: { action: 'click->add-row#add',
+                            'add-row-container-value': container,
+                            'add-row-template-selector-value': template_selector }) do
+          content = []
+          content << content_tag(:i, '', class: "bi bi-#{icon} me-2")
+          content << label
+          content.join.html_safe
+        end
+      else
+        content_tag(:button, label, class: 'btn btn-outline-secondary ' + classes, type: 'button',
+                    data: { action: 'click->add-row#add',
+                            'add-row-container-value': container,
+                            'add-row-template-selector-value': template_selector })
+      end
+
+      content_tag(:div, class: 'form-row') do
+        content_tag(:div, class: 'col-12') { button }
+      end
+    end
+
+    def remove_row_button(icon: 'trash', classes: '')
+      content_tag(:button, class: 'btn btn-outline-danger btn-sm ' + classes, type: 'button',
+                  data: { action: 'click->add-row#remove',
+                          'add-row-template-selector-value': '.form-row' }) do
+        content = []
+        content << content_tag(:i, '', class: "bi bi-#{icon}")
+        content.join.html_safe
+      end
+    end
+
     def with_resource(resource)
       previous_resource = @resource
       @resource = resource

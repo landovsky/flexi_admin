@@ -24,7 +24,7 @@ module FlexiAdmin::Components::Resource
 
     def merge_data_keys(data)
       controller = data[:controller]
-      controllers = controller.present? ? [controller, "form-validation"] : ["form-validation"]
+      controllers = controller.present? ? [controller, "form-validation", "add-row"] : ["form-validation", "add-row"]
       data.merge(controller: controllers.join(" "))
     end
   end
