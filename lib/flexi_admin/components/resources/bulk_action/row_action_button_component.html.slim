@@ -1,16 +1,16 @@
 - if dropdown_mode?
-  a.dropdown-item [href="#"
-                   data-action="click->bulk-action#requestModal"
-                   data-scope="#{context.scope}"
-                   data-url-with-id="#{scoped_url_with_modal_id}"]
+  - if disabled?
+    - attrs = { 'aria-disabled' => 'true' }
+  - else
+    - attrs = { href: "#", 'data-action' => "click->bulk-action#requestModal", 'data-scope' => context.scope, 'data-url-with-id' => scoped_url_with_modal_id }
+  a.dropdown-item *attrs
     - if show_icon?
       i.bi.me-2 class="#{button_icon_class}"
     = button_text
 - else
-  button [class="#{css_classes}"
-          data-action="click->bulk-action#requestModal"
-          data-scope="#{context.scope}"
-          data-url-with-id="#{scoped_url_with_modal_id}"]
+  - attrs = { 'class' => css_classes, 'data-action' => "click->bulk-action#requestModal", 'data-scope' => context.scope, 'data-url-with-id' => scoped_url_with_modal_id }
+  - attrs['disabled'] = 'disabled' if disabled?
+  button *attrs
     - if show_icon?
       i.bi.me-2 class="#{button_icon_class}"
     = button_text
