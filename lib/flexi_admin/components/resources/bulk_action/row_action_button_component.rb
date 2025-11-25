@@ -7,20 +7,25 @@ module FlexiAdmin::Components::Resources::BulkAction
     include FlexiAdmin::Components::Helpers::UrlHelper
     include FlexiAdmin::Components::Helpers::IconHelper
 
-    attr_reader :item, :context, :modal_class, :options, :dropdown_mode, :hide_icon
+    attr_reader :item, :context, :modal_class, :options, :dropdown_mode, :hide_icon, :disabled
 
-    def initialize(item, context, modal_class, dropdown: false, hide_icon: false, **options)
+    def initialize(item, context, modal_class, dropdown: false, hide_icon: false, disabled: false, **options)
       super(nil)
       @item = item
       @context = context
       @modal_class = modal_class
       @dropdown_mode = dropdown
       @hide_icon = hide_icon
+      @disabled = disabled
       @options = options
     end
 
     def dropdown_mode?
       @dropdown_mode
+    end
+
+    def disabled?
+      @disabled
     end
 
     def button_text
@@ -62,8 +67,10 @@ module FlexiAdmin::Components::Resources::BulkAction
     def css_classes
       if dropdown_mode?
         classes = %w[dropdown-item]
+        classes << "disabled" if disabled?
       else
         classes = %w[btn btn-sm btn-outline-primary]
+        classes << "disabled" if disabled?
       end
       classes.concat(options[:class].split) if options[:class]
       classes.join(" ")
