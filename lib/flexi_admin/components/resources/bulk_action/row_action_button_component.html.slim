@@ -1,6 +1,6 @@
 - if dropdown_mode?
   - if disabled?
-    - attrs = { 'aria-disabled' => 'true' }
+    - attrs = { 'aria-disabled' => 'true', 'class' => 'text-muted' }
   - else
     - attrs = { href: "#", 'data-action' => "click->bulk-action#requestModal", 'data-scope' => context.scope, 'data-url-with-id' => scoped_url_with_modal_id }
   a.dropdown-item *attrs

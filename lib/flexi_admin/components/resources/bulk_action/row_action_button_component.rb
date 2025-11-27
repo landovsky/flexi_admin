@@ -67,11 +67,10 @@ module FlexiAdmin::Components::Resources::BulkAction
     def css_classes
       if dropdown_mode?
         classes = %w[dropdown-item]
-        classes << "disabled" if disabled?
       else
         classes = %w[btn btn-sm btn-outline-primary]
-        classes << "disabled" if disabled?
       end
+      classes << "text-muted" if disabled?
       classes.concat(options[:class].split) if options[:class]
       classes.join(" ")
     end
