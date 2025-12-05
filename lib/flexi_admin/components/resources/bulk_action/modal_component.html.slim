@@ -27,6 +27,7 @@ div.modal.fade id="#{context.options[:modal_id]}" tabindex="-1"
                                            { detail:
                                             {
                                               modalId: '#{context.options[:modal_id]}',
-                                              scope: '#{context.scope}'
+                                              scope: '#{context.scope}',
+                                              selectedIds: #{{(context.params.request_params[:selected_ids] || []).to_json}}
                                               }
                                            }));
