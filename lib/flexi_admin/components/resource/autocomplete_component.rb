@@ -9,12 +9,12 @@ module FlexiAdmin::Components::Resource
 
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
                 :name, :html_options, :path, :width, :value,
-                :disabled_empty_custom_message
+                :disabled_empty_custom_message, :placeholder
 
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
                   value: nil, disabled_empty_custom_message: nil,
-                  target_controller: nil, **html_options)
+                  target_controller: nil, placeholder: nil, **html_options)
       @resource = resource
       @scope = scope
       @target_controller = target_controller
@@ -45,6 +45,7 @@ module FlexiAdmin::Components::Resource
       end
 
       @disabled_empty_custom_message = disabled_empty_custom_message || 'žádný zdroj'
+      @placeholder = placeholder || 'hledat'
 
       validate_action!
     end
