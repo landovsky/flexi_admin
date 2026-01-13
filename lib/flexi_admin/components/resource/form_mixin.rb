@@ -172,7 +172,7 @@ module FlexiAdmin::Components::Resource
       end
     end
 
-    def add_row_button(container:, template_selector: '.dynamic-rows > .form-row', label: I18n.t('flexi_admin.form.add_row_button'), icon: 'plus', classes: '')
+    def add_row_button(container:, template_selector: '.dynamic-rows > .form-row:has(input, select, textarea)', label: I18n.t('flexi_admin.form.add_row_button'), icon: 'plus', classes: '')
       button = if icon.present?
         content_tag(:button, class: 'btn btn-outline-secondary ' + classes, type: 'button',
                     data: { action: 'click->add-row#add',
