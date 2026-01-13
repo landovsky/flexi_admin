@@ -2,6 +2,7 @@
 
 module FlexiAdmin::Components::Nav
   class BreadcrumbsComponent < FlexiAdmin::Components::BaseComponent
+    include FlexiAdmin::Components::Helpers::UrlHelper
 
     attr_reader :path
 
@@ -25,15 +26,15 @@ module FlexiAdmin::Components::Nav
           label ||= record&.try(:name)
           label ||= "#{segments[idx - 1].singularize.camelize} ##{segment}"
           url += "/#{segment}"
-          crumbs << { label: label, url: url.dup }
         elsif !is_id?(segment)
           # For collection, use plural segment for display and I18n lookup
           plural_segment = segment
           model_class = infer_model_class(segment, segments[0..idx-1])
           label = breadcrumb_label(model_class, plural_segment)
           url += "/#{segment}"
-          crumbs << { label: label, url: url.dup }
         end
+
+        crumbs << { label: label, url: url.dup }
       end
       crumbs
     end

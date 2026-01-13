@@ -52,7 +52,7 @@
     .inline-field-wrapper {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       border: 0;
       justify-content: start !important;
       gap: 1rem;

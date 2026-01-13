@@ -3,7 +3,11 @@ nav.breadcrumbs aria-label="breadcrumb"
     - breadcrumbs.each_with_index do |crumb, idx|
       - if idx < breadcrumbs.size - 1
         li.breadcrumb-item
-          = helpers.link_to crumb[:label], crumb[:url], "data-turbo-frame": "_top"
+          - if (main_app.routes.recognize_path("#{request.base_url}#{crumb[:url]}", method: :get) rescue false)
+            = helpers.link_to crumb[:label], crumb[:url], "data-turbo-frame": "_top"
+          - else
+            - puts "here"
+            = crumb[:label]
       - else
         li.breadcrumb-item.active aria-current="page"
           = crumb[:label]

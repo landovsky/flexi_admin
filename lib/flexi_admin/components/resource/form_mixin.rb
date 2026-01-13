@@ -172,7 +172,7 @@ module FlexiAdmin::Components::Resource
       end
     end
 
-    def add_row_button(container:, template_selector: '.form-row', label: I18n.t('flexi_admin.form.add_row_button'), icon: 'plus', classes: '')
+    def add_row_button(container:, template_selector: '.dynamic-rows > .form-row', label: I18n.t('flexi_admin.form.add_row_button'), icon: 'plus', classes: '')
       button = if icon.present?
         content_tag(:button, class: 'btn btn-outline-secondary ' + classes, type: 'button',
                     data: { action: 'click->add-row#add',
@@ -309,8 +309,9 @@ module FlexiAdmin::Components::Resource
       content_tag(:div, html_options.merge(class: 'form-row')) do
         lbl = label
         lbl += ' *' if required && !disabled
+        col_md = label == false ? 'col-md-12' : 'col-md-9'
         concat content_tag(:div, class: 'col-12 col-md-3') { label_tag(attr_name, lbl) } unless label == false
-        concat content_tag(:div, class: inline ? 'col-12 col-md-9 inline-field-wrapper' : 'col-12 col-md-9') {
+        concat content_tag(:div, class: inline ? "col-12 #{col_md} inline-field-wrapper" : "col-12 #{col_md}") {
                 field_html
               }
       end
@@ -323,7 +324,8 @@ module FlexiAdmin::Components::Resource
                   label_tag('autocomplete', label)
                 }
         end
-        concat content_tag(:div, class: 'col-12 col-md-9') { render view_component_instance }
+        col_md = label == false ? 'col-md-12' : 'col-md-9'
+        concat content_tag(:div, class: "col-12 #{col_md}") { render view_component_instance }
       end
     end
 
