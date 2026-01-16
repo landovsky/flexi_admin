@@ -1,8 +1,8 @@
 - if icon.present?
-  = link_to path, **options.merge(data: { turbo_frame: '_top' }, class: 'dropdown-item') do
+  = link_to path, **options.merge(data: { turbo_frame: '_top' }, class: "dropdown-item #{disabled ? 'disabled' : ''}") do
     i.bi.me-2 class=icon_class
     = label
   /a href="#{path}" data-turbo-frame="_top" class="dropdown-item"
 - else
-  = link_to label, path, **options.merge(data: { turbo_frame: '_top' }, class: 'dropdown-item')
+  = link_to label, path, **options.merge(data: { turbo_frame: '_top' }, class: "dropdown-item #{disabled ? 'disabled' : ''}")
   /a href="#{path}" data-turbo-frame="_top" class="dropdown-item" = label
