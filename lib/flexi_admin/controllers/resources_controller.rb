@@ -160,10 +160,10 @@ module FlexiAdmin::Controllers::ResourcesController
       result = update_service.run(resource: @resource, params: resource_params)
     end
 
-
     if result.valid?
       render_edit_resource_form(disabled: disabled?(true))
     else
+      Rails.logger.debug "ResourcesController: #{__method__} errors: #{result.errors.full_messages}"
       render_edit_resource_form(disabled: disabled?(false))
     end
   end
