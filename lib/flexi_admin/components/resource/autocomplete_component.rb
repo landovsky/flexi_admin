@@ -53,6 +53,7 @@ module FlexiAdmin::Components::Resource
     def autocomplete_options
       {
         style: 'border-top-right-radius: 0.4rem; border-bottom-right-radius: 0.4rem;',
+        autocomplete: 'off',
         data: { autocomplete_target: 'input',
                 action: 'keyup->autocomplete#keyup focusout->autocomplete#onFocusOut',
                 autocomplete_search_path: get_path,
