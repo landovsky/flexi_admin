@@ -40,11 +40,14 @@ module FlexiAdmin::Controllers::ResourcesController
       format.html do
         component_class = namespaced_class('namespace', resource_class.name, "IndexPageComponent")
         puts "component_class: #{component_class}"
-        render component_class.new(resources, context_params: context_params, scope: resource_class.model_name.plural)
+        render component_class.new(resources, context_params: context_params,
+                                              scope: resource_class.model_name.plural)
       end
       format.turbo_stream do
         component_class = namespaced_class('namespace', resource_class.name, "ResourcesComponent")
-        render turbo_stream: turbo_stream.replace(target, component_class.new(resources, context_params: context_params, scope: resource_class.model_name.plural))
+        render turbo_stream: turbo_stream.replace(target, component_class.new(resources, context_params: context_params,
+                                                                                         scope: resource_class.model_name.plural,
+                                                                                         parent: parent_instance))
       end
     end
   end
