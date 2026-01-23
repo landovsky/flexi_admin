@@ -5,20 +5,25 @@ div.modal.fade id="#{context.options[:modal_id]}" tabindex="-1"
           h1.modal-title.fs-5 = context.options[:title]
           button.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
 
-        div.modal-body
-          = modal_form
+        fieldset.modal-fieldset disabled=context.options[:disabled]
+          div.modal-body
+            - if context.options[:errors].present?
+              div.alert.alert-danger
+                = context.options[:errors].messages.values.flatten.join(', ')
+            = modal_form
 
-        div.modal-footer.d-flex.justify-content-between.align-items-center
-          .d-flex.justify-content-start.gap-3
-            button.btn.btn-primary [type="submit"
-                                    data-action="click->bulk-action#submitForm"]
-              | Spustit
-            button.btn.btn-secondary [type="button"
-                                      data-bs-dismiss="modal"]
-              | Zrušit
-          span
-            |> vybraných položek:
-            span.count
+          - unless context.options[:skip_confirmation_buttons]
+            div.modal-footer.d-flex.justify-content-between.align-items-center
+              .d-flex.justify-content-start.gap-3
+                button.btn.btn-primary [type="submit"
+                                        data-action="click->bulk-action#submitForm"]
+                  | Spustit
+                button.btn.btn-secondary [type="button"
+                                          data-bs-dismiss="modal"]
+                  | Zrušit
+              span
+                |> vybraných položek:
+                span.count
 
   javascript:
     var modal = new window.bootstrap.Modal(document.getElementById('#{context.options[:modal_id]}'));

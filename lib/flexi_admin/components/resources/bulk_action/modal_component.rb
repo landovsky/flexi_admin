@@ -9,19 +9,22 @@ module FlexiAdmin::Components::Resources::BulkAction
       attr_accessor :class_name
     end
 
-    attr_reader :context
+    attr_reader :context, :extra_options
 
     renders_one :modal_form
 
-    def initialize(context = nil)
+    def initialize(context = nil, **extra_options)
       @context = context
 
-      add_context_options(@context)
+      add_context_options(context)
+      extra_options.each do |key, value|
+        context.options[key] = value
+      end
       super(nil, disabled: false)
     end
 
-    def modal(context, &block)
-      render FlexiAdmin::Components::Resources::BulkAction::ModalComponent.new(context) do |component|
+    def modal(context, **options,&block)
+      render FlexiAdmin::Components::Resources::BulkAction::ModalComponent.new(context, **options) do |component|
         component.with_modal_form(&block)
       end
     end
