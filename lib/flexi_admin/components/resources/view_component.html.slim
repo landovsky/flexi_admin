@@ -11,7 +11,7 @@ turbo-frame [id="#{context.scope}"
         = context.resources&.count || 0
         |< záznamů
       span data-bulk-action-target="selectionText" style="display: none;"
-        | vybráno
+        ' vybráno
         span data-bulk-action-target="counter" 0
         |  z #{context.resources&.count || 0} záznamů (
         a href="#" data-action="click->bulk-action#clearSelection" zrušit výběr
