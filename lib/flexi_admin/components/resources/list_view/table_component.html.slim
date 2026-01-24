@@ -7,6 +7,16 @@ flexi-table
     - columns.each do |column|
       = render FlexiAdmin::Components::Shared::Table::HeaderItemComponent.new(column)
 
+    - if selectable?
+      .col-auto.ms-auto.d-flex.align-items-center.gap-2
+        span.text-primary[data-bulk-action-target="counter" style="display: none;"]
+          | 0
+        button.btn.btn-sm.btn-outline-secondary[data-bulk-action-target="clearButton"
+                                                 data-action="click->bulk-action#clearSelection"
+                                                 style="display: none;"
+                                                 type="button"]
+          | Clear selection
+
   - resources.each do |resource|
     .row.border-top.py-2
       - if selectable?
