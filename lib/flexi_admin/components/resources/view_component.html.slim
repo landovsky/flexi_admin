@@ -6,9 +6,16 @@ turbo-frame [id="#{context.scope}"
   .py-2.d-flex.justify-content-between.align-items-center
     .d-flex.gap-2
       = actions
-    span.text-muted
-      = context.resources&.count || 0
-      |< záznamů
+    span.text-muted data-bulk-action-target="recordsInfo" data-total-count="#{context.resources&.count || 0}"
+      span data-bulk-action-target="defaultText"
+        = context.resources&.count || 0
+        |< záznamů
+      span data-bulk-action-target="selectionText" style="display: none;"
+        | vybráno
+        span data-bulk-action-target="counter" 0
+        |  z #{context.resources&.count || 0} záznamů (
+        a href="#" data-action="click->bulk-action#clearSelection" zrušit výběr
+        | )
     = render FlexiAdmin::Components::Resources::PaginationComponent.new(context, per_page: context.params.per_page, page: context.params.page)
   .py-2
     = views

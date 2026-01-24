@@ -1,5 +1,5 @@
 .card style="width: 18rem;"
-  = render(FlexiAdmin::Components::Actions::CheckboxComponent.new(id: resource.id, scope: resource.class.name.downcase))
+  = render(FlexiAdmin::Components::Actions::CheckboxComponent.new(id: resource.id, scope: context.scope))
   div
     - if media?
       = render_media
