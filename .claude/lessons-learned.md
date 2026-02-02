@@ -44,3 +44,48 @@
     this.counterTarget.textContent = count;
   }
   ```
+
+## 2026-02-02 - flexi_admin_-cq9 - Test Infrastructure for Rails Engine
+
+### What worked well
+- Using an in-memory SQLite database (`:memory:`) for test isolation and speed
+- Defining schema directly in rails_helper.rb avoids migration complexity
+- FactoryBot traits for common test data patterns (`:admin`, `:balicka`, etc.)
+- SimpleCov coverage reporting integration
+
+### What to avoid
+- **`ENV['RAILS_ENV'] ||= 'test'` can fail**: If RAILS_ENV is set to empty string or inherited from shell, the `||=` operator won't override it. Always use `ENV['RAILS_ENV'] = 'test'` in rails_helper.rb for reliable test environment.
+- **`config.paths['app/controllers']` doesn't configure autoloading**: For dummy Rails apps, you must explicitly add directories to `config.autoload_paths` and `config.eager_load_paths` for Rails to find controllers/models.
+- **Testing FlexiAdmin components in isolation is complex**: Components use route helpers (`users_path`), Context objects, and ContextParams with specific APIs. Isolated ViewComponent tests may need extensive mocking or should be replaced with request-level tests.
+- **Namespaced controllers must use `::ApplicationController`**: Inside `module Admin`, writing `ApplicationController` looks for `Admin::ApplicationController`. Use `::ApplicationController` for the global class.
+
+### Process improvements
+- **For Rails Engine testing**: Always verify the environment is `test` early in test boot (add `raise if Rails.env != 'test'` temporarily if debugging)
+- **Document component constructor signatures**: Components like `PaginationComponent.new(context, per_page:, page:)` mix positional and keyword args - tests need to match exactly
+- **Integration tests need working component stack**: UI test cases (from ui-test-cases.md) that test actual page interactions require either: (1) real FlexiAdmin components configured for test models, or (2) system tests with the full application
+- **Consider test layers**: Infrastructure tests (model creation, factory loading) should be separate from integration tests (full page rendering) - easier to diagnose failures
+
+### Patterns to reuse
+- **Dummy Rails app structure for engine testing**:
+  ```
+  spec/dummy/
+    app/
+      controllers/
+        application_controller.rb
+        admin/users_controller.rb
+      models/
+        application_record.rb
+        user.rb
+    config/
+      application.rb  # with autoload_paths configured
+      database.yml    # sqlite3 :memory:
+      routes.rb
+      environments/test.rb
+  ```
+- **ViewComponent test context builder**:
+  ```ruby
+  def build_context(resource:, resources:, scope:)
+    params = FlexiAdmin::Models::ContextParams.new({ 'fa_scope' => scope })
+    FlexiAdmin::Models::Resources::Context.new(resources, scope, params, { parent: nil })
+  end
+  ```
