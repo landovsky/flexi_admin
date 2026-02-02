@@ -8,8 +8,8 @@ SimpleCov.start 'rails' do
   add_filter '/vendor/'
 end
 
-# Set up Rails test environment
-ENV['RAILS_ENV'] ||= 'test'
+# Set up Rails test environment - force test mode
+ENV['RAILS_ENV'] = 'test'
 ENV.delete('DATABASE_URL')  # Clear any external database config
 require File.expand_path('dummy/config/environment', __dir__)
 
@@ -26,8 +26,8 @@ require 'global_id'
 # in spec/support/ and its subdirectories.
 Dir[File.expand_path('support/**/*.rb', __dir__)].each { |f| require f }
 
-# Load dummy app models
-Dir[File.expand_path('dummy/app/models/**/*.rb', __dir__)].each { |f| require f }
+# Note: Dummy app controllers and models are autoloaded via config.autoload_paths
+# defined in spec/dummy/config/application.rb
 
 # Set up database schema for tests (database already configured in dummy app)
 ActiveRecord::Schema.define do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class CommentsController < ApplicationController
+  class CommentsController < ::ApplicationController
     include FlexiAdmin::Controllers::ResourcesController
 
     private

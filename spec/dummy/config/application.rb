@@ -26,8 +26,16 @@ module Dummy
     config.assets.paths = []
     config.assets.precompile = []
 
-    # Configure database paths - look in dummy/config directory
+    # Configure paths - look in dummy directories
     config.paths['config/database'] = File.expand_path('database.yml', __dir__)
+    config.paths['config/routes.rb'] = File.expand_path('routes.rb', __dir__)
+
+    # Set up autoload paths for dummy app
+    dummy_root = File.expand_path('..', __dir__)
+    config.autoload_paths << "#{dummy_root}/app/controllers"
+    config.autoload_paths << "#{dummy_root}/app/models"
+    config.eager_load_paths << "#{dummy_root}/app/controllers"
+    config.eager_load_paths << "#{dummy_root}/app/models"
 
     # Configure GlobalID
     config.global_id = ActiveSupport::OrderedOptions.new
