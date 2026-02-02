@@ -1,0 +1,7 @@
+[
+  {
+    "filename": "ui-test-cases.md",
+    "description": "UI test cases for User Management module (List and Detail views)",
+    "usage": "when writing or reviewing UI tests"
+  }
+]
