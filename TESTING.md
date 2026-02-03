@@ -318,6 +318,93 @@ Key configuration in `spec/rails_helper.rb`:
 - FactoryBot syntax methods
 - I18n with Czech locale support
 
+## JavaScript Setup in Dummy App
+
+The dummy app uses esbuild to bundle JavaScript, matching how production apps consume FlexiAdmin.
+
+### Installing Dependencies
+
+Before running tests for the first time, install JavaScript dependencies:
+
+```bash
+cd spec/dummy
+npm install
+```
+
+### Building JavaScript Assets
+
+Build the JavaScript bundle before running tests:
+
+```bash
+cd spec/dummy
+npm run build
+```
+
+This compiles:
+- Stimulus controllers from the gem
+- Turbo Rails integration
+- Dummy app JavaScript
+
+### Development Workflow
+
+For active development with live reloading:
+
+```bash
+cd spec/dummy
+bin/dev
+```
+
+This starts:
+- Rails server on port 3000
+- esbuild watcher (auto-rebuilds on changes)
+
+### Troubleshooting JavaScript Setup
+
+**Module not found: flexi_admin**
+- Ensure NODE_PATH includes `lib/flexi_admin/javascript`
+- Check `esbuild.config.mjs` has correct nodePaths configuration
+- Verify the gem's JavaScript files exist at `lib/flexi_admin/javascript/`
+
+**Stimulus controllers not registered**
+- Check browser console for JavaScript errors
+- Verify `app/assets/builds/application.js` exists after build
+- Inspect bundle: `cat spec/dummy/app/assets/builds/application.js | grep "flexi-admin"`
+- Check that `javascript_include_tag` is present in layout
+
+**Tests fail with JavaScript errors**
+- Rebuild assets: `cd spec/dummy && npm run build`
+- Check that esbuild ran successfully (no errors in output)
+- Verify application.js is loaded: check browser network tab
+- Ensure tests use `js: true` for JavaScript-dependent features
+
+**esbuild watch not working in bin/dev**
+- Check that foreman is installed: `gem install foreman`
+- Verify Procfile.dev exists and has correct processes
+- Try running build manually: `npm run build -- --watch`
+
+## Known Limitations
+
+### JavaScript Build Required
+
+Tests require building JavaScript assets before running. This is not automatic. Run:
+
+```bash
+cd spec/dummy && npm run build
+```
+
+Consider adding to CI setup or test rake task.
+
+### esbuild Only
+
+Currently only tested with esbuild. Webpack integration should work but is untested. Importmap support requires additional configuration.
+
+### Test Speed Impact
+
+The esbuild build adds approximately 2-3 seconds to initial test setup. Consider:
+- Caching build output in CI (see CI_REQUIREMENTS.md)
+- Only rebuilding when JavaScript files change
+- Pre-building before running full test suite
+
 ## Debugging Tests
 
 ### Print Output
