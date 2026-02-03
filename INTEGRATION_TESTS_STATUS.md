@@ -1,35 +1,37 @@
-# Integration Tests Status
+# Integration Tests Status - UPDATED
 
 ## Current State
 
-The integration test files have been created (`spec/integration/users_list_spec.rb` and `spec/integration/user_detail_spec.rb`) but they are currently failing because the dummy Rails app is not fully configured to render the FlexiAdmin UI components.
+✅ **Major Progress**: Core infrastructure is now working!
 
-## Issues Found
+### Test Results: 27/68 PASSING (40% pass rate)
 
-### 1. Missing Turbo Rails Integration
-- The `render_index` method in `ResourcesController` uses `format.turbo_stream`
-- Turbo-rails is not included in dependencies
-- This causes a "custom format not registered" error
+- **Infrastructure tests**: ✅ ALL PASSING (5/5)
+- **Component tests**: ✅ 3/6 passing
+- **Controller tests**: ✅ 1/1 passing
+- **Integration tests**: ❌ 0/30 passing (need JS driver)
+- **Request tests**: ❌ 2/11 passing (need full CRUD implementation)
+- **Other tests**: ✅ 16/16 passing
 
-### 2. Component Rendering Issues
-- Created `Admin::Users::IndexPageComponent` to render the index page
-- Component requires slots for search, filter, and actions
-- Template exists at `lib/flexi_admin/components/resources/index_page_component.html.slim`
-- Component isn't rendering any output (investigating why)
+## Issues Resolved ✅
 
-### 3. Missing Setup in Dummy App
-- Created application layout: `spec/dummy/app/views/layouts/application.html.erb`
-- Added autoload paths for components directory
-- Controller simplified to directly render component
+### 1. Turbo Rails Integration
+- ✅ Added turbo-rails as dependency to gemspec
+- ✅ Configured in dummy app application.rb
+- ✅ turbo_stream format now works properly
 
-## Tests Status
+### 2. Component Rendering
+- ✅ Fixed namespace conflicts (::User vs Admin::User)
+- ✅ Created `Admin::User::IndexPageComponent` (singular, not plural!)
+- ✅ Configured FlexiAdmin.namespace = 'admin' in rails_helper
+- ✅ Component successfully renders with search/filter slots
+- ✅ Template rendering works properly
 
-- **Infrastructure tests**: ✅ PASSING (5 examples, 0 failures)
-- **Integration tests**: ❌ FAILING (38 failures out of 42 examples)
-  - User detail page tests (9 tests)
-  - Users list page tests (20 tests)
-- **Component tests**: ❌ FAILING (6 failures)
-- **Request tests**: ❌ FAILING (9 failures)
+### 3. Dummy App Configuration
+- ✅ Created application layout
+- ✅ Added component autoload paths
+- ✅ Created FlexiAdmin initializer
+- ✅ Controller uses ::User to avoid namespace conflicts
 
 ## Root Cause
 
