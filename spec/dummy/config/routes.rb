@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   # Define admin routes
   namespace :admin do
     resources :users do
+      collection do
+        post :bulk_action
+      end
       resources :comments
     end
   end
