@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails'
@@ -13,11 +15,17 @@ require 'turbo-rails'
 module Dummy
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
+
+    # Configuration for the application, engines, and railties goes here.
     config.eager_load = false
 
-    # Configure assets for esbuild
+    # For compatibility with applications that use this config
+    config.active_storage.service = :test if config.respond_to?(:active_storage)
+
+    # Configure assets for test environment (needed by flexi_admin railtie)
     config.assets.enabled = true
-    config.assets.paths << Rails.root.join("app/assets/builds")
+    config.assets.paths = []
+    config.assets.precompile = []
 
     # Configure paths - look in dummy directories
     config.paths['config/database'] = File.expand_path('database.yml', __dir__)
@@ -39,5 +47,6 @@ module Dummy
     # I18n configuration
     config.i18n.default_locale = :cs
     config.i18n.available_locales = [:cs, :en]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
   end
 end

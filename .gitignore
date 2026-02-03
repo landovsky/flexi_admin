@@ -76,3 +76,8 @@ yarn-debug.log*
 
 # bv (beads viewer) local config and caches
 .bv/
+
+# esbuild output directories
+spec/dummy/app/assets/builds/
+spec/dummy/node_modules/
+spec/dummy/package-lock.json
