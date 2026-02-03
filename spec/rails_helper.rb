@@ -22,6 +22,11 @@ require 'view_component/test_helpers'
 require 'factory_bot_rails'
 require 'global_id'
 
+# Configure FlexiAdmin namespace
+FlexiAdmin::Config.configure do |config|
+  config.namespace = 'admin'
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[File.expand_path('support/**/*.rb', __dir__)].each { |f| require f }

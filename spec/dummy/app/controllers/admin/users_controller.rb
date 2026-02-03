@@ -5,8 +5,7 @@ module Admin
     include FlexiAdmin::Controllers::ResourcesController
 
     def index
-      Rails.logger.info "=== Admin::UsersController#index called ==="
-      resources = User.all
+      resources = ::User.all
       # Apply search if present
       if params[:search].present?
         search_term = "%#{params[:search]}%"
@@ -22,13 +21,13 @@ module Admin
       # Paginate
       resources = resources.paginate(page: params[:page] || 1, per_page: params[:per_page] || 16)
 
-      render json: { users: resources.as_json }
+      render_index(resources)
     end
 
     private
 
     def resource_class
-      User
+      ::User
     end
 
     def permitted_params

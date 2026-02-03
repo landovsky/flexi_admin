@@ -41,6 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 7.1", "< 9"
   spec.add_dependency "gemini-ai"
   spec.add_dependency "slim-rails"
+  spec.add_dependency "turbo-rails"
   spec.add_dependency "view_component", "= 3.20"
   spec.add_dependency "will_paginate"
   spec.add_dependency "will_paginate-bootstrap-style"

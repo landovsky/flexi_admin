@@ -10,6 +10,7 @@ require 'sprockets/railtie'
 
 Bundler.require(*Rails.groups)
 require 'flexi_admin'
+require 'turbo-rails'
 
 module Dummy
   class Application < Rails::Application
@@ -34,8 +35,10 @@ module Dummy
     dummy_root = File.expand_path('..', __dir__)
     config.autoload_paths << "#{dummy_root}/app/controllers"
     config.autoload_paths << "#{dummy_root}/app/models"
+    config.autoload_paths << "#{dummy_root}/app/components"
     config.eager_load_paths << "#{dummy_root}/app/controllers"
     config.eager_load_paths << "#{dummy_root}/app/models"
+    config.eager_load_paths << "#{dummy_root}/app/components"
 
     # Configure GlobalID
     config.global_id = ActiveSupport::OrderedOptions.new
