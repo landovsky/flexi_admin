@@ -28,13 +28,19 @@ module Admin
       @user = ::User.find(params[:id])
 
       respond_to do |format|
-        format.html { render plain: "User: #{@user.full_name}" }
+        format.html { render Admin::User::ShowPageComponent.new(@user) }
         format.json { render json: @user }
       end
     end
 
     def create
+      Rails.logger.info "=== CREATE ACTION ==="
+      Rails.logger.info "Params: #{params.inspect}"
+      Rails.logger.info "Permitted params: #{permitted_params.inspect}"
+
       @user = ::User.new(permitted_params)
+      Rails.logger.info "User valid: #{@user.valid?}"
+      Rails.logger.info "User errors: #{@user.errors.full_messages}" unless @user.valid?
 
       if @user.save
         respond_to do |format|
@@ -43,10 +49,29 @@ module Admin
           format.json { render json: @user, status: :created }
         end
       else
+        error_message = "Error: #{@user.errors.full_messages.join(', ')}"
+        Rails.logger.info "=== CREATE FAILED: #{error_message}"
+
         respond_to do |format|
-          format.html { render plain: "Error: #{@user.errors.full_messages.join(', ')}", status: :unprocessable_entity }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
+          format.html { render plain: error_message, status: :unprocessable_content }
+          format.json { render json: @user.errors, status: :unprocessable_content }
         end
+      end
+    rescue ActionController::ParameterMissing => e
+      # Handle missing required parameter
+      Rails.logger.info "=== PARAMETER MISSING: #{e.message}"
+
+      respond_to do |format|
+        format.html { render plain: "Parameter error: #{e.message}", status: :bad_request }
+        format.json { render json: { error: e.message }, status: :bad_request }
+      end
+    rescue => e
+      Rails.logger.error "=== UNEXPECTED ERROR: #{e.class}: #{e.message}"
+      Rails.logger.error e.backtrace.first(5).join("\n")
+
+      respond_to do |format|
+        format.html { render plain: "Unexpected error: #{e.message}", status: :internal_server_error }
+        format.json { render json: { error: e.message }, status: :internal_server_error }
       end
     end
 
@@ -60,8 +85,8 @@ module Admin
         end
       else
         respond_to do |format|
-          format.html { render plain: "Error: #{@user.errors.full_messages.join(', ')}", status: :unprocessable_entity }
-          format.json { render json: @user.errors, status: :unprocessable_entity }
+          format.html { render plain: "Error: #{@user.errors.full_messages.join(', ')}", status: :unprocessable_content }
+          format.json { render json: @user.errors, status: :unprocessable_content }
         end
       end
     end
