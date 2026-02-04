@@ -21,6 +21,7 @@ require 'capybara/rspec'
 require 'view_component/test_helpers'
 require 'factory_bot_rails'
 require 'global_id'
+GlobalID.app = 'dummy'
 
 # Configure FlexiAdmin namespace
 FlexiAdmin::Config.configure do |config|

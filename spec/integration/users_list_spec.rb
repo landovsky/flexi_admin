@@ -150,7 +150,7 @@ RSpec.describe 'Users List Page', type: :feature do
     it 'updates displayed items when changing per-page value', js: true do
       visit '/admin/users'
 
-      select '32', from: 'per_page'
+      select '24', from: 'per_page'
 
       # Should show more items
       expect(page).to have_css('.user-row', count: 22)  # All 22 users on one page
@@ -161,7 +161,7 @@ RSpec.describe 'Users List Page', type: :feature do
       create_list(:user, 40)  # Ensure multiple pages
       visit '/admin/users'
 
-      click_link '>'  # Next button
+      click_link '→'  # Next button
 
       expect(current_url).to include('page=2')
     end
@@ -171,7 +171,7 @@ RSpec.describe 'Users List Page', type: :feature do
       create_list(:user, 40)
       visit '/admin/users?page=2'
 
-      click_link '<'  # Previous button
+      click_link '←'  # Previous button
 
       expect(current_url).to include('page=1')
     end

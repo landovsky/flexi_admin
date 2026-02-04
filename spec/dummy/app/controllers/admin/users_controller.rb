@@ -102,7 +102,7 @@ module Admin
     end
 
     def bulk_action
-      action_type = params[:action]
+      action_type = params[:bulk_action_type]
       ids = params[:ids]
 
       # Parse JSON if it's a string

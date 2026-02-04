@@ -129,7 +129,7 @@ RSpec.describe 'ResourcesController', type: :request do
 
       expect {
         post '/admin/users/bulk_action', params: {
-          action: 'delete',
+          bulk_action_type: 'delete',
           ids: user_ids
         }
       }.to change(User, :count).by(-3)

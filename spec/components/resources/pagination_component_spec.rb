@@ -33,22 +33,22 @@ RSpec.describe FlexiAdmin::Components::Resources::PaginationComponent, type: :co
     end
 
     it 'renders previous and next links' do
-      render_inline(described_class.new(context, per_page: 16, page: 2))
+      render_inline(described_class.new(context, per_page: 12, page: 2))
 
-      expect(page).to have_css('a', text: '<')  # Previous
-      expect(page).to have_css('a', text: '>')  # Next
+      expect(page).to have_css('a', text: '←')  # Previous
+      expect(page).to have_css('a', text: '→')  # Next
     end
 
     it 'includes per-page selector' do
-      render_inline(described_class.new(context, per_page: 16, page: 2))
+      render_inline(described_class.new(context, per_page: 12, page: 2))
 
-      expect(page).to have_select(with_options: ['16', '32', '64'])
+      expect(page).to have_select(with_options: ['12', '24', '48', '96'])
     end
   end
 
   describe 'pagination state' do
     it 'marks current page as active' do
-      render_inline(described_class.new(context, per_page: 16, page: 2))
+      render_inline(described_class.new(context, per_page: 12, page: 2))
 
       active_page = page.find('.page-item.active')
       expect(active_page).to have_text('2')
@@ -61,9 +61,9 @@ RSpec.describe FlexiAdmin::Components::Resources::PaginationComponent, type: :co
         scope: 'users'
       )
 
-      render_inline(described_class.new(first_page_context, per_page: 16, page: 1))
+      render_inline(described_class.new(first_page_context, per_page: 12, page: 1))
 
-      expect(page).to have_css('.page-item.disabled', text: '<')
+      expect(page).to have_css('.page-item.disabled', text: '←')
     end
   end
 end

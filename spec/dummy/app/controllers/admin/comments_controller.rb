@@ -15,6 +15,11 @@ module Admin
       render plain: "Comment by #{@user.full_name}: #{@comment.body}"
     end
 
+    def new
+      @comment = @user.comments.build
+      render plain: "New comment for #{@user.full_name} (#{GlobalID.create(@user)})"
+    end
+
     private
 
     def set_user
