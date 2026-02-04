@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Ensure GlobalID is loaded
+require 'global_id'
+
 # Clear existing data
 Comment.destroy_all
 User.destroy_all
