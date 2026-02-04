@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node esbuild.config.mjs",
-    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css"
+    "build": "node esbuild.config.mjs"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
