@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'global_id'
+
 class User < ApplicationRecord
   include FlexiAdmin::Models::Concerns::ApplicationResource
 
