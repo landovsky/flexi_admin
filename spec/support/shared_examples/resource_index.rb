@@ -92,12 +92,12 @@ RSpec.shared_examples 'a resource show page' do |resource_name, factory_name = n
 
     it 'has edit button' do
       visit show_path
-      expect(page).to have_button('Edit') || expect(page).to have_link('Edit')
+      expect(page.has_button?('Edit') || page.has_link?('Edit')).to be true
     end
 
     it 'has delete button' do
       visit show_path
-      expect(page).to have_button('Delete') || expect(page).to have_link('Delete')
+      expect(page.has_button?('Delete') || page.has_link?('Delete')).to be true
     end
   end
 

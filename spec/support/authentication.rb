@@ -16,28 +16,18 @@ RSpec.configure do |config|
     def login_as(user, scope: :user)
       # Simple session-based login for testing
       # In a real Devise setup, this would use Warden::Test::Helpers
-      if respond_to?(:visit)
-        # Feature tests - set session via Rails
-        page.driver.post('/test_login', { user_id: user.id }.to_json, {
-          'CONTENT_TYPE' => 'application/json'
-        })
-      else
-        # Controller tests - set session directly
-        session[:user_id] = user.id if respond_to?(:session)
-      end
+      # For now, this is a no-op placeholder for when authentication is added
+      @current_test_user = user
     end
 
     def logout
-      if respond_to?(:visit)
-        page.driver.post('/test_logout')
-      else
-        session.delete(:user_id) if respond_to?(:session)
-      end
+      # Reset test user
+      @current_test_user = nil
     end
 
     def current_user
       # Helper to get current user in tests
-      User.find_by(id: session[:user_id]) if respond_to?(:session)
+      @current_test_user
     end
   }, type: :feature
 
