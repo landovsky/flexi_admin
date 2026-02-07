@@ -10,7 +10,7 @@ RSpec.describe 'User Detail Page', type: :feature do
     it 'navigates back to users list via breadcrumb' do
       visit "/admin/users/#{user.id}"
 
-      within('.breadcrumb') do
+      within(first('.breadcrumb')) do
         click_link 'Uživatel'
       end
 
@@ -37,7 +37,8 @@ RSpec.describe 'User Detail Page', type: :feature do
       expect(page).to have_content('Updated')
       expect(page).to have_content('Poslední přihlášení')
       expect(page).to have_content(user.full_name)
-      expect(page).to have_content(user.email)
+      # Check field value instead of page content for disabled fields
+      expect(page).to have_field('user[email]', with: user.email, disabled: true)
     end
 
     # UD-004: Edit Text Fields
@@ -94,7 +95,7 @@ RSpec.describe 'User Detail Page', type: :feature do
     end
 
     # UD-008: Edit Mode Toggle
-    it 'enables editing when clicking pencil icon' do
+    it 'enables editing when clicking pencil icon', js: true do
       visit "/admin/users/#{user.id}"
 
       click_button class: 'edit-icon'
@@ -108,7 +109,7 @@ RSpec.describe 'User Detail Page', type: :feature do
       visit "/admin/users/#{user.id}"
 
       accept_confirm do
-        click_button class: 'delete-icon'
+        click_link 'Delete'  # It's a link, not a button
       end
 
       # Should redirect to users list
