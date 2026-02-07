@@ -6,13 +6,29 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <%# No custom stylesheets for dummy app - FlexiAdmin provides its own %>
+  <%# Bootstrap CSS via CDN %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+        crossorigin="anonymous">
+
+  <%# Custom component styles %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
   <%# JavaScript from esbuild output %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+  <%# Bootstrap JS Bundle (includes Popper) %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+          crossorigin="anonymous"></script>
 </head>
 <body>
-  <div id="toasts"></div>
-  <%= yield %>
+  <div class="container-fluid">
+    <%# Toast container for flash messages %>
+    <div id="toasts" class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+    <%= yield %>
+  </div>
 </body>
 </html>

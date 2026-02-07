@@ -82,11 +82,32 @@ module Admin
         respond_to do |format|
           format.html { redirect_to admin_user_path(@user), notice: 'User updated successfully' }
           format.json { render json: @user }
+          format.turbo_stream do
+            render turbo_stream: [
+              turbo_stream.replace("user-#{@user.id}",
+                partial: 'admin/users/user',
+                locals: { user: @user }
+              ),
+              turbo_stream.prepend('toasts',
+                partial: 'shared/toast',
+                locals: { message: 'User updated successfully', type: 'success' }
+              )
+            ]
+          end
         end
       else
         respond_to do |format|
           format.html { render plain: "Error: #{@user.errors.full_messages.join(', ')}", status: :unprocessable_content }
           format.json { render json: @user.errors, status: :unprocessable_content }
+          format.turbo_stream do
+            render turbo_stream: turbo_stream.prepend('toasts',
+              partial: 'shared/toast',
+              locals: {
+                message: "Failed to update user: #{@user.errors.full_messages.join(', ')}",
+                type: 'error'
+              }
+            ), status: :unprocessable_entity
+          end
         end
       end
     end
@@ -98,6 +119,15 @@ module Admin
       respond_to do |format|
         format.html { redirect_to admin_users_path, notice: 'User deleted successfully' }
         format.json { head :no_content }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove("user-#{@user.id}"),
+            turbo_stream.prepend('toasts',
+              partial: 'shared/toast',
+              locals: { message: 'User deleted successfully', type: 'success' }
+            )
+          ]
+        end
       end
     end
 
