@@ -2,17 +2,22 @@
   "artifacts": [
     {
       "filename": "artifacts/front-end-feature-testing.md",
-      "description": "Comprehensive guide to writing and debugging Capybara feature tests with Stimulus, Turbo Streams, and FlexiAdmin components. Covers DatabaseCleaner strategies, authentication, custom matchers, shared examples, and common gotchas.",
+      "description": "Capybara + Selenium testing guide. Covers DatabaseCleaner truncation for JS tests, SQLite file-based requirement, FlexiAdmin UI patterns (sorting via Turbo Stream, bulk selection, hidden elements), and debugging techniques.",
+      "usage": "always"
+    },
+    {
+      "filename": "artifacts/dummy-app-setup.md",
+      "description": "Dummy Rails app setup guide. Covers esbuild watch mode configuration, FlexiAdmin component chain pattern (IndexPage → Resources → ListView), controller conventions (q, fa_sort, fa_order), and common issues.",
       "usage": "decide"
     },
     {
       "filename": "artifacts/ui-test-cases.md",
-      "description": "Detailed UI test case specifications for User Management module (list and detail views). Defines expected behavior for search, filter, sorting, pagination, bulk actions, and CRUD operations. Reference for integration test implementation.",
+      "description": "UI test case specifications for User Management module. Defines expected behavior for search, filter, sorting, pagination, bulk actions, and CRUD operations.",
       "usage": "decide"
     },
     {
       "filename": "artifacts/progress.md",
-      "description": "Historical project progress summary tracking major features, improvements, and fixes from October 2025 to February 2026. Useful context for understanding project evolution.",
+      "description": "Historical project progress summary from October 2025 to February 2026.",
       "usage": "decide"
     }
   ],
@@ -21,11 +26,11 @@
     "description": "FlexiAdmin is a Rails engine providing an admin interface framework with ViewComponent-based architecture, Stimulus controllers, and Turbo Stream integration.",
     "last_updated": "2026-02-07",
     "conventions": {
-      "testing": "RSpec + Capybara + Selenium, custom matchers in spec/support/matchers/, shared examples in spec/support/shared_examples/",
-      "javascript": "Stimulus controllers in spec/dummy/app/javascript/controllers/, esbuild for bundling",
-      "styling": "Bootstrap 5 via CDN, custom component CSS in spec/dummy/app/assets/stylesheets/admin/",
-      "components": "ViewComponent architecture, slots for composition, Turbo Stream responses",
-      "task_tracking": "Beads (bd) for issue tracking and workflow management"
+      "testing": "RSpec + Capybara + Selenium, DatabaseCleaner with truncation for JS tests, file-based SQLite (NOT :memory:)",
+      "javascript": "esbuild with watch mode (context + watch), Stimulus controllers",
+      "components": "ViewComponent chain: IndexPage → Resources → ListView, Slim templates delegate to gem",
+      "params": "Search: q, Sort: fa_sort/fa_order, Pagination: fa_page/fa_per_page",
+      "task_tracking": "Beads (bd) for all issue tracking"
     }
   }
 }
