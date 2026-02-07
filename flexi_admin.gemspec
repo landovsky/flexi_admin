@@ -41,14 +41,24 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 7.1", "< 9"
   spec.add_dependency "gemini-ai"
   spec.add_dependency "slim-rails"
+  spec.add_dependency "turbo-rails"
   spec.add_dependency "view_component", "= 3.20"
   spec.add_dependency "will_paginate"
   spec.add_dependency "will_paginate-bootstrap-style"
 
   # Development dependencies
+  spec.add_development_dependency "capybara", "~> 3.39"
+  spec.add_development_dependency "database_cleaner-active_record", "~> 2.1"
+  spec.add_development_dependency "factory_bot_rails", "~> 6.4"
   spec.add_development_dependency "pry-rails", "~> 0.3.10"
-  spec.add_development_dependency "rspec-rails"
+  spec.add_development_dependency "rails", ">= 7.1", "< 9"
+  spec.add_development_dependency "rspec-rails", "~> 6.1"
+  spec.add_development_dependency "selenium-webdriver"
   spec.add_development_dependency "semantic"
+  spec.add_development_dependency "simplecov", "~> 0.22"
+  spec.add_development_dependency "sprockets-rails"
+  spec.add_development_dependency "sqlite3", "~> 2.0"
+  spec.add_development_dependency "puma", "~> 6.0"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

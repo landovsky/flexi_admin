@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+default: &default
+  adapter: sqlite3
+  database: ":memory:"
+  pool: 5
+  timeout: 5000
+
+test:
+  <<: *default
+
+development:
+  <<: *default

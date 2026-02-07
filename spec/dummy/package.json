@@ -1,0 +1,13 @@
+{
+  "name": "flexi_admin_dummy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node esbuild.config.mjs"
+  },
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.0",
+    "esbuild": "^0.25.0"
+  }
+}

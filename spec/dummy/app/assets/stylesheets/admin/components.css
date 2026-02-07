@@ -1,0 +1,291 @@
+/* FlexiAdmin Component Styles */
+
+/* ========================================
+   Status Badges
+   ======================================== */
+
+.badge-primary {
+  background-color: #0d6efd;
+  color: white;
+  padding: 0.25em 0.6em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: white;
+  padding: 0.25em 0.6em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.badge-success {
+  background-color: #198754;
+  color: white;
+  padding: 0.25em 0.6em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+/* ========================================
+   Bulk Actions
+   ======================================== */
+
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 0.375rem;
+}
+
+.selection-info {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.bulk-action-button {
+  margin-left: 0.5rem;
+}
+
+/* ========================================
+   Pagination
+   ======================================== */
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.pagination {
+  margin-bottom: 0;
+}
+
+.per-page-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.per-page-selector label {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.per-page-selector select {
+  width: auto;
+  min-width: 80px;
+}
+
+/* ========================================
+   Forms
+   ======================================== */
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-control.is-valid {
+  border-color: #198754;
+}
+
+/* ========================================
+   User Detail Page
+   ======================================== */
+
+.user-detail-page {
+  padding: 1rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.user-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-section {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.info-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.metadata-item {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.metadata-item strong {
+  display: inline-block;
+  min-width: 100px;
+  color: #6c757d;
+}
+
+/* ========================================
+   Role & Type Selectors
+   ======================================== */
+
+.role-selector,
+.type-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.role-selector .btn,
+.type-selector .btn {
+  flex: 1;
+  position: relative;
+}
+
+.role-selector .btn.active,
+.type-selector .btn.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+/* ========================================
+   Tables
+   ======================================== */
+
+.resources-table {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.resources-table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.resources-table th[data-sort-column] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.resources-table th[data-sort-column]:hover {
+  background-color: #e9ecef;
+}
+
+.resources-table td {
+  vertical-align: middle;
+}
+
+/* ========================================
+   Search
+   ======================================== */
+
+.search-wrapper {
+  margin-bottom: 1rem;
+}
+
+.search-wrapper .form-control {
+  max-width: 400px;
+}
+
+/* ========================================
+   Breadcrumbs
+   ======================================== */
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+}
+
+/* ========================================
+   Toast Messages
+   ======================================== */
+
+.toast-container {
+  z-index: 9999;
+}
+
+.toast {
+  min-width: 300px;
+}
+
+.toast-header {
+  font-weight: 600;
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.text-primary {
+  color: #0d6efd !important;
+}
+
+.text-success {
+  color: #198754 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}

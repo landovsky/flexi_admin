@@ -1,0 +1,6 @@
+= render FlexiAdmin::Components::Resources::ViewComponent.new(context) do |c|
+  - c.with_actions do
+    = render FlexiAdmin::Components::Resources::SwitchViewComponent.new(context)
+
+  - c.with_views do
+    = render Admin::User::View::ListViewComponent.new(context)

@@ -1,0 +1,8 @@
+= list_view do
+  - selectable
+  - column :full_name, label: 'Jméno', sortable: true do |user|
+    - navigate_to user.full_name || '-', user
+  - column :email, label: 'Email', sortable: true do |user|
+    - navigate_to user.email, user
+  - column :phone, label: 'Telefon'
+  - column :role, label: 'Role'

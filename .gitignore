@@ -73,3 +73,20 @@ yarn-debug.log*
 
 # Ignore beads
 .beads/export-state*
+.beads/issues.jsonl
+
+# bv (beads viewer) local config and caches
+.bv/
+
+# esbuild output directories
+spec/dummy/app/assets/builds/
+spec/dummy/node_modules/
+spec/dummy/package-lock.json
+
+# Dummy app runtime files
+spec/dummy/db/*.sqlite3
+spec/dummy/db/*.sqlite3-*
+spec/dummy/log/*.log
+spec/dummy/tmp/
+spec/dummy/storage/
+spec/dummy/public/assets/
