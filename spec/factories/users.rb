@@ -37,5 +37,31 @@ FactoryBot.define do
     trait :old_login do
       last_sign_in_at { 90.days.ago }
     end
+
+    trait :with_comments do
+      after(:create) do |user|
+        create_list(:comment, 3, user: user)
+      end
+    end
+
+    trait :inactive do
+      last_sign_in_at { 6.months.ago }
+      sign_in_count { 1 }
+    end
+
+    trait :active do
+      last_sign_in_at { 1.day.ago }
+      sign_in_count { rand(50..200) }
+    end
+
+    trait :power_user do
+      sign_in_count { rand(200..1000) }
+      last_sign_in_at { rand(1..24).hours.ago }
+    end
+
+    trait :never_logged_in do
+      last_sign_in_at { nil }
+      sign_in_count { 0 }
+    end
   end
 end
