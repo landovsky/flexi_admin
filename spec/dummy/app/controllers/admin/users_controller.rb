@@ -7,19 +7,20 @@ module Admin
     def index
       resources = ::User.all
       # Apply search if present
-      if params[:search].present?
-        search_term = "%#{params[:search]}%"
+      if params[:q].present?
+        search_term = "%#{params[:q]}%"
         resources = resources.where('full_name LIKE ? OR email LIKE ?', search_term, search_term)
       end
       # Apply role filter if present
       resources = resources.where(role: params[:role]) if params[:role].present?
       # Apply sorting
-      if params[:sort_by].present?
-        direction = params[:sort_direction] || 'asc'
-        resources = resources.order(params[:sort_by] => direction)
-      end
+      resources = if fa_sorted?
+                    resources.order(fa_sort => fa_order)
+                  else
+                    resources.order(full_name: :asc)
+                  end
       # Paginate
-      resources = resources.paginate(page: params[:page] || 1, per_page: params[:per_page] || 16)
+      resources = resources.paginate(**context_params.pagination)
 
       render_index(resources)
     end

@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Ignore favicon requests from Chrome
+  get '/favicon.ico', to: proc { [204, {}, []] }
+
   # Root route for testing
   root to: redirect('/admin/users')
 end

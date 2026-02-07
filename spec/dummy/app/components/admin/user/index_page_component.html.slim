@@ -1,0 +1,11 @@
+= render FlexiAdmin::Components::Resources::IndexPageComponent.new(resources,
+                                           scope: 'users',
+                                           title: 'Uživatelé',
+                                           context_params:) do |c|
+  - c.with_filter
+    = render FlexiAdmin::Components::Resource::FilterComponent.new(filter_options: { role: { options: [['user', 'User'], ['admin', 'Admin']], multiple: false } },
+                                                                   params:,
+                                                                   search_field: text_field_tag('q', params[:q], placeholder: 'jméno, email', class: 'form-control'),
+                                                                   field_labels: { "q" => "Hledat", "role" => "Role" })
+
+  = render Admin::User::ResourcesComponent.new(resources, context_params:)

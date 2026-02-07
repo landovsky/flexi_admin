@@ -20,6 +20,7 @@ require 'rspec/rails'
 require 'capybara/rspec'
 require 'view_component/test_helpers'
 require 'factory_bot_rails'
+require 'database_cleaner-active_record'
 require 'global_id'
 GlobalID.app = 'dummy'
 
@@ -60,13 +61,20 @@ ActiveRecord::Schema.define do
 end
 
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = nil
+  config.use_transactional_fixtures = false
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = true
+  # DatabaseCleaner: truncation for JS tests (Selenium can't see transactions)
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+  end
+
+  config.before(:each) { DatabaseCleaner.start }
+  config.after(:each) { DatabaseCleaner.clean }
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
@@ -89,22 +97,7 @@ RSpec.configure do |config|
   # Include Capybara DSL for integration tests
   config.include Capybara::DSL, type: :feature
 
-  # Configure Capybara
-  Capybara.default_driver = :rack_test
-  Capybara.javascript_driver = :selenium_chrome_headless
-
-  Capybara.register_driver :selenium_chrome_headless do |app|
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--disable-gpu')
-    options.add_argument('--window-size=1400,900')
-
-    Selenium::WebDriver.logger.level = :error
-
-    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-  end
+  # Capybara drivers configured in spec/support/capybara.rb
 
   # Load I18n with flexi_admin locales
   flexi_admin_root = File.expand_path('../..', __dir__)

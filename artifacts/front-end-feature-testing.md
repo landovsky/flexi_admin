@@ -6,255 +6,169 @@
 - **Config files**: `spec/support/capybara.rb`, `spec/rails_helper.rb`
 - **Test location**: `spec/integration/` (feature specs)
 - **Run with visible browser**: `HEADED=1 bundle exec rspec spec/integration/`
+- **Database**: SQLite (file-based for test — in-memory won't work with Selenium)
 
 ## Strict Requirements
 
 ### DatabaseCleaner: truncation for JS tests
 
-JS tests run Chrome in a separate process. It **cannot see data inside a DB transaction**. The `spec/support/database_cleaner.rb` selects strategy based on `js` metadata:
+JS tests run Chrome in a separate process. It **cannot see data inside a DB transaction**. The `rails_helper.rb` selects strategy based on `js` metadata:
 
 ```ruby
+config.use_transactional_fixtures = false
+
+config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
 config.before(:each) do |example|
   DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
 end
+config.before(:each) { DatabaseCleaner.start }
+config.after(:each) { DatabaseCleaner.clean }
 ```
 
-**Never** wrap JS tests in `DatabaseCleaner.cleaning` with transaction strategy - data will be invisible to the browser.
+**Never** use `use_transactional_fixtures = true` with JS tests — data will be invisible to the browser.
 
-### All feature specs should use `js: true`
+### SQLite in-memory database won't work with JS tests
 
-The dummy app UI depends on Stimulus controllers and Turbo. Tests that interact with JavaScript components require `js: true`.
+SQLite `:memory:` databases are connection-specific. Selenium runs the app in a separate thread with a different connection = empty database. Use **file-based SQLite**:
 
-### Authentication via test helpers
+```yaml
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+```
 
-The dummy app uses simple test authentication helpers (no Devise yet):
+### All feature specs must use `js: true`
+
+The admin UI depends on Stimulus controllers, Bootstrap JS, and Turbo. Tests without `js: true` use rack_test (no browser, no JS):
 
 ```ruby
-let(:admin_user) { create(:user, :admin) }
-
-before do
-  login_as(admin_user, scope: :user)
-end
+RSpec.describe 'Users List Page', type: :feature, js: true do
 ```
 
-Currently, `login_as` is a placeholder that sets `@current_test_user`. When Devise is added, this will integrate with Warden test helpers.
+### No authentication required (dummy app)
+
+The dummy app has no authentication. No `login_as` needed.
 
 ## Recommendations
 
-### Scope interactions to avoid ambiguous matches
+### Scope filter interactions to `.filter-bar`
 
-FlexiAdmin component labels may match multiple elements on the page. Always scope interactions when possible:
+FlexiAdmin filter dropdown labels often match column headers, causing `Capybara::Ambiguous` errors:
 
 ```ruby
-within('.breadcrumb') { click_link 'Uživatel' }
-within('.page-header') { click_button 'Edit' }
-within('.bulk-actions') { click_button 'Delete Selected' }
+within('.filter-bar') { select 'Admin', from: 'role' }
 ```
 
-### Use custom matchers for cleaner tests
+### Search uses `q` parameter
 
-The project provides custom RSpec matchers in `spec/support/matchers/component_matchers.rb`:
+The search field name is `q`. Use URL params for direct search:
 
 ```ruby
-expect(page).to have_sortable_column('full_name')
-expect(page).to have_pagination_controls
-expect(page).to have_per_page_selector
-expect(page).to have_bulk_actions
-expect(page).to have_search_field
-expect(page).to have_success_message('User updated successfully')
+visit '/admin/users?q=search+term'
 ```
 
-### Use shared examples for common patterns
-
-Shared examples are available in `spec/support/shared_examples/resource_index.rb`:
+Or fill in the field and trigger focusout (filter-auto-submit controller):
 
 ```ruby
-RSpec.describe 'Users Index', type: :feature do
-  it_behaves_like 'a resource index page', 'users', :user
-  it_behaves_like 'a resource with bulk actions', 'users', :user
-  it_behaves_like 'a filterable resource index', 'users', ['role', 'user_type']
+fill_in 'q', with: 'search term'
+find('[name="q"]').native.send_keys(:tab)
+```
+
+### Sorting uses Turbo Stream (URL doesn't change)
+
+Sorting is handled by the `sorting` Stimulus controller which fetches via Turbo Stream. Don't check `current_path` — check the DOM:
+
+```ruby
+within('flexi-table') do
+  find('[data-controller="sorting"]', text: 'Jméno').find('a').click
+end
+# After sort, the path value toggles to desc
+within('flexi-table') do
+  sort_el = find('[data-controller="sorting"]', text: 'Jméno')
+  expect(sort_el['data-sorting-sort-path-value']).to match(/fa_order=desc/)
 end
 ```
 
-### Search field behavior
-
-The search implementation depends on the specific component. Check the controller action to understand the behavior:
+### Pagination uses `fa_page` and `fa_per_page` params
 
 ```ruby
-# Example: searching users
-fill_in 'q', with: 'search term'
-# May require explicit form submission or JS trigger depending on implementation
+visit '/admin/users?fa_page=2'
+within('.pagination') { click_link '→' }
+expect(page).to have_css('.page-item.active', text: '2')
+```
+
+### Bulk selection checkboxes
+
+```ruby
+# Select all
+find('#checkbox-all').click
+
+# Individual checkboxes (exclude "select all")
+checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+checkboxes.first.click
+
+# Check selection counter
+expect(find('[data-bulk-action-target="counter"]').text).to eq('1')
+
+# Clear selection
+click_link 'zrušit výběr'
+expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: :hidden)
+```
+
+### Hidden elements need `visible: :hidden` or `visible: :all`
+
+Selection text starts hidden (`display: none`). Use:
+
+```ruby
+expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: :hidden)
+```
+
+### Delete uses Turbo confirm, not browser confirm
+
+Turbo 8 uses `data-turbo-confirm` which triggers browser's `confirm()`. Use:
+
+```ruby
+accept_confirm('Are you sure?') { click_link 'Delete' }
 ```
 
 ### Debugging techniques
 
 | Technique | When to use |
 |---|---|
-| Read component source | First approach - understand component structure |
-| Capybara error messages | Usually sufficient for fixing failures |
+| Read source (Slim, Stimulus, FlexiAdmin gem) | First approach — predict UI structure |
 | `puts page.text[0..2000]` | Check what text is visible on page |
 | `HEADED=1` | Watch the browser execute the test |
-| `binding.pry` + `page.all('.selector').map(&:text)` | Interactive element inspection |
-| `save_screenshot` | Auto-captured on JS test failure (see spec/tmp/capybara/) |
+| `save_and_open_screenshot` | Capture rendered state including JS |
+| Screenshot on failure | Auto-saved to `spec/tmp/capybara/` |
 
-### FlexiAdmin component patterns
+## Dummy app component chain
 
-The dummy app demonstrates FlexiAdmin gem patterns:
+The dummy app mirrors the real app's (hriste) component chain:
 
-- Index pages use `FlexiAdmin::Components::Resources::IndexPageComponent`
-- Show pages extend `FlexiAdmin::Components::Resources::ShowPageComponent`
-- Components use ViewComponent architecture with slots
-- Stimulus controllers handle interactivity (edit, search, pagination, bulk actions)
-- Turbo Streams provide seamless updates without page reloads
-
-### Bootstrap 5 integration
-
-The dummy app uses Bootstrap 5 for styling:
-
-- Forms use `.form-control`, `.form-select`, `.form-group` classes
-- Buttons use `.btn`, `.btn-primary`, `.btn-secondary` classes
-- Tables use `.table` class
-- Toasts use Bootstrap toast component with `.toast`, `.toast-container`
-- Dropdowns use Bootstrap dropdown with `data-bs-toggle="dropdown"`
-
-### Turbo Stream expectations
-
-When testing actions that use Turbo Streams:
-
-```ruby
-it 'updates user without page reload', js: true do
-  visit admin_user_path(user)
-
-  click_button 'Edit'
-  fill_in 'Full Name', with: 'Updated Name'
-  click_button 'Save'
-
-  # Turbo stream should update content in-place
-  expect(page).to have_content('Updated Name')
-  expect(page).to have_success_message('User updated successfully')
-
-  # No full page reload occurred
-  expect(current_path).to eq(admin_user_path(user))
-end
+```
+IndexPageComponent (slim template delegates to gem's component)
+  └── FilterComponent (search field + role filter)
+  └── ResourcesComponent (sets scope='users', views=['list'])
+        └── ViewComponent (turbo-frame, bulk-action controller, pagination)
+              └── ListViewComponent (table columns via list_view DSL)
+                    └── TableComponent (flexi-table, headers, rows, checkboxes)
 ```
 
-### Factory traits
+Each layer inherits from the gem's base class and only overrides what's needed.
 
-Use factory traits for realistic test data:
-
-```ruby
-create(:user, :admin)              # Admin user
-create(:user, :external)           # External user
-create(:user, :with_comments)      # User with 3 comments
-create(:user, :inactive)           # Last login 6 months ago
-create(:user, :power_user)         # 200-1000 sign-ins
-create(:user, :never_logged_in)    # Never logged in
-```
-
-### Screenshot debugging
-
-Screenshots are automatically saved on JS test failures:
-
-```bash
-# Location: spec/tmp/capybara/
-# Format: {spec_file}-{line_number}-{timestamp}.png
-
-# To manually capture a screenshot:
-page.save_screenshot('debug.png')
-```
-
-### Common Capybara gotchas
-
-1. **Wait for async updates**: Use `have_content` not `page.text.include?`
-   ```ruby
-   # Good - waits for content
-   expect(page).to have_content('Success')
-
-   # Bad - doesn't wait
-   expect(page.text).to include('Success')
-   ```
-
-2. **Element visibility**: Use `visible: :all` to find hidden elements
-   ```ruby
-   find('input[type="hidden"]', visible: :all)
-   ```
-
-3. **Ambiguous matches**: Be specific with selectors
-   ```ruby
-   # Good
-   click_button 'Edit', match: :first
-
-   # Better
-   within('.page-header') { click_button 'Edit' }
-   ```
-
-4. **Form field labels**: Match exact label text
-   ```ruby
-   # If label is "Jméno a příjmení"
-   fill_in 'Jméno a příjmení', with: 'Test User'
-   ```
-
-## Example test patterns
-
-### Basic resource index test
+### Controller pattern (align with gem's conventions)
 
 ```ruby
-RSpec.describe 'Users List', type: :feature, js: true do
-  let!(:users) { create_list(:user, 5) }
-
-  before do
-    visit admin_users_path
-  end
-
-  it 'displays all users' do
-    users.each do |user|
-      expect(page).to have_content(user.full_name)
-    end
-  end
-
-  it 'has search functionality' do
-    expect(page).to have_search_field
-
-    fill_in 'q', with: users.first.full_name
-    # Add search trigger if needed
-
-    expect(page).to have_content(users.first.full_name)
-  end
-end
-```
-
-### Testing Stimulus controllers
-
-```ruby
-it 'enables bulk actions when users selected', js: true do
-  visit admin_users_path
-
-  # Stimulus controller should be connected
-  expect(page).to have_stimulus_controller('flexi-admin--bulk-action')
-
-  # Select a user
-  first('input[type="checkbox"]').check
-
-  # Bulk actions should be enabled
-  expect(page).to have_css('.bulk-actions:not([disabled])')
-end
-```
-
-### Testing Turbo Stream responses
-
-```ruby
-it 'deletes user via Turbo Stream', js: true do
-  user = create(:user)
-  visit admin_users_path
-
-  within("#user-#{user.id}") do
-    click_button 'Delete'
-  end
-
-  # Turbo stream removes the element
-  expect(page).not_to have_css("#user-#{user.id}")
-
-  # Shows success toast
-  expect(page).to have_success_message('User deleted successfully')
+def index
+  resources = ::User.all
+  resources = resources.where('full_name LIKE ?', "%#{params[:q]}%") if params[:q].present?
+  resources = resources.where(role: params[:role]) if params[:role].present?
+  resources = if fa_sorted?
+                resources.order(fa_sort => fa_order)
+              else
+                resources.order(full_name: :asc)
+              end
+  resources = resources.paginate(**context_params.pagination)
+  render_index(resources)
 end
 ```

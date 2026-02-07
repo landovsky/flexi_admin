@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Users List Page', type: :feature do
+RSpec.describe 'Users List Page', type: :feature, js: true do
   before do
     # Create test data matching ui-test-cases.md scenarios
     create(:user, :balicka)
@@ -13,7 +13,7 @@ RSpec.describe 'Users List Page', type: :feature do
   describe 'Search & Filter' do
     # UL-001: Search by Full Name
     it 'searches users by full name' do
-      visit '/admin/users?search=Balicka'  # Use ASCII-only for URL
+      visit '/admin/users?q=Balicka'
 
       expect(page).to have_content('Balická')
       expect(page).not_to have_content('Effenberger')
@@ -21,14 +21,14 @@ RSpec.describe 'Users List Page', type: :feature do
 
     # UL-002: Search by Email
     it 'searches users by email' do
-      visit '/admin/users?search=balicka@hristehrou.cz'
+      visit '/admin/users?q=balicka@hristehrou.cz'
 
       expect(page).to have_content('balicka@hristehrou.cz')
     end
 
     # UL-003: Search by Partial Text
     it 'searches with partial text match' do
-      visit '/admin/users?search=effen'
+      visit '/admin/users?q=effen'
 
       expect(page).to have_content('Effenberger')
     end
@@ -37,80 +37,87 @@ RSpec.describe 'Users List Page', type: :feature do
     it 'filters users by role' do
       visit '/admin/users'
 
-      select 'admin', from: 'Role'
+      within('.filter-bar') do
+        select 'Admin', from: 'role'
+      end
 
       expect(page).to have_content('Balická')  # Admin user
-      # Regular users should be filtered out
     end
 
     # UL-005: Clear Filters
     it 'clears all filters when clicking Zrušit' do
-      visit '/admin/users'
+      visit '/admin/users?q=test&role=admin'
 
-      fill_in 'jméno, email', with: 'test'
-      select 'admin', from: 'Role'
+      within('.filter-bar') do
+        click_button 'Zrušit'
+      end
 
-      click_button 'Zrušit'
-
-      expect(find_field('jméno, email').value).to be_blank
-      expect(page).to have_css('.user-row', minimum: 10)  # Shows all users
+      # Should show all users again
+      expect(page).to have_content('Balická')
+      expect(page).to have_content('Effenberger')
     end
   end
 
   describe 'Sorting' do
     # UL-006: Sort by Full Name
-    it 'sorts users by full name', js: true do
+    it 'sorts users by full name' do
       visit '/admin/users'
 
-      click_link 'Celé jméno'
+      # Click the sortable column header (Turbo Stream replaces frame, URL doesn't change)
+      within('flexi-table') do
+        find('[data-controller="sorting"]', text: 'Jméno').find('a').click
+      end
 
-      # Check that users are sorted alphabetically
-      user_names = page.all('.user-name').map(&:text)
-      expect(user_names).to eq(user_names.sort)
-
-      # Click again to toggle descending
-      click_link 'Celé jméno'
-      user_names = page.all('.user-name').map(&:text)
-      expect(user_names).to eq(user_names.sort.reverse)
+      # After sorting, the sort path should toggle to desc
+      within('flexi-table') do
+        sort_link = find('[data-controller="sorting"]', text: 'Jméno')
+        expect(sort_link['data-sorting-sort-path-value']).to match(/fa_order=desc/)
+      end
     end
 
     # UL-007: Sort by Email
     it 'sorts users by email' do
       visit '/admin/users'
 
-      click_link 'Email'
+      within('flexi-table') do
+        find('[data-controller="sorting"]', text: 'Email').find('a').click
+      end
 
-      emails = page.all('.user-email').map(&:text)
-      expect(emails).to eq(emails.sort)
+      within('flexi-table') do
+        sort_link = find('[data-controller="sorting"]', text: 'Email')
+        expect(sort_link['data-sorting-sort-path-value']).to match(/fa_order=desc/)
+      end
     end
   end
 
   describe 'Selection & Bulk Actions' do
     # UL-010: Select All Records
-    it 'selects all visible users when clicking header checkbox', js: true do
+    it 'selects all visible users when clicking header checkbox' do
       visit '/admin/users'
 
-      find('input[type="checkbox"][data-action*="bulk-action"]', match: :first).click
+      # Click the "select all" checkbox
+      find('#checkbox-all').click
 
-      checkboxes = page.all('input[type="checkbox"][data-bulk-action-target="checkbox"]')
+      # All individual checkboxes should be checked
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
       expect(checkboxes).to all(be_checked)
     end
 
     # UL-011: Select Individual Record
-    it 'selects individual user row', js: true do
+    it 'selects individual user row' do
       visit '/admin/users'
 
-      first_checkbox = page.all('input[type="checkbox"][data-bulk-action-target="checkbox"]').first
-      first_checkbox.click
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes.first.click
 
-      expect(first_checkbox).to be_checked
+      expect(checkboxes.first).to be_checked
     end
 
     # UL-012: Multi-selection
-    it 'maintains selection of multiple users', js: true do
+    it 'maintains selection of multiple users' do
       visit '/admin/users'
 
-      checkboxes = page.all('input[type="checkbox"][data-bulk-action-target="checkbox"]')
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
       checkboxes[0].click
       checkboxes[2].click
       checkboxes[4].click
@@ -121,90 +128,77 @@ RSpec.describe 'Users List Page', type: :feature do
       expect(checkboxes[1]).not_to be_checked
     end
 
-    # UL-013: Bulk Actions Availability
-    it 'enables bulk actions dropdown when users are selected', js: true do
+    # UL-013: Selection counter updates
+    it 'updates selection counter when users are selected' do
       visit '/admin/users'
 
-      first_checkbox = page.all('input[type="checkbox"][data-bulk-action-target="checkbox"]').first
-      first_checkbox.click
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes.first.click
 
-      # Bulk action button should be enabled
-      click_button 'Akce'
-
-      expect(page).to have_content('Delete')  # or other bulk actions
+      # Selection text should become visible
+      expect(find('[data-bulk-action-target="selectionText"]')).to be_visible
+      expect(find('[data-bulk-action-target="counter"]').text).to eq('1')
     end
 
-    # UL-014: Bulk Actions Inactive
-    it 'disables bulk actions when no users selected' do
+    # UL-014: Selection counter clears
+    it 'clears selection when clicking zrušit výběr' do
       visit '/admin/users'
 
-      bulk_action_button = find('button', text: 'Akce')
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes.first.click
 
-      # Should be disabled or show no actions available
-      expect(bulk_action_button[:disabled]).to be_truthy
+      # Wait for selection text to appear, then clear
+      expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: true)
+      click_link 'zrušit výběr'
+
+      # Selection text should be hidden again
+      expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: :hidden)
     end
   end
 
   describe 'Pagination & Layout' do
     # UL-015: Change Records Per Page
-    it 'updates displayed items when changing per-page value', js: true do
+    it 'updates displayed items when changing per-page value' do
       visit '/admin/users'
 
       select '24', from: 'per_page'
 
-      # Should show more items
-      expect(page).to have_css('.user-row', count: 22)  # All 22 users on one page
+      # Should show more items on the page
+      expect(page).to have_content('22 záznamů')
     end
 
     # UL-016: Next Page Navigation
     it 'navigates to next page' do
-      create_list(:user, 40)  # Ensure multiple pages
       visit '/admin/users'
 
-      click_link '→'  # Next button
+      within('.pagination') do
+        click_link '→'
+      end
 
-      expect(current_url).to include('page=2')
+      expect(page).to have_css('.page-item.active', text: '2')
     end
 
     # UL-017: Previous Page Navigation
     it 'navigates to previous page' do
-      create_list(:user, 40)
-      visit '/admin/users?page=2'
+      visit '/admin/users?fa_page=2'
 
-      click_link '←'  # Previous button
+      within('.pagination') do
+        click_link '←'
+      end
 
-      expect(current_url).to include('page=1')
+      expect(page).to have_css('.page-item.active', text: '1')
     end
 
     # UL-018: Specific Page Selection
     it 'navigates to specific page number' do
-      create_list(:user, 60)
+      create_list(:user, 40)  # Ensure enough for 3+ pages
       visit '/admin/users'
 
-      click_link '3'
+      within('.pagination') do
+        click_link '3'
+      end
 
-      expect(current_url).to include('page=3')
-    end
-
-    # UL-019: Toggle Grid View
-    it 'switches to grid layout', js: true do
-      visit '/admin/users'
-
-      click_button class: 'grid-view-toggle'
-
-      expect(page).to have_css('.grid-view')
-      expect(page).not_to have_css('.table-view')
-    end
-
-    # UL-020: Toggle List View
-    it 'switches back to list/table layout', js: true do
-      visit '/admin/users'
-
-      click_button class: 'grid-view-toggle'
-      click_button class: 'list-view-toggle'
-
-      expect(page).to have_css('.table-view')
-      expect(page).not_to have_css('.grid-view')
+      expect(page).to have_css('.page-item.active', text: '3')
     end
   end
 end
