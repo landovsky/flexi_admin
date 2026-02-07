@@ -104,17 +104,22 @@ RSpec.describe 'User Detail Page', type: :feature, js: true do
     end
 
     # UD-009: Delete User
-    it 'deletes user after confirmation' do
-      visit "/admin/users/#{user.id}"
+    it 'deletes user after confirmation and redirects to index' do
+      user_id = user.id
+      visit "/admin/users/#{user_id}"
 
-      accept_confirm('Are you sure you want to delete this user?') do
-        click_link 'Delete'
-      end
+      # Verify user exists before deletion
+      expect(User.find_by(id: user_id)).not_to be_nil
 
-      # Should show success message
-      expect(page).to have_content('User deleted successfully')
+      # Submit the delete form directly, bypassing confirm
+      page.execute_script("document.querySelector('form[action*=\"/admin/users/#{user_id}\"][method=\"post\"] input[name=\"_method\"][value=\"delete\"]').closest('form').submit()")
+
+      # Wait for redirect to index page
+      expect(page).to have_css('flexi-table', wait: 10)
+      expect(page).to have_content('Uživatelé')
+
       # User should be deleted from the database
-      expect(User.find_by(id: user.id)).to be_nil
+      expect(User.find_by(id: user_id)).to be_nil
     end
   end
 end

@@ -1,0 +1,197 @@
+<div class="autocomplete-test-page">
+  <h1>Autocomplete Component Tests</h1>
+
+  <%= form_tag(admin_test_autocomplete_submit_path, method: :post, id: 'autocomplete-form', data: { controller: 'form-validation' }) do %>
+    <div class="test-section" data-testid="select-mode">
+      <h2>Select Mode (:select)</h2>
+      <p>Standard autocomplete for selecting a resource. Stores the selected resource's ID in a hidden input field.</p>
+
+      <div class="form-group mb-3" data-testid="select-enabled">
+        <label>AC-001/AC-002: Enabled (search and select user)</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :select,
+              fields: [:full_name],
+              name: 'supervisor_id',
+              target_controller: 'users',
+              placeholder: 'Search for a user...'
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="select-disabled-with-resource">
+        <label>AC-003: Disabled with Resource</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              user,
+              scope: ::User,
+              action: :select,
+              fields: [:full_name],
+              name: 'disabled_supervisor_id',
+              disabled: true
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="select-disabled-without-resource">
+        <label>AC-004: Disabled without Resource</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :select,
+              fields: [:full_name],
+              name: 'empty_supervisor_id',
+              disabled: true
+            ) %>
+      </div>
+    </div>
+
+    <div class="test-section" data-testid="show-mode">
+      <h2>Show Mode (:show)</h2>
+      <p>Autocomplete that displays resources for viewing/navigation.</p>
+
+      <div class="form-group mb-3" data-testid="show-enabled">
+        <label>AC-005: Enabled (search and view results)</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :show,
+              fields: [:full_name],
+              name: 'show_user_id',
+              target_controller: 'users',
+              placeholder: 'Search to view users...'
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="show-disabled-with-resource">
+        <label>AC-007: Disabled with Resource</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              user,
+              scope: ::User,
+              action: :show,
+              fields: [:full_name],
+              name: 'show_disabled_id',
+              disabled: true
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="show-disabled-without-resource">
+        <label>AC-008: Disabled without Resource</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :show,
+              fields: [:full_name],
+              name: 'show_empty_id',
+              disabled: true,
+              disabled_empty_custom_message: 'No user selected'
+            ) %>
+      </div>
+    </div>
+
+    <div class="test-section" data-testid="input-mode">
+      <h2>Input Mode (:input / Datalist)</h2>
+      <p>Text input with suggestions from existing values. Returns plain text values, not resources.</p>
+
+      <div class="form-group mb-3" data-testid="input-enabled">
+        <label>AC-009/AC-010: Enabled (search and select value)</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :input,
+              fields: [:role],
+              name: 'role_input',
+              target_controller: 'users',
+              placeholder: 'Type to see role suggestions...'
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="input-disabled-with-value">
+        <label>AC-011: Disabled with Value</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :input,
+              fields: [:role],
+              name: 'disabled_role',
+              value: 'admin',
+              disabled: true
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="input-disabled-without-value">
+        <label>AC-012: Disabled without Value</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :input,
+              fields: [:role],
+              name: 'empty_role',
+              disabled: true
+            ) %>
+      </div>
+    </div>
+
+    <div class="test-section" data-testid="cross-mode">
+      <h2>Cross-Mode Behavior</h2>
+
+      <div class="form-group mb-3" data-testid="custom-scope">
+        <label>AC-015: Custom Scope Support (Proc scope, admin users only)</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: -> { ::User.where(role: 'admin') },
+              action: :select,
+              fields: [:full_name],
+              target_controller: 'users',
+              placeholder: 'Search admin users only...'
+            ) %>
+      </div>
+
+      <div class="form-group mb-3" data-testid="required-field">
+        <label>AC-016: Required Validation</label>
+        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+              nil,
+              scope: ::User,
+              action: :select,
+              fields: [:full_name],
+              name: 'required_user_id',
+              target_controller: 'users',
+              required: true,
+              placeholder: 'Required field...'
+            ) %>
+      </div>
+    </div>
+
+    <div class="form-actions mt-4">
+      <%= submit_tag 'Submit Form', class: 'btn btn-primary', id: 'submit-button' %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .autocomplete-test-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  .test-section h2 {
+    margin-top: 0;
+    color: #333;
+  }
+  .test-section p {
+    color: #666;
+    font-size: 0.9em;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+</style>

@@ -1,0 +1,232 @@
+<div class="form-fields-test-page">
+  <h1>Form Fields Component Tests</h1>
+
+  <% if params[:disabled] == 'true' %>
+    <div class="alert alert-info">Form is currently in DISABLED mode. <a href="<%= helpers.admin_test_form_fields_path %>">Enable editing</a></div>
+  <% else %>
+    <div class="alert alert-secondary">Form is in EDIT mode. <a href="<%= helpers.admin_test_form_fields_path(disabled: true) %>">View disabled mode</a></div>
+  <% end %>
+
+  <%= form(url: helpers.admin_test_form_fields_submit_path, method: :post, css_class: 'test-form') do %>
+
+    <!-- Section: Text Fields -->
+    <div class="test-section" data-testid="text-fields">
+      <%= header('Text Fields', description: 'Standard single-line text inputs') %>
+
+      <div data-testid="text-basic">
+        <%= text_field :full_name, label: 'FF-001: Basic Text Field', placeholder: 'Enter name...' %>
+      </div>
+
+      <div data-testid="text-disabled">
+        <%= text_field :full_name, label: 'FF-002: Disabled Text Field', disabled: true %>
+      </div>
+
+      <div data-testid="text-required">
+        <%= text_field :email, label: 'FF-003: Required Text Field', required: true, placeholder: 'Required field...' %>
+      </div>
+
+      <% with_resource(user_with_errors) do %>
+        <div data-testid="text-validation-error">
+          <%= text_field :full_name, label: 'FF-004: Text Field with Validation Error' %>
+        </div>
+      <% end %>
+
+      <div data-testid="text-proc-value">
+        <%= text_field :computed_name, label: 'FF-005: Text Field with Proc Value', value: -> { "Computed: #{user.full_name}" } %>
+      </div>
+    </div>
+
+    <!-- Section: Number Fields -->
+    <div class="test-section" data-testid="number-fields">
+      <%= header('Number Fields', description: 'Numeric input with step support') %>
+
+      <div data-testid="number-basic">
+        <%= number_field :amount, label: 'FF-006: Basic Number Field', value: 100.50 %>
+      </div>
+
+      <div data-testid="number-custom-step">
+        <%= number_field :quantity, label: 'FF-007: Number Field with Step=1', step: 1, value: 5 %>
+      </div>
+
+      <div data-testid="number-disabled">
+        <%= number_field :amount, label: 'FF-008: Disabled Number Field', disabled: true, value: 99.99 %>
+      </div>
+    </div>
+
+    <!-- Section: Checkbox Fields -->
+    <div class="test-section" data-testid="checkbox-fields">
+      <%= header('Checkbox Fields', description: 'Boolean checkbox with hidden field for false value') %>
+
+      <div data-testid="checkbox-unchecked">
+        <%= checkbox_field :active, label: 'FF-009/FF-011: Unchecked Checkbox', checked: false %>
+      </div>
+
+      <div data-testid="checkbox-checked">
+        <%= checkbox_field :verified, label: 'FF-010: Checked Checkbox', checked: true %>
+      </div>
+
+      <div data-testid="checkbox-disabled">
+        <%= checkbox_field :locked, label: 'FF-012: Disabled Checkbox', checked: true, disabled: true %>
+      </div>
+
+      <div data-testid="checkbox-proc">
+        <%= checkbox_field :has_name, label: 'FF-013: Checkbox with Proc Value', checked: -> { user.full_name.present? } %>
+      </div>
+    </div>
+
+    <!-- Section: Select Fields -->
+    <div class="test-section" data-testid="select-fields">
+      <%= header('Select Fields', description: 'Standard dropdown select') %>
+
+      <div data-testid="select-basic">
+        <%= select_field :role, label: 'FF-014: Basic Select', options: role_options %>
+      </div>
+
+      <div data-testid="select-preselected">
+        <%= select_field :role, label: 'FF-015: Pre-selected Select', options: role_options, value: 'admin' %>
+      </div>
+
+      <div data-testid="select-disabled">
+        <%= select_field :role, label: 'FF-016: Disabled Select', options: role_options, value: 'user', disabled: true %>
+      </div>
+
+      <div data-testid="select-required">
+        <%= select_field :user_type, label: 'FF-017: Required Select', options: type_options, required: true %>
+      </div>
+
+      <% with_resource(user_with_errors) do %>
+        <div data-testid="select-validation-error">
+          <%= select_field :role, label: 'FF-018: Select with Validation Error', options: role_options %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Section: Button Select Fields -->
+    <div class="test-section" data-testid="button-select-fields">
+      <%= header('Button Select Fields', description: 'Radio-style button group for mutually exclusive options') %>
+
+      <div data-testid="button-select-basic">
+        <%= button_select_field :role, label: 'FF-019/FF-020: Button Select', options: role_options %>
+      </div>
+
+      <div data-testid="button-select-preselected">
+        <%= button_select_field :role, label: 'FF-021: Pre-selected Button Select', options: role_options, value: 'admin' %>
+      </div>
+
+      <div data-testid="button-select-disabled">
+        <%= button_select_field :role, label: 'FF-022: Disabled Button Select', options: role_options, value: 'user', disabled: true %>
+      </div>
+
+      <% with_resource(user_with_errors) do %>
+        <div data-testid="button-select-validation-error">
+          <%= button_select_field :role, label: 'FF-023: Button Select with Validation Error', options: role_options %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Section: Date Fields -->
+    <div class="test-section" data-testid="date-fields">
+      <%= header('Date Fields', description: 'Date picker input') %>
+
+      <div data-testid="date-basic">
+        <%= date_field :birth_date, label: 'FF-024/FF-025: Date Field', value: Date.today %>
+      </div>
+
+      <div data-testid="date-disabled">
+        <%= date_field :birth_date, label: 'FF-026: Disabled Date Field', value: Date.today - 30.years, disabled: true %>
+      </div>
+    </div>
+
+    <!-- Section: Datetime Fields -->
+    <div class="test-section" data-testid="datetime-fields">
+      <%= header('Datetime Fields', description: 'Datetime picker input') %>
+
+      <div data-testid="datetime-basic">
+        <%= datetime_field :last_login, label: 'FF-027: Datetime Field', value: Time.current %>
+      </div>
+
+      <div data-testid="datetime-disabled">
+        <%= datetime_field :created_at, label: 'FF-028: Disabled Datetime Field', value: 1.week.ago, disabled: true %>
+      </div>
+    </div>
+
+    <!-- Section: Text Area Fields -->
+    <div class="test-section" data-testid="textarea-fields">
+      <%= header('Text Area Fields', description: 'Multi-line text input') %>
+
+      <div data-testid="textarea-basic">
+        <%= text_area_field :description, label: 'FF-029: Text Area', value: "Line 1\nLine 2\nLine 3" %>
+      </div>
+
+      <div data-testid="textarea-disabled">
+        <%= text_area_field :notes, label: 'FF-030: Disabled Text Area', value: 'Read-only content', disabled: true %>
+      </div>
+    </div>
+
+    <!-- Section: Inline Fields -->
+    <div class="test-section" data-testid="inline-fields">
+      <%= header('Inline Fields', description: 'Multiple fields rendered side-by-side') %>
+
+      <div data-testid="inline-example">
+        <%= field :name_parts, label: 'FF-037: Inline Fields', inline: true do %>
+          <%= text_field_tag :first_name, value: 'John', placeholder: 'First name' %>
+          <%= text_field_tag :last_name, value: 'Doe', placeholder: 'Last name' %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Section: Form Utilities -->
+    <div class="test-section" data-testid="form-utilities">
+      <%= header('Form Utilities', description: 'Headers, submit buttons, and layout helpers') %>
+
+      <div data-testid="submit-basic">
+        <%= submit 'FF-039: Submit Button', cancel_button: false %>
+      </div>
+
+      <div data-testid="submit-with-cancel">
+        <%= submit 'FF-040: Submit with Cancel', cancel_button: true, cancel_button_url: helpers.admin_test_form_fields_path(disabled: true) %>
+      </div>
+    </div>
+
+  <% end %>
+</div>
+
+<style>
+  .form-fields-test-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .test-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  .test-section .header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .test-section .description {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+  }
+  .form-row {
+    margin-bottom: 15px;
+  }
+  .alert {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    border-radius: 4px;
+  }
+  .alert-info {
+    background: #e7f3ff;
+    border: 1px solid #b6d4fe;
+  }
+  .alert-secondary {
+    background: #e9ecef;
+    border: 1px solid #dee2e6;
+  }
+</style>

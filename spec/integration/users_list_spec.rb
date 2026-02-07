@@ -154,6 +154,147 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       # Selection text should be hidden again
       expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: :hidden)
     end
+
+    # UL-021: Bulk Action - Selected IDs to Controller
+    it 'sends selected IDs to controller when submitting bulk action' do
+      initial_count = User.count
+      visit '/admin/users'
+
+      # Select 2 users (Balická and Effenberger)
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes[0].click
+      checkboxes[1].click
+
+      # Open actions dropdown and click Delete
+      within('.dropdown') do
+        click_button 'Akce'
+        click_button 'Smazat'
+      end
+
+      # Modal should appear with count
+      expect(page).to have_css('.modal.show')
+      expect(page).to have_content('Opravdu chcete smazat')
+      within('.modal') do
+        # Count in message body
+        expect(all('span.count').first.text).to eq('2')
+        # Count in footer "vybraných položek: X"
+        expect(page).to have_content('vybraných položek: 2')
+      end
+
+      # Submit the form by triggering form submission
+      page.execute_script("document.querySelector('#modalx_users form').submit()")
+
+      # Wait for modal to close and page to redirect
+      expect(page).to have_no_css('.modal.show', wait: 5)
+
+      # Verify users were actually deleted
+      expect(User.count).to eq(initial_count - 2)
+
+      # The page should refresh showing updated count
+      expect(page).to have_content("#{initial_count - 2} záznamů")
+    end
+
+    # UL-022: Selection-Dependent Action Disabled
+    it 'disables selection-dependent actions when nothing is selected' do
+      visit '/admin/users'
+
+      # Open actions dropdown
+      within('.dropdown') do
+        click_button 'Akce'
+      end
+
+      # Delete button should be disabled (has .disabled class)
+      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      expect(delete_button[:class]).to include('disabled')
+    end
+
+    # UL-023: Selection-Independent Action Always Available
+    it 'enables selection-independent actions regardless of selection' do
+      visit '/admin/users'
+
+      # Open actions dropdown without selecting anything
+      within('.dropdown') do
+        click_button 'Akce'
+      end
+
+      # Export button should NOT be disabled
+      export_button = find('.dropdown-item.bulk-action', text: 'Exportovat')
+      expect(export_button[:class]).not_to include('disabled')
+    end
+
+    # UL-024: Selection-Dependent Action Enabled After Selection
+    it 'enables selection-dependent actions after selecting users' do
+      visit '/admin/users'
+
+      # Initially disabled
+      within('.dropdown') do
+        click_button 'Akce'
+      end
+      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      expect(delete_button[:class]).to include('disabled')
+
+      # Close dropdown and select a user
+      find('body').click
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes.first.click
+
+      # Re-open dropdown - Delete should now be enabled
+      within('.dropdown') do
+        click_button 'Akce'
+      end
+      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      expect(delete_button[:class]).not_to include('disabled')
+    end
+
+    # UL-025: Selection Persistence Across Pages and Reload
+    it 'persists selection across pages and page reload' do
+      visit '/admin/users'
+
+      # Select 2 users
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      checkboxes[0].click
+      checkboxes[1].click
+
+      # Verify selection counter shows 2
+      expect(find('[data-bulk-action-target="counter"]').text).to eq('2')
+
+      # Navigate to page 2
+      within('.pagination') do
+        click_link '2'
+      end
+
+      # Wait for page to load
+      expect(page).to have_css('.page-item.active', text: '2')
+
+      # Selection should persist - counter still shows 2
+      expect(find('[data-bulk-action-target="counter"]').text).to eq('2')
+
+      # Go back to page 1
+      within('.pagination') do
+        click_link '1'
+      end
+
+      # Wait for page to load
+      expect(page).to have_css('.page-item.active', text: '1')
+
+      # Checkboxes should still be checked
+      checkboxes = page.all('.bulk-action-checkbox input[type="checkbox"]').reject { |cb| cb[:id] == 'checkbox-all' }
+      expect(checkboxes[0]).to be_checked
+      expect(checkboxes[1]).to be_checked
+
+      # Reload the page
+      page.driver.browser.navigate.refresh
+
+      # Selection should persist after reload
+      expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: true)
+      expect(find('[data-bulk-action-target="counter"]').text).to eq('2')
+
+      # Clear selection via button
+      click_link 'zrušit výběr'
+
+      # Selection should be cleared
+      expect(page).to have_css('[data-bulk-action-target="selectionText"]', visible: :hidden)
+    end
   end
 
   describe 'Pagination & Layout' do

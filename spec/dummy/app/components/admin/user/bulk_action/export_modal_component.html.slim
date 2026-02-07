@@ -1,0 +1,13 @@
+= modal(context) do |m|
+  = form do
+    p
+      | Export
+      |
+      span.count.fw-bold
+      |
+      | uživatelů do CSV.
+    .form-group
+      label.form-label Formát
+      select.form-select name="format"
+        option value="csv" CSV
+        option value="xlsx" Excel (XLSX)

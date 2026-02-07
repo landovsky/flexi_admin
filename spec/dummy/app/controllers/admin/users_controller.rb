@@ -117,34 +117,27 @@ module Admin
       @user = ::User.find(params[:id])
       @user.destroy
 
-      respond_to do |format|
-        format.html { redirect_to admin_users_path, notice: 'User deleted successfully' }
-        format.json { head :no_content }
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.remove("user-#{@user.id}"),
-            turbo_stream.prepend('toasts',
-              partial: 'shared/toast',
-              locals: { message: 'User deleted successfully', type: 'success' }
-            )
-          ]
-        end
-      end
+      redirect_to admin_users_path, notice: 'User deleted successfully', status: :see_other
     end
 
     def bulk_action
-      action_type = params[:bulk_action_type]
+      processor = params[:processor]
       ids = params[:ids]
 
       # Parse JSON if it's a string
       ids = JSON.parse(ids) if ids.is_a?(String)
 
-      if action_type == 'delete' && ids.present?
-        ::User.where(id: ids).delete_all
-        respond_to do |format|
-          format.html { redirect_to admin_users_path, notice: "#{ids.length} users deleted" }
-          format.json { head :no_content }
+      case processor
+      when 'admin-user-bulk_action-delete_modal_component'
+        if ids.present?
+          deleted_count = ::User.where(id: ids).delete_all
+          redirect_to admin_users_path, notice: "#{deleted_count} users deleted"
+        else
+          redirect_to admin_users_path, alert: 'No users selected'
         end
+      when 'admin-user-bulk_action-export_modal_component'
+        format_type = params[:format] || 'csv'
+        redirect_to admin_users_path, notice: "Exported #{ids&.length || 'all'} users as #{format_type.upcase}"
       else
         respond_to do |format|
           format.html { redirect_to admin_users_path, alert: 'Unknown action' }

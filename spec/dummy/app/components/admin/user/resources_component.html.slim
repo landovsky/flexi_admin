@@ -1,6 +1,11 @@
 = render FlexiAdmin::Components::Resources::ViewComponent.new(context) do |c|
   - c.with_actions do
     = render FlexiAdmin::Components::Resources::SwitchViewComponent.new(context)
+    = render FlexiAdmin::Components::Actions::SelectComponent.new(context:) do |select|
+      - select.with_action do
+        = action Admin::User::BulkAction::DeleteModalComponent, selection_dependent: true
+      - select.with_action do
+        = action Admin::User::BulkAction::ExportModalComponent, selection_dependent: false
 
   - c.with_views do
     = render Admin::User::View::ListViewComponent.new(context)
