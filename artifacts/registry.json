@@ -1,7 +1,31 @@
-[
-  {
-    "filename": "ui-test-cases.md",
-    "description": "UI test cases for User Management module (List and Detail views)",
-    "usage": "when writing or reviewing UI tests"
+{
+  "artifacts": [
+    {
+      "filename": "artifacts/front-end-feature-testing.md",
+      "description": "Comprehensive guide to writing and debugging Capybara feature tests with Stimulus, Turbo Streams, and FlexiAdmin components. Covers DatabaseCleaner strategies, authentication, custom matchers, shared examples, and common gotchas.",
+      "usage": "decide"
+    },
+    {
+      "filename": "artifacts/ui-test-cases.md",
+      "description": "Detailed UI test case specifications for User Management module (list and detail views). Defines expected behavior for search, filter, sorting, pagination, bulk actions, and CRUD operations. Reference for integration test implementation.",
+      "usage": "decide"
+    },
+    {
+      "filename": "artifacts/progress.md",
+      "description": "Historical project progress summary tracking major features, improvements, and fixes from October 2025 to February 2026. Useful context for understanding project evolution.",
+      "usage": "decide"
+    }
+  ],
+  "metadata": {
+    "project": "flexi_admin_",
+    "description": "FlexiAdmin is a Rails engine providing an admin interface framework with ViewComponent-based architecture, Stimulus controllers, and Turbo Stream integration.",
+    "last_updated": "2026-02-07",
+    "conventions": {
+      "testing": "RSpec + Capybara + Selenium, custom matchers in spec/support/matchers/, shared examples in spec/support/shared_examples/",
+      "javascript": "Stimulus controllers in spec/dummy/app/javascript/controllers/, esbuild for bundling",
+      "styling": "Bootstrap 5 via CDN, custom component CSS in spec/dummy/app/assets/stylesheets/admin/",
+      "components": "ViewComponent architecture, slots for composition, Turbo Stream responses",
+      "task_tracking": "Beads (bd) for issue tracking and workflow management"
+    }
   }
-]
+}
