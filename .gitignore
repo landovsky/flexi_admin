@@ -73,6 +73,7 @@ yarn-debug.log*
 
 # Ignore beads
 .beads/export-state*
+.beads/issues.jsonl
 
 # bv (beads viewer) local config and caches
 .bv/
