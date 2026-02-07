@@ -52,17 +52,29 @@
 
       <div class="form-group">
         <label>Role</label>
-        <div class="role-selector">
-          <button class="btn <%= 'active' if user.role == 'user' %>" data-role="user">user</button>
-          <button class="btn <%= 'active' if user.role == 'admin' %>" data-role="admin">admin</button>
+        <div class="role-selector" data-controller="role-selector">
+          <button class="btn <%= 'active' if user.role == 'user' %>"
+                  data-role="user"
+                  data-role-selector-target="button"
+                  data-action="click->role-selector#select">user</button>
+          <button class="btn <%= 'active' if user.role == 'admin' %>"
+                  data-role="admin"
+                  data-role-selector-target="button"
+                  data-action="click->role-selector#select">admin</button>
         </div>
       </div>
 
       <div class="form-group">
         <label>Type</label>
-        <div class="type-selector">
-          <button class="btn <%= 'active' if user.user_type == 'internal' %>" data-type="internal">internal</button>
-          <button class="btn <%= 'active' if user.user_type == 'external' %>" data-type="external">external</button>
+        <div class="type-selector" data-controller="role-selector">
+          <button class="btn <%= 'active' if user.user_type == 'internal' %>"
+                  data-type="internal"
+                  data-role-selector-target="button"
+                  data-action="click->role-selector#select">internal</button>
+          <button class="btn <%= 'active' if user.user_type == 'external' %>"
+                  data-type="external"
+                  data-role-selector-target="button"
+                  data-action="click->role-selector#select">external</button>
         </div>
       </div>
     </div>
