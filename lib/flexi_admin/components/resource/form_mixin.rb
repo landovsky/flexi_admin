@@ -244,7 +244,19 @@ module FlexiAdmin::Components::Resource
     def render_field_wrapper(field, attr_name)
       content_tag(:div, class: inline ? 'inline-field' : 'field-wrapper') do
         content = []
-        content << field
+        if disabled && attr_name.present?
+          content << content_tag(:div, class: 'copy-field-wrapper', data: { controller: 'copy-to-clipboard' }) do
+            field_content = []
+            field_content << field
+            field_content << content_tag(:button, type: 'button', class: 'copy-field-btn', tabindex: -1,
+                                         data: { action: 'click->copy-to-clipboard#copy' }) do
+              content_tag(:i, '', class: 'bi bi-clipboard')
+            end
+            field_content.join.html_safe
+          end
+        else
+          content << field
+        end
         if resource.present? && attr_name.present?
           content << content_tag(:div, class: 'invalid-feedback') do
             resource.errors[attr_name].join(' ')
