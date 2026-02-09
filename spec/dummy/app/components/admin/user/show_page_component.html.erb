@@ -12,6 +12,7 @@
     <h1><%= user.full_name %></h1>
     <div class="header-actions">
       <%= link_to 'Back', admin_users_path, class: 'btn btn-secondary' %>
+      <%= link_to 'Form Fields', admin_test_form_fields_path, class: 'btn btn-outline-primary' %>
       <button class="edit-icon btn btn-primary" data-action="click->edit#toggle">
         Edit
       </button>
