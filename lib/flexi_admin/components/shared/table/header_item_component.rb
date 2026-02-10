@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class FlexiAdmin::Components::Shared::Table::HeaderItemComponent < FlexiAdmin::Components::BaseComponent
-  attr_reader :column, :attr, :justify, :width, :sort_by
+  include FlexiAdmin::Components::Helpers::ResourceHelper
 
-  def initialize(column)
+  attr_reader :column, :attr, :justify, :width, :sort_by, :context
+
+  def initialize(column, context:)
     @column = column
+    @context = context
     @justify = column.options[:justify] || :start
     @width = column.options[:width] || ""
     @attr = column.attribute
@@ -18,9 +21,13 @@ class FlexiAdmin::Components::Shared::Table::HeaderItemComponent < FlexiAdmin::C
 
   def sort_path
     if order.blank?
-      view_context.context.params.to_path(request.path)
+      resources_path(**context.params.merge)
     else
-      view_context.context.params.merge({ sort: sort_by, order: }).to_path(request.path)
+      resources_params = context.params
+                                .merge(sort: sort_by, order: order)
+                                .to_params
+
+      resources_path(**resources_params.merge)
     end
   end
 

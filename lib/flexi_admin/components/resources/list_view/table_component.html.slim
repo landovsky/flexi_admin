@@ -5,7 +5,7 @@ flexi-table
         = render(FlexiAdmin::Components::Actions::CheckboxComponent.new(id: 'all', scope: context.scope, select_all: true))
 
     - columns.each do |column|
-      = render FlexiAdmin::Components::Shared::Table::HeaderItemComponent.new(column)
+      = render FlexiAdmin::Components::Shared::Table::HeaderItemComponent.new(column, context: context)
 
   - resources.each do |resource|
     .row.border-top.py-2
