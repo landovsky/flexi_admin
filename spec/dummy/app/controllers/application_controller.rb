@@ -3,4 +3,8 @@
 class ApplicationController < ActionController::Base
   # Skip CSRF verification for testing - will use exception in production
   protect_from_forgery with: :exception unless Rails.env.test?
+
+  def current_user
+    nil
+  end
 end

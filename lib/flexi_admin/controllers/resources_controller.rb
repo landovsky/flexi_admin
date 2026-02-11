@@ -113,7 +113,9 @@ module FlexiAdmin::Controllers::ResourcesController
     end
 
     if result.valid?
-      redirect_to_path resource_path(result.resource)
+      namespace = FlexiAdmin::Config.configuration.namespace
+      path_segments = namespace.present? ? [namespace.to_sym, result.resource] : [result.resource]
+      redirect_to_path polymorphic_path(path_segments)
     else
       render_new_resource_form(result.resource)
     end
@@ -166,7 +168,7 @@ module FlexiAdmin::Controllers::ResourcesController
     if result.valid?
       render_edit_resource_form(disabled: disabled?(true))
     else
-      Rails.logger.debug "ResourcesController: #{__method__} errors: #{result.errors.full_messages}"
+      Rails.logger.debug "ResourcesController: #{__method__} errors: #{result.errors.respond_to?(:full_messages) ? result.errors.full_messages : result.errors}"
       render_edit_resource_form(disabled: disabled?(false))
     end
   end

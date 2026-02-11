@@ -1,0 +1,7 @@
+<%= form(url: admin_users_path, method: :post) do %>
+  <%= text_field 'user[full_name]', label: 'Jméno a příjmení', value: -> { resource.full_name } %>
+  <%= text_field 'user[email]', label: 'Email', value: -> { resource.email } %>
+  <%= text_field 'user[phone]', label: 'Telefon', value: -> { resource.phone } %>
+  <%= text_field 'user[personal_number]', label: 'Osobní číslo', value: -> { resource.personal_number } %>
+  <%= submit %>
+<% end %>

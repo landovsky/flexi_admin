@@ -181,8 +181,8 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
         expect(page).to have_content('vybraných položek: 2')
       end
 
-      # Submit the form by triggering form submission
-      page.execute_script("document.querySelector('#modalx_users form').submit()")
+      # Submit the form via requestSubmit so Turbo processes the response
+      page.execute_script("document.querySelector('#modalx_users form').requestSubmit()")
 
       # Wait for modal to close and page to redirect
       expect(page).to have_no_css('.modal.show', wait: 5)

@@ -111,8 +111,12 @@ RSpec.describe 'User Detail Page', type: :feature, js: true do
       # Verify user exists before deletion
       expect(User.find_by(id: user_id)).not_to be_nil
 
-      # Submit the delete form directly, bypassing confirm
-      page.execute_script("document.querySelector('form[action*=\"/admin/users/#{user_id}\"][method=\"post\"] input[name=\"_method\"][value=\"delete\"]').closest('form').submit()")
+      # Remove turbo confirm to bypass dialog, then submit via requestSubmit so Turbo processes it
+      page.execute_script(<<~JS)
+        var form = document.querySelector('form[action*="/admin/users/#{user_id}"][method="post"] input[name="_method"][value="delete"]').closest('form');
+        delete form.dataset.turboConfirm;
+        form.requestSubmit();
+      JS
 
       # Wait for redirect to index page
       expect(page).to have_css('flexi-table', wait: 10)
