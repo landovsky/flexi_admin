@@ -24,6 +24,15 @@
           crossorigin="anonymous"></script>
 </head>
 <body>
+  <nav class="navbar navbar-expand navbar-light bg-light border-bottom mb-3 px-3">
+    <span class="navbar-brand">FlexiAdmin</span>
+    <div class="navbar-nav">
+      <%= link_to 'Users', admin_users_path, class: 'nav-link' %>
+      <%= link_to 'Autocomplete', admin_test_autocomplete_path, class: 'nav-link' %>
+      <%= link_to 'Form Fields', admin_test_form_fields_path, class: 'nav-link' %>
+    </div>
+  </nav>
+
   <div class="container-fluid">
     <%# Toast container for flash messages %>
     <div id="toasts" class="toast-container position-fixed top-0 end-0 p-3"></div>
