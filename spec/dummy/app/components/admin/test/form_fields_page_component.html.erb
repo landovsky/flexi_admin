@@ -163,6 +163,53 @@
       </div>
     </div>
 
+    <!-- Section: Columns Layout -->
+    <div class="test-section" data-testid="columns-layout">
+      <%= header('Columns Layout', description: 'Fields organized in side-by-side columns') %>
+
+      <div data-testid="columns-two-col">
+        <%= columns do %>
+          <%= column do %>
+            <%= text_field :full_name, label: 'FF-041: Name (Left Column)' %>
+            <%= text_field :email, label: 'FF-042: Email (Left Column)', value: -> { user.email } %>
+          <% end %>
+          <%= column do %>
+            <%= text_field :phone, label: 'FF-043: Phone (Right Column)', value: -> { user.phone } %>
+            <%= date_field :birth_date, label: 'FF-044: Birth Date (Right Column)', value: Date.today %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= header('Three Columns with Mixed Fields', description: 'A section header between column groups') %>
+
+      <div data-testid="columns-three-col">
+        <%= columns do %>
+          <%= column do %>
+            <%= text_field :full_name, label: 'FF-045: Col 1' %>
+          <% end %>
+          <%= column do %>
+            <%= number_field :amount, label: 'FF-046: Col 2', value: 42 %>
+          <% end %>
+          <%= column do %>
+            <%= select_field :role, label: 'FF-047: Col 3', options: role_options %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div data-testid="columns-with-validation">
+        <% with_resource(user_with_errors) do %>
+          <%= columns do %>
+            <%= column do %>
+              <%= text_field :full_name, label: 'FF-048: Validation in Column' %>
+            <% end %>
+            <%= column do %>
+              <%= text_field :email, label: 'FF-049: Another Column' %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
     <!-- Section: Inline Fields -->
     <div class="test-section" data-testid="inline-fields">
       <%= header('Inline Fields', description: 'Multiple fields rendered side-by-side') %>

@@ -1,7 +1,16 @@
 <%= form(url: resource_path(resource), method: :patch) do %>
   <%= text_field 'user[full_name]', label: 'Jméno a příjmení', value: -> { resource.full_name } %>
-  <%= text_field 'user[email]', label: 'Email', value: -> { resource.email } %>
-  <%= text_field 'user[phone]', label: 'Telefon', value: -> { resource.phone } %>
-  <%= text_field 'user[personal_number]', label: 'Osobní číslo', value: -> { resource.personal_number } %>
+
+  <%= columns do %>
+    <%= column do %>
+      <%= text_field 'user[email]', label: 'Email', value: -> { resource.email } %>
+      <%= text_field 'user[phone]', label: 'Telefon', value: -> { resource.phone } %>
+    <% end %>
+    <%= column do %>
+      <%= text_field 'user[personal_number]', label: 'Osobní číslo', value: -> { resource.personal_number } %>
+      <%= date_field 'user[created_at]', label: 'Vytvořeno', value: -> { resource.created_at&.to_date } %>
+    <% end %>
+  <% end %>
+
   <%= submit unless disabled %>
 <% end %>

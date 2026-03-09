@@ -205,6 +205,26 @@ module FlexiAdmin::Components::Resource
       end
     end
 
+    def columns(**html_options, &block)
+      content = capture(&block)
+      css_classes = ['form-columns']
+      css_classes << html_options.delete(:class) if html_options[:class]
+
+      content_tag(:div, content, html_options.merge(class: css_classes.join(' ')))
+    end
+
+    def column(**html_options, &block)
+      previous_inside_column = @inside_column
+      @inside_column = true
+      content = capture(&block)
+      @inside_column = previous_inside_column
+
+      css_classes = ['form-column']
+      css_classes << html_options.delete(:class) if html_options[:class]
+
+      content_tag(:div, content, html_options.merge(class: css_classes.join(' ')))
+    end
+
     def with_resource(resource)
       previous_resource = @resource
       @resource = resource
@@ -318,26 +338,45 @@ module FlexiAdmin::Components::Resource
     def render_form_row(attr_name, field_html, label:, required: false, **html_options)
       label ||= attr_name.to_s.humanize unless label == false
 
-      content_tag(:div, html_options.merge(class: 'form-row')) do
+      row_classes = ['form-row']
+      row_classes << 'form-row--stacked' if @inside_column
+
+      content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
         lbl = label
         lbl += ' *' if required && !disabled
-        col_md = label == false ? 'col-md-12' : 'col-md-9'
-        concat content_tag(:div, class: 'col-12 col-md-3') { label_tag(attr_name, lbl) } unless label == false
-        concat content_tag(:div, class: inline ? "col-12 #{col_md} inline-field-wrapper" : "col-12 #{col_md}") {
-                field_html
-              }
+
+        if @inside_column
+          concat content_tag(:div, class: 'col-12') { label_tag(attr_name, lbl) } unless label == false
+          concat content_tag(:div, class: inline ? 'col-12 inline-field-wrapper' : 'col-12') { field_html }
+        else
+          col_md = label == false ? 'col-md-12' : 'col-md-9'
+          concat content_tag(:div, class: 'col-12 col-md-3') { label_tag(attr_name, lbl) } unless label == false
+          concat content_tag(:div, class: inline ? "col-12 #{col_md} inline-field-wrapper" : "col-12 #{col_md}") {
+                  field_html
+                }
+        end
       end
     end
 
     def render_custom_field(view_component_instance, label, html_options, _value)
-      content_tag(:div, html_options.merge(class: 'form-row')) do
-        unless label == false
-          concat content_tag(:div, class: 'col-12 col-md-3') {
-                  label_tag('autocomplete', label)
-                }
+      row_classes = ['form-row']
+      row_classes << 'form-row--stacked' if @inside_column
+
+      content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
+        if @inside_column
+          unless label == false
+            concat content_tag(:div, class: 'col-12') { label_tag('autocomplete', label) }
+          end
+          concat content_tag(:div, class: 'col-12') { render view_component_instance }
+        else
+          unless label == false
+            concat content_tag(:div, class: 'col-12 col-md-3') {
+                    label_tag('autocomplete', label)
+                  }
+          end
+          col_md = label == false ? 'col-md-12' : 'col-md-9'
+          concat content_tag(:div, class: "col-12 #{col_md}") { render view_component_instance }
         end
-        col_md = label == false ? 'col-md-12' : 'col-md-9'
-        concat content_tag(:div, class: "col-12 #{col_md}") { render view_component_instance }
       end
     end
 

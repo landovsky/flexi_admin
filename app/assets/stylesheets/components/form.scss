@@ -79,6 +79,7 @@
     width: 100% !important;
     //padding-bottom: 0.3rem !important;
   }
+
 }
 
 .copy-field-wrapper {
@@ -104,6 +105,30 @@
 
   &:hover .copy-field-btn {
     opacity: 1;
+  }
+}
+
+.form-columns {
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .form-column {
+    flex: 1;
+    min-width: 0;
+
+    .form-row {
+      flex-direction: column !important;
+      align-items: stretch;
+
+      label {
+        margin-bottom: 0.25rem;
+      }
+    }
   }
 }
 

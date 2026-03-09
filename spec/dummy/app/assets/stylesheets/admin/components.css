@@ -271,6 +271,36 @@
 }
 
 /* ========================================
+   Form Columns Layout
+   ======================================== */
+
+.form-columns {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .form-columns {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+
+.form-columns .form-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-columns .form-column .form-row {
+  flex-direction: column !important;
+  align-items: stretch;
+}
+
+.form-columns .form-column .form-row label {
+  margin-bottom: 0.25rem;
+}
+
+/* ========================================
    Copy to Clipboard (disabled fields)
    ======================================== */
 
