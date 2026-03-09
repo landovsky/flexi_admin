@@ -108,23 +108,46 @@
   }
 }
 
+textarea.expandable-field {
+  resize: none;
+  overflow: hidden;
+  min-height: 0;
+}
+
 .form-columns {
   display: flex;
   flex-direction: column;
   background-color: var(----bs-tertiary-bg);
+  border-bottom: 2px solid white;
 
+  // grid-template-rows and grid-template-columns are set inline by the columns helper
   @media (min-width: 768px) {
-    flex-direction: row;
+    display: grid;
+  }
+
+  // When columns block is the last child in a section, apply closing border-radius
+  &:last-child {
+    border-bottom: 0 !important;
+    border-bottom-left-radius: 0.4rem;
+    border-bottom-right-radius: 0.4rem;
   }
 
   .form-column {
-    flex: 1;
     min-width: 0;
 
     @media (min-width: 768px) {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: 1 / -1;
+
       & + .form-column {
         border-left: 2px solid white;
       }
+    }
+
+    // Last row inside a column should not have bottom border (the columns container handles it)
+    .form-row:last-child {
+      border-bottom: 0 !important;
     }
 
     .form-row {

@@ -34,6 +34,18 @@
       <div data-testid="text-proc-value">
         <%= text_field :computed_name, label: 'FF-005: Text Field with Proc Value', value: -> { "Computed: #{user.full_name}" } %>
       </div>
+
+      <div data-testid="text-expandable">
+        <%= text_field :description, label: 'FF-050: Expandable Text Field', expandable: true, value: -> { "This is a short value" } %>
+      </div>
+
+      <div data-testid="text-expandable-long">
+        <%= text_field :description, label: 'FF-051: Expandable with Long Text', expandable: true, value: -> { "This is a much longer text that would normally be cut off in a regular single-line input field. With the expandable option, the field automatically grows to show all content without horizontal scrolling. It works in both edit and read-only modes." } %>
+      </div>
+
+      <div data-testid="text-expandable-disabled">
+        <%= text_field :description, label: 'FF-052: Expandable Disabled', expandable: true, disabled: true, value: -> { "A longer read-only value that benefits from the expandable treatment so users can see the full content without scrolling horizontally through a tiny input field." } %>
+      </div>
     </div>
 
     <!-- Section: Number Fields -->

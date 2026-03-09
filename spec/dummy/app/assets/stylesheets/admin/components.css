@@ -271,6 +271,16 @@
 }
 
 /* ========================================
+   Expandable Text Fields
+   ======================================== */
+
+textarea.expandable-field {
+  resize: none;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ========================================
    Form Columns Layout
    ======================================== */
 

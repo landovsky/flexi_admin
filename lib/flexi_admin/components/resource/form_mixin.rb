@@ -50,8 +50,12 @@ module FlexiAdmin::Components::Resource
       inline ? field_wrapper : render_form_row(attr_name, field_wrapper, label:, required: html_options[:required])
     end
 
-    def text_field(attr_name, label: nil, value: nil, **html_options)
-      field = text_field_tag(attr_name, value:, **html_options)
+    def text_field(attr_name, label: nil, value: nil, expandable: false, **html_options)
+      field = if expandable
+        render_expandable_field(attr_name, value, html_options)
+      else
+        text_field_tag(attr_name, value:, **html_options)
+      end
       field_wrapper = render_field_wrapper(field, attr_name)
 
       inline ? field_wrapper : render_form_row(attr_name, field_wrapper, label:, required: html_options[:required])
@@ -206,23 +210,37 @@ module FlexiAdmin::Components::Resource
     end
 
     def columns(**html_options, &block)
+      previous_column_row_counts = @column_row_counts
+      @column_row_counts = []
       content = capture(&block)
+      max_rows = @column_row_counts.max || 1
+      col_count = @column_row_counts.size
+
       css_classes = ['form-columns']
       css_classes << html_options.delete(:class) if html_options[:class]
 
-      content_tag(:div, content, html_options.merge(class: css_classes.join(' ')))
+      style = "grid-template-rows: repeat(#{max_rows}, auto); grid-template-columns: repeat(#{col_count}, 1fr);"
+      existing_style = html_options[:style]
+      style = "#{existing_style} #{style}" if existing_style
+
+      content_tag(:div, content, html_options.merge(class: css_classes.join(' '), style:))
+    ensure
+      @column_row_counts = previous_column_row_counts
     end
 
     def column(**html_options, &block)
       previous_inside_column = @inside_column
       @inside_column = true
+      @current_column_row_count = 0
       content = capture(&block)
-      @inside_column = previous_inside_column
+      @column_row_counts << @current_column_row_count
 
       css_classes = ['form-column']
       css_classes << html_options.delete(:class) if html_options[:class]
 
       content_tag(:div, content, html_options.merge(class: css_classes.join(' ')))
+    ensure
+      @inside_column = previous_inside_column
     end
 
     def with_resource(resource)
@@ -235,30 +253,39 @@ module FlexiAdmin::Components::Resource
 
     private
 
+    def render_expandable_field(attr_name, value, html_options)
+      val, input_classes, resolved_disabled = resolve_field_attrs(attr_name, value, html_options, extra_class: 'expandable-field')
+      data = {
+        controller: 'expandable-field',
+        action: 'input->expandable-field#resize blur->form-validation#handleInvalid keyup->form-validation#handleInvalid'
+      }
+      merge_model_error!(data, attr_name)
+
+      content_tag(:textarea, val, {
+        name: attr_name, class: input_classes, rows: 1, data:, disabled: resolved_disabled
+      }.merge(html_options.except(:disabled)))
+    end
+
     def render_standard_field(type, attr_name, value, html_options)
-      val = value.is_a?(Proc) ? value.call : resource.try(attr_name) || value
+      val, input_classes, resolved_disabled = resolve_field_attrs(attr_name, value, html_options)
       data = {
         action: 'blur->form-validation#handleInvalid keyup->form-validation#handleInvalid'
       }
       merge_model_error!(data, attr_name) unless type == :submit
 
-      content = []
-      input_classes = 'form-control'
+      return ''.html_safe if type == :submit
+
+      content_tag(:input, nil, {
+        type:, name: attr_name, value: val, class: input_classes, data:, disabled: resolved_disabled
+      }.merge(html_options.except(:disabled)))
+    end
+
+    def resolve_field_attrs(attr_name, value, html_options, extra_class: nil)
+      val = value.is_a?(Proc) ? value.call : resource.try(attr_name) || value
+      input_classes = ['form-control', extra_class].compact.join(' ')
       input_classes += ' is-invalid' if resource.present? && attr_name.present? && resource.errors[attr_name].present?
-
-      if type != :submit
-        content << content_tag(:input, nil,
-                              {
-                                type:,
-                                name: attr_name,
-                                value: val,
-                                class: input_classes,
-                                data:,
-                                disabled: html_options[:disabled] || disabled
-                              }.merge(html_options.except(:disabled)))
-      end
-
-      content.join.html_safe
+      resolved_disabled = html_options[:disabled] || disabled
+      [val, input_classes, resolved_disabled]
     end
 
     def render_field_wrapper(field, attr_name)
@@ -337,9 +364,9 @@ module FlexiAdmin::Components::Resource
 
     def render_form_row(attr_name, field_html, label:, required: false, **html_options)
       label ||= attr_name.to_s.humanize unless label == false
+      @current_column_row_count += 1 if @inside_column
 
       row_classes = ['form-row']
-      row_classes << 'form-row--stacked' if @inside_column
 
       content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
         lbl = label
@@ -359,8 +386,9 @@ module FlexiAdmin::Components::Resource
     end
 
     def render_custom_field(view_component_instance, label, html_options, _value)
+      @current_column_row_count += 1 if @inside_column
+
       row_classes = ['form-row']
-      row_classes << 'form-row--stacked' if @inside_column
 
       content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
         if @inside_column

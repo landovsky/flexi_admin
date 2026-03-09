@@ -51,15 +51,26 @@ module FlexiAdmin::Components::Resource
     end
 
     def autocomplete_options
+      base_data = { autocomplete_target: 'input',
+                    action: 'keyup->autocomplete#keyup focusout->autocomplete#onFocusOut',
+                    autocomplete_search_path: get_path,
+                    autocomplete_is_disabled: disabled,
+                    field_type: kind }.merge(html_options)
+
       {
         style: 'border-top-right-radius: 0.4rem; border-bottom-right-radius: 0.4rem;',
         autocomplete: 'off',
-        data: { autocomplete_target: 'input',
-                action: 'keyup->autocomplete#keyup focusout->autocomplete#onFocusOut',
-                autocomplete_search_path: get_path,
-                autocomplete_is_disabled: disabled,
-                field_type: kind }.merge(html_options)
+        data: base_data
       }
+    end
+
+    def expandable_autocomplete_options
+      opts = autocomplete_options
+      data = opts[:data].merge(
+        controller: 'expandable-field',
+        action: "input->expandable-field#resize #{opts[:data][:action]}"
+      )
+      { data: data, **opts.except(:data) }
     end
 
     private
