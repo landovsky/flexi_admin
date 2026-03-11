@@ -6,10 +6,11 @@ RSpec.describe 'reload_frame after bulk_action', type: :request do
   let!(:users) { create_list(:user, 3) }
   let(:user_ids) { users.map(&:id).to_json }
   let(:export_processor) { 'admin-user-bulk_action-export_modal_component' }
+  let(:reset_processor) { 'admin-user-bulk_action-reset_modal_component' }
 
-  def bulk_action_params(**overrides)
+  def bulk_action_params(processor: export_processor, **overrides)
     {
-      processor: export_processor,
+      processor: processor,
       ids: user_ids
     }.merge(overrides)
   end
@@ -97,6 +98,34 @@ RSpec.describe 'reload_frame after bulk_action', type: :request do
            headers: { 'HTTP_REFERER' => 'http://localhost:3000/admin/users/1' }
 
       expect(response.body).to include("src = 'http://localhost:3000/admin/users/1'")
+    end
+  end
+
+  describe 'explicit full page reload' do
+    context 'when processor returns reload: :page' do
+      it 'uses reload_page instead of reload_frame' do
+        post '/admin/users/bulk_action', params: bulk_action_params(processor: reset_processor)
+
+        expect(response.body).to include('window.location.reload()')
+        expect(response.body).not_to include('getElementById')
+      end
+    end
+
+    context 'when fa_reload=page param is passed' do
+      it 'uses reload_page instead of reload_frame' do
+        post '/admin/users/bulk_action', params: bulk_action_params(fa_reload: 'page')
+
+        expect(response.body).to include('window.location.reload()')
+        expect(response.body).not_to include('getElementById')
+      end
+
+      it 'overrides fa_reload_frame param' do
+        post '/admin/users/bulk_action',
+             params: bulk_action_params(fa_reload: 'page', fa_reload_frame: 'some_frame')
+
+        expect(response.body).to include('window.location.reload()')
+        expect(response.body).not_to include('getElementById')
+      end
     end
   end
 end
