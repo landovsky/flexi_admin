@@ -7,6 +7,7 @@ module FlexiAdmin::Controllers::ResourcesController
   # rescue_from RuntimeError, with: :handle_runtime_error
 
   included do
+    helper FlexiAdmin::Helpers::ApplicationHelper
     before_action :context_params
 
     if defined?(CanCan::AccessDenied)
@@ -50,6 +51,14 @@ module FlexiAdmin::Controllers::ResourcesController
                                                                                          parent: parent_instance))
       end
     end
+  end
+
+  def reload_frame(scope = nil)
+    scope ||= context_params.reload_frame.presence || context_params.scope.presence || resource_class.model_name.plural
+    render turbo_stream: [
+      turbo_stream.append('system', partial: 'shared/reload_frame', locals: { scope: scope, referrer: request.referrer }),
+      turbo_stream.append('toasts', partial: 'shared/toasts')
+    ]
   end
 
   # Deprecated
@@ -240,7 +249,13 @@ module FlexiAdmin::Controllers::ResourcesController
 
     flash[result.result] = FlexiAdmin::Models::Toast.new(result.message)
 
-    result.redirect_to.present? ? redirect_to_path(result.redirect_to) : reload_page
+    if result.redirect_to.present?
+      redirect_to_path(result.redirect_to)
+    elsif result.try(:reload) == :page || context_params.reload == :page
+      reload_page
+    else
+      reload_frame
+    end
   end
 
   def autocomplete(includes: nil)

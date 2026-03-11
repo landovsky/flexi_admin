@@ -15,6 +15,8 @@ module FlexiAdmin::Models
       ac_action: 'ac_action', # autocomplete action
       ac_fields: { 'ac_fields': [] }, # autocomplete result fields
       ac_path: 'ac_path', # autocomplete path for opening resource in new window
+      reload_frame: 'fa_reload_frame', # turbo-frame ID to reload after bulk actions
+      reload: 'fa_reload', # :page forces full page reload after bulk actions
     }
 
     def self.permitted_params_keys
@@ -136,6 +138,14 @@ module FlexiAdmin::Models
 
     def order
       params[:order]
+    end
+
+    def reload_frame
+      params[:reload_frame]
+    end
+
+    def reload
+      params[:reload]&.to_sym
     end
   end
 end
