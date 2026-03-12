@@ -29,8 +29,8 @@ module FlexiAdmin::Components::Resources::BulkAction
       end
     end
 
-    def form(url: self.class.path, method: :post, **html_options, &block)
-      super(url:, css_class: 'modalForm section', method:, **html_options, &block)
+    def form(url: self.class.path, method: :post, label_col: 'col-md-3', field_col: 'col-md-9', **html_options, &block)
+      super(url:, css_class: 'modalForm section', method:, label_col:, field_col:, **html_options, &block)
     end
 
     # /observation_images/bulk_action

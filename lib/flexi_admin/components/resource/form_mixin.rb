@@ -28,12 +28,21 @@ module FlexiAdmin::Components::Resource
     attr_reader :resource, :disabled, :inline, :parent_resource
 
     # Form does not render; fields do.
-    def form(url: resource_path(resource), css_class: 'myForm section', method: :patch, **html_options, &block)
+    # TODO: allow setting label_col/field_col for non-modal forms (e.g. via FormComponent initialize)
+    def form(url: resource_path(resource), css_class: 'myForm section', method: :patch, label_col: 'col-md-3', field_col: 'col-md-9', **html_options, &block)
+      previous_label_col = @label_col
+      previous_field_col = @field_col
+      @label_col = label_col
+      @field_col = field_col
+
       render FlexiAdmin::Components::Resource::FormElementComponent.new(resource, url:, css_class:, method:, **html_options) do |component|
         component.with_fields do
           capture(&block)
         end
       end
+    ensure
+      @label_col = previous_label_col
+      @field_col = previous_field_col
     end
 
     def select_field(attr_name, options:, label: nil, value: nil, **html_options)
@@ -367,6 +376,8 @@ module FlexiAdmin::Components::Resource
       @current_column_row_count += 1 if @inside_column
 
       row_classes = ['form-row']
+      label_col = @label_col || 'col-md-3'
+      field_col = @field_col || 'col-md-9'
 
       content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
         lbl = label
@@ -376,9 +387,9 @@ module FlexiAdmin::Components::Resource
           concat content_tag(:div, class: 'col-12') { label_tag(attr_name, lbl) } unless label == false
           concat content_tag(:div, class: inline ? 'col-12 inline-field-wrapper' : 'col-12') { field_html }
         else
-          col_md = label == false ? 'col-md-12' : 'col-md-9'
-          concat content_tag(:div, class: 'col-12 col-md-3') { label_tag(attr_name, lbl) } unless label == false
-          concat content_tag(:div, class: inline ? "col-12 #{col_md} inline-field-wrapper" : "col-12 #{col_md}") {
+          resolved_field_col = label == false ? 'col-md-12' : field_col
+          concat content_tag(:div, class: "col-12 #{label_col}") { label_tag(attr_name, lbl) } unless label == false
+          concat content_tag(:div, class: inline ? "col-12 #{resolved_field_col} inline-field-wrapper" : "col-12 #{resolved_field_col}") {
                   field_html
                 }
         end
@@ -389,6 +400,8 @@ module FlexiAdmin::Components::Resource
       @current_column_row_count += 1 if @inside_column
 
       row_classes = ['form-row']
+      label_col = @label_col || 'col-md-3'
+      field_col = @field_col || 'col-md-9'
 
       content_tag(:div, html_options.merge(class: row_classes.join(' '))) do
         if @inside_column
@@ -398,12 +411,12 @@ module FlexiAdmin::Components::Resource
           concat content_tag(:div, class: 'col-12') { render view_component_instance }
         else
           unless label == false
-            concat content_tag(:div, class: 'col-12 col-md-3') {
+            concat content_tag(:div, class: "col-12 #{label_col}") {
                     label_tag('autocomplete', label)
                   }
           end
-          col_md = label == false ? 'col-md-12' : 'col-md-9'
-          concat content_tag(:div, class: "col-12 #{col_md}") { render view_component_instance }
+          resolved_field_col = label == false ? 'col-md-12' : field_col
+          concat content_tag(:div, class: "col-12 #{resolved_field_col}") { render view_component_instance }
         end
       end
     end
