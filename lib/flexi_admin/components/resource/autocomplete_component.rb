@@ -14,7 +14,8 @@ module FlexiAdmin::Components::Resource
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
                   value: nil, disabled_empty_custom_message: nil,
-                  target_controller: nil, placeholder: nil, **html_options)
+                  target_controller: nil, placeholder: nil,
+                  custom_scope: nil, **html_options)
       @resource = resource
       @scope = scope
       @target_controller = target_controller
@@ -23,6 +24,7 @@ module FlexiAdmin::Components::Resource
       @path = path
       @action = action
       @value = value
+      @custom_scope = custom_scope&.to_s
 
       @html_options = html_options
       @width = html_options.delete(:width)
@@ -30,19 +32,7 @@ module FlexiAdmin::Components::Resource
       @style = html_options.delete(:style)
       @disabled = html_options.key?(:disabled) ? html_options[:disabled] : false
 
-      # Set @name - for custom scopes (Proc), we need either explicit name or target_controller
-      if scope.is_a?(Proc)
-        if html_options[:name].present?
-          @name = html_options[:name]
-        elsif target_controller.present?
-          # Infer name from target_controller (e.g., 'users' -> 'user_id')
-          @name = "#{target_controller.to_s.singularize}_id"
-        else
-          raise ArgumentError, 'When using a Proc scope, you must provide either :name in html_options or :target_controller'
-        end
-      else
-        @name = html_options[:name] || resource_input_name
-      end
+      @name = html_options[:name] || resource_input_name
 
       @disabled_empty_custom_message = disabled_empty_custom_message || 'žádný zdroj'
       @placeholder = placeholder || 'hledat'
@@ -103,7 +93,7 @@ module FlexiAdmin::Components::Resource
       when :input
         datalist_path(action: :input, parent: effective_parent, fields: fields)
       else
-        autocomplete_path(action: action, parent: effective_parent, fields: fields, custom_scope: custom_scope_value)
+        autocomplete_path(action: action, parent: effective_parent, fields: fields, custom_scope: @custom_scope)
       end
     end
 
@@ -114,15 +104,7 @@ module FlexiAdmin::Components::Resource
     end
 
     def effective_parent
-      scope_is_custom? ? nil : parent
-    end
-
-    def scope_is_custom?
-      @scope.is_a?(Proc)
-    end
-
-    def custom_scope_value
-      scope_is_custom? ? @scope : nil
+      @custom_scope.present? ? nil : parent
     end
   end
 end

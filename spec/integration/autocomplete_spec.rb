@@ -215,12 +215,12 @@ RSpec.describe 'Autocomplete Component', type: :feature, js: true do
       end
     end
 
-    # AC-015: Custom Scope Support - filters results based on proc scope
+    # AC-015: Custom Scope Support - filters results based on named model scope
     it 'uses custom scope for filtering results' do
       visit '/admin/test/autocomplete'
 
       within('[data-testid="custom-scope"]') do
-        # Type to search - the custom scope should filter only admin users
+        # Type to search - the named scope should filter only admin users
         fill_in 'user_id', with: 'a'
 
         # Wait for results

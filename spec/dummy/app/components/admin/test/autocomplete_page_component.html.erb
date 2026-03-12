@@ -134,13 +134,13 @@
       <h2>Cross-Mode Behavior</h2>
 
       <div class="form-group mb-3" data-testid="custom-scope">
-        <label>AC-015: Custom Scope Support (Proc scope, admin users only)</label>
+        <label>AC-015: Custom Scope Support (named scope, admin users only)</label>
         <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
               nil,
-              scope: -> { ::User.where(role: 'admin') },
+              scope: ::User,
               action: :select,
               fields: [:full_name],
-              target_controller: 'users',
+              custom_scope: :admins,
               placeholder: 'Search admin users only...'
             ) %>
       </div>

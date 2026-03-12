@@ -260,8 +260,7 @@ module FlexiAdmin::Controllers::ResourcesController
 
   def autocomplete(includes: nil)
     base_query = if context_params.params[:custom_scope].present?
-                   # Handle custom scope passed from component
-                   deserialize_and_apply_custom_scope(resource_class, context_params.params[:custom_scope])
+                   apply_named_custom_scope(resource_class, context_params.params[:custom_scope])
                  else
                    resource_class.with_parent(parent_instance)
                  end
@@ -372,19 +371,14 @@ module FlexiAdmin::Controllers::ResourcesController
     raise NameError, "Failed to find class: #{modules.join("::")}"
   end
 
-  def deserialize_and_apply_custom_scope(resource_class, scope_key)
-    custom_scope = FlexiAdmin::Components::Helpers::CustomScopeRegistry.get(scope_key)
+  def apply_named_custom_scope(resource_class, scope_name)
+    scope_name = scope_name.to_sym
 
-    return resource_class.all unless custom_scope
-
-    case custom_scope
-    when Proc
-      custom_scope.call(resource_class)
-    else
-      resource_class.all
+    unless resource_class.respond_to?(:fa_allowed_scopes) && resource_class.fa_allowed_scopes.include?(scope_name)
+      raise ArgumentError, "Scope '#{scope_name}' is not whitelisted for #{resource_class}. " \
+                           "Add it to fa_allowed_scopes in the model."
     end
-  rescue => e
-    Rails.logger.warn "Failed to apply custom scope: #{e.message}"
-    resource_class.all
+
+    resource_class.public_send(scope_name)
   end
 end

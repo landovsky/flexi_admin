@@ -17,6 +17,7 @@ module FlexiAdmin::Models
       ac_path: 'ac_path', # autocomplete path for opening resource in new window
       reload_frame: 'fa_reload_frame', # turbo-frame ID to reload after bulk actions
       reload: 'fa_reload', # :page forces full page reload after bulk actions
+      custom_scope: 'fa_custom_scope', # named model scope for autocomplete filtering
     }
 
     def self.permitted_params_keys

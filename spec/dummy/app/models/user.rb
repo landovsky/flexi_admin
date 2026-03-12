@@ -10,6 +10,12 @@ class User < ApplicationRecord
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: true
 
+  scope :admins, -> { where(role: 'admin') }
+
+  def self.fa_allowed_scopes
+    %i[admins]
+  end
+
   # Fulltext search scope for autocomplete
   scope :fulltext, ->(query) {
     return all if query.blank?

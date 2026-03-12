@@ -4,6 +4,12 @@ module FlexiAdmin::Models::Concerns::ApplicationResource
   extend ActiveSupport::Concern
   include FlexiAdmin::Models::Concerns::Parentable
 
+  class_methods do
+    def fa_allowed_scopes
+      []
+    end
+  end
+
   def identifier
     "#{self.class.name.underscore}_#{id}"
   end

@@ -11,8 +11,7 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
       ac_fields: fields
     }
 
-    # Add custom_scope to payload if provided
-    payload[:fa_custom_scope] = serialize_custom_scope(custom_scope) if custom_scope.present?
+    payload[:fa_custom_scope] = custom_scope if custom_scope.present?
 
     path = namespaced_path("autocomplete", "namespace", scope_plural)
     route_exists_in_main_app?(path) ? main_app.send(path, params: payload) : helpers.send(path, params: payload)
@@ -134,15 +133,4 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
     resource.paginate(page: params[:page], per_page: per_page)
   end
 
-  private
-
-  def serialize_custom_scope(custom_scope)
-    return nil unless custom_scope
-
-    scope_key = "scope_#{SecureRandom.hex(8)}"
-
-    FlexiAdmin::Components::Helpers::CustomScopeRegistry.register(scope_key, custom_scope)
-
-    scope_key
-  end
 end
