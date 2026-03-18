@@ -31,7 +31,7 @@ module FlexiAdmin::Components::Resources
     end
 
     attr_reader :context, :resources, :resource
-    attr_accessor :title_element, :header_element, :description_element, :image_element
+    attr_accessor :title_element, :header_element, :description_element, :image_element, :quick_action_block
 
     def initialize(context)
       @context = context
@@ -51,7 +51,8 @@ module FlexiAdmin::Components::Resources
     def grid
       render FlexiAdmin::Components::Resources::GridView::GridComponent.new(resources, title_element, header_element,
                                                                             description_element,
-                                                                            image_element, context)
+                                                                            image_element, quick_action_block,
+                                                                            context)
     end
 
     def render?
@@ -84,6 +85,10 @@ module FlexiAdmin::Components::Resources
       options[:formatter] = format(options[:as] || :text)
 
       self.description_element = Element.new(attribute, value, options)
+    end
+
+    def quick_action(&block)
+      self.quick_action_block = block
     end
   end
 end

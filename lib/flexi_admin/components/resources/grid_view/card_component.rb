@@ -5,14 +5,15 @@ module FlexiAdmin::Components::Resources::GridView
     include FlexiAdmin::Components::Helpers::LinkHelper
 
     attr_accessor :resource, :title, :header, :description, :image
-    attr_reader :context
+    attr_reader :context, :quick_action
 
-    def initialize(resource, title, header, description, image, context = nil)
+    def initialize(resource, title, header, description, image, quick_action = nil, context)
       @resource = resource
       @title = title
       @header = header
       @description = description
       @image = image
+      @quick_action = quick_action
       @context = context
     end
 

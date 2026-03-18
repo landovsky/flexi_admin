@@ -1,5 +1,7 @@
 .grid-view {
   .card {
+    position: relative;
+
     .bulk-action-checkbox {
       position: absolute !important;
       top: 0.4em !important;
@@ -10,6 +12,13 @@
         width: 1.1em !important;
         height: 1.1em !important;
       }
+    }
+
+    .quick-action {
+      position: absolute;
+      top: 0.4em;
+      right: 0.7em;
+      z-index: 100;
     }
   }
 }
