@@ -260,19 +260,25 @@ module FlexiAdmin::Controllers::ResourcesController
 
   def autocomplete(includes: nil)
     base_query = if context_params.params[:custom_scope].present?
-                   apply_named_custom_scope(resource_class, context_params.params[:custom_scope])
+                   Rails.logger.debug "Autocomplete: custom scope: #{context_params.params[:custom_scope]}"
+                   apply_named_custom_scope(resource_class.with_parent(parent_instance), context_params.params[:custom_scope])
                  else
+                   Rails.logger.debug "Autocomplete: no custom scope, using parent instance"
                    resource_class.with_parent(parent_instance)
                  end
 
     base_query = base_query.fulltext(params[:q])
     base_query = base_query.includes(includes) if includes.present?
+    Rails.logger.debug "Autocomplete: included #{includes.present? ? includes : "none"}"
+    Rails.logger.debug "Autocomplete: base_query SQL #{base_query.to_sql}"
+
     results_count = base_query.count
     results = base_query.limit(100)
+    Rails.logger.debug "Autocomplete: base_query results after fulltext search: #{base_query.count}"
 
     render FlexiAdmin::Components::Shared::Autocomplete::ResultsComponent.new(results:,
-                                                                         results_count:,
-                                                                         context_params:), layout: false
+                                                                              results_count:,
+                                                                              context_params:), layout: false
   end
 
   def datalist
@@ -290,6 +296,8 @@ module FlexiAdmin::Controllers::ResourcesController
 
   def parent_instance
     @parent_instance ||= locate_resource(context_params.parent)
+    Rails.logger.debug "Parent instance: #{@parent_instance.present? ? format("@parent_instance: %s##{@parent_instance.id}", @parent_instance.class.name) : 'nil'}"
+    @parent_instance
   end
 
   def edit_form_component_instance(disabled)
@@ -371,14 +379,14 @@ module FlexiAdmin::Controllers::ResourcesController
     raise NameError, "Failed to find class: #{modules.join("::")}"
   end
 
-  def apply_named_custom_scope(resource_class, scope_name)
+  def apply_named_custom_scope(scoped_resource_class, scope_name)
     scope_name = scope_name.to_sym
 
-    unless resource_class.respond_to?(:fa_allowed_scopes) && resource_class.fa_allowed_scopes.include?(scope_name)
-      raise ArgumentError, "Scope '#{scope_name}' is not whitelisted for #{resource_class}. " \
+    unless scoped_resource_class.respond_to?(:fa_allowed_scopes) && scoped_resource_class.fa_allowed_scopes.include?(scope_name)
+      raise ArgumentError, "Scope '#{scope_name}' is not whitelisted for #{scoped_resource_class}. " \
                            "Add it to fa_allowed_scopes in the model."
     end
 
-    resource_class.public_send(scope_name)
+    scoped_resource_class.public_send(scope_name)
   end
 end

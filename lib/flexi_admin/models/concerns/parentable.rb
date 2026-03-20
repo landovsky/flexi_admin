@@ -6,6 +6,9 @@ module FlexiAdmin::Models::Concerns::Parentable
   included do
     scope :with_parent, lambda { |parent_instance|
       return all if parent_instance.blank?
+      if !parent_instance.class.ancestors.include?(ActiveRecord::Base)
+        raise ArgumentError, "Parent instance must be a valid model instance, was #{parent_instance.class.name}"
+      end
 
       plural_name = parent_instance.class.model_name.plural
 

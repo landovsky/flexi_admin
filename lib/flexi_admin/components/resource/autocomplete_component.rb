@@ -91,9 +91,9 @@ module FlexiAdmin::Components::Resource
 
       case action
       when :input
-        datalist_path(action: :input, parent: effective_parent, fields: fields)
+        datalist_path(action: :input, parent: parent, fields: fields)
       else
-        autocomplete_path(action: action, parent: effective_parent, fields: fields, custom_scope: @custom_scope)
+        autocomplete_path(action: action, parent: parent, fields: fields, custom_scope: @custom_scope)
       end
     end
 
@@ -101,10 +101,6 @@ module FlexiAdmin::Components::Resource
       return if ALLOWED_ACTIONS.include?(@action)
 
       raise "Invalid action: #{@action}"
-    end
-
-    def effective_parent
-      @custom_scope.present? ? nil : parent
     end
   end
 end
