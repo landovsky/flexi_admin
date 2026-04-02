@@ -39,5 +39,9 @@ module Dummy
     # I18n configuration
     config.i18n.default_locale = :cs
     config.i18n.available_locales = [:cs, :en]
+    # Fall back to :en when a key is missing in the current locale.
+    # This ensures gem-provided English translations are used for any key
+    # that has not yet been translated into Czech.
+    config.i18n.fallbacks = [:en]
   end
 end

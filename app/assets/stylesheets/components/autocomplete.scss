@@ -23,6 +23,43 @@
     }
   }
 
+  // Keyboard / mouse highlight for select mode navigation.
+  li.autocomplete-highlighted {
+    background-color: #e8f0fe;
+  }
+
+  // Section label rows ("Suggested", "Search results") — not selectable.
+  li.autocomplete-section-label {
+    padding: 6px 10px 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: default;
+    border-bottom: 1px solid #f0f0f0;
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  // Hint rows: result count notice and no-results message.
+  li.autocomplete-hint {
+    cursor: default;
+    font-size: 0.85rem;
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  // Highlight matched substrings returned by the server.
+  mark {
+    background-color: #fff3cd;
+    font-weight: 600;
+    padding: 0;
+    border-radius: 2px;
+  }
+
   .clear-icon {
     position: absolute;
     right: 6px;
