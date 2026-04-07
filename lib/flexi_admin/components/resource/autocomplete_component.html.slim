@@ -1,6 +1,9 @@
 .autocomplete [data-controller="#{ disabled ? '' : 'autocomplete' }"]
   - if disabled && data_list?
-    = value
+    - if disabled_link_if_resource? && resource.present?
+      a href="#{resource_path(resource)}" data-turbo-frame="_top" = value.presence || resource&.try(:ac_title) || resource&.try(:title)
+    - elsif value.present?
+      = value
   - elsif disabled && !data_list?
     - if resource.present?
       a href="#{resource_path(resource)}" data-turbo-frame="_top" = resource&.try(:ac_title) || resource&.try(:title)

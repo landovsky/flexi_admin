@@ -10,6 +10,8 @@
 
 This document records the design and implementation decisions made for the enhanced autocomplete feature added to the FlexiAdmin gem. The feature augments the existing `AutocompleteComponent` and its Stimulus controller with two operating modes, keyboard navigation, match highlighting, pre-loaded results, and additional developer-configurable options.
 
+Scope note: this decision log applies to the enhanced autocomplete work that shipped for the shared `autocomplete` flow, especially resource-search behavior and `:select` mode. Input-mode / datalist behavior was later kept production-conservative; see `artifacts/input-mode-current-state.md` for the current shipped `action: :input` contract.
+
 ---
 
 ## Decision Log

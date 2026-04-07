@@ -445,8 +445,9 @@
       <div class="alert alert-info mb-4">
         <strong>Jon's Notes:</strong> These examples show the current <code>action: :input</code>
         behaviour. Input mode is a plain-text field with suggestions from existing values; it does
-        not select a resource ID. Disabled input mode currently renders plain text only, and a blank
-        disabled value renders no control at all.
+        not select a resource ID. Disabled input mode renders plain text only by default, and can
+        opt into a resource link with <code>disabled_display: :link_if_resource</code>. A blank
+        disabled value still renders no control at all.
       </div>
 
       <div class="test-section">
@@ -477,16 +478,16 @@
       <div class="test-section">
         <h2>INP-002 — Disabled With Value</h2>
         <p>
-          When input mode is disabled and backed by a resource, the component renders the preserved
-          display value and links to that resource, matching the classic disabled examples.
+          When input mode is disabled, the backward-compatible default is plain text only. Even if a
+          real resource exists, no link is rendered unless the consumer explicitly opts in.
         </p>
         <div class="option-badges mb-2">
           <span class="badge bg-secondary">action: :input</span>
           <span class="badge bg-secondary">disabled: true</span>
-          <span class="badge bg-secondary">resource-backed</span>
+          <span class="badge bg-secondary">legacy default</span>
         </div>
         <div class="form-group" data-testid="input-mode-disabled-with-value">
-          <label>Disabled input mode with a linked resource value</label>
+          <label>Disabled input mode with a plain-text value</label>
           <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
                 input_mode_user,
                 scope: ::User,
@@ -497,12 +498,40 @@
                 value: input_mode_user&.full_name,
                 disabled: true
               ) %>
-          <div class="form-text text-muted mt-1">Current behavior: linked text when a resource is available.</div>
+          <div class="form-text text-muted mt-1">Default behavior: plain text only, no link.</div>
         </div>
       </div>
 
       <div class="test-section">
-        <h2>INP-003 — Disabled Without Value</h2>
+        <h2>INP-003 — Disabled Link Opt-In</h2>
+        <p>
+          Consumers that want the richer disabled UI can opt in explicitly. This keeps existing
+          installations backward compatible while still supporting resource navigation when desired.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">action: :input</span>
+          <span class="badge bg-secondary">disabled: true</span>
+          <span class="badge bg-secondary">disabled_display: :link_if_resource</span>
+        </div>
+        <div class="form-group" data-testid="input-mode-disabled-link-opt-in">
+          <label>Disabled input mode with an opt-in resource link</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                input_mode_user,
+                scope: ::User,
+                action: :input,
+                fields: [:full_name],
+                name: 'linked_disabled_role_example',
+                target_controller: 'users',
+                value: input_mode_user&.full_name,
+                disabled: true,
+                disabled_display: :link_if_resource
+              ) %>
+          <div class="form-text text-muted mt-1">Opt-in behavior: linked text when a real resource is available.</div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>INP-004 — Disabled Without Value</h2>
         <p>
           When input mode is disabled and no value is present, the component renders no field or
           placeholder. The note below is part of the demo page so the empty state is explicit.
@@ -527,7 +556,7 @@
       </div>
 
       <div class="test-section">
-        <h2>INP-004 — Auto-Growing Text Field</h2>
+        <h2>INP-005 — Auto-Growing Text Field</h2>
         <p>
           Input mode uses an expandable text field. It should rest at the same height as the other
           autocomplete inputs and grow only when the content wraps.

@@ -10,12 +10,13 @@ module FlexiAdmin::Components::Resource
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
                 :name, :html_options, :path, :width, :value,
                 :disabled_empty_custom_message, :placeholder,
-                :mode, :preload_count, :result_limit, :min_chars,
+                :disabled_display, :mode, :preload_count, :result_limit, :min_chars,
                 :debounce_ms, :highlight_matches, :show_preload_label
 
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
                   value: nil, disabled_empty_custom_message: nil,
+                  disabled_display: :legacy_text,
                   target_controller: nil, placeholder: nil,
                   custom_scope: nil,
                   mode: :search, preload_count: 10, result_limit: 100,
@@ -42,6 +43,7 @@ module FlexiAdmin::Components::Resource
 
       @disabled_empty_custom_message = disabled_empty_custom_message || 'žádný zdroj'
       @placeholder = placeholder || 'hledat'
+      @disabled_display = disabled_display
 
       @mode = mode
       @preload_count = preload_count
@@ -108,6 +110,10 @@ module FlexiAdmin::Components::Resource
 
     def data_list?
       action == :input
+    end
+
+    def disabled_link_if_resource?
+      disabled_display == :link_if_resource
     end
 
     def kind

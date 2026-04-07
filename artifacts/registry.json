@@ -19,6 +19,11 @@
       "filename": "artifacts/progress.md",
       "description": "Historical project progress summary from October 2025 to February 2026.",
       "usage": "decide"
+    },
+    {
+      "filename": "artifacts/input-mode-current-state.md",
+      "description": "Current shipped behavior for AutocompleteComponent action :input, including the production-safe rollback of datalist semantics, the dedicated dummy-app examples tab, and the textarea autosize/min-height normalization.",
+      "usage": "decide"
     }
   ],
   "metadata": {
