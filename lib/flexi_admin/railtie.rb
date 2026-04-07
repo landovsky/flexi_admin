@@ -9,6 +9,10 @@ module FlexiAdmin
       load "tasks/flexi_admin.rake"
     end
 
+    initializer "flexi_admin.locale" do |app|
+      app.config.i18n.load_path += Dir[absolute_gem_path("config/locales/*.yml")]
+    end
+
     initializer "flexi_admin.asset_paths" do |_app|
       # This enables
       setup_node_path

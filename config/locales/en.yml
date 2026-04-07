@@ -7,3 +7,9 @@ en:
     form:
       add_row_button: "Add Row"
       remove_row_button: "Remove"
+    autocomplete:
+      label:
+        suggested: "Suggested"
+        search_results: "Search results"
+      no_results: "No results found"
+      showing_count: "Showing %{count} total results"

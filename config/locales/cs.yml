@@ -1,0 +1,8 @@
+cs:
+  flexi_admin:
+    autocomplete:
+      label:
+        suggested: "Doporučené"
+        search_results: "Výsledky hledání"
+      no_results: "Nenalezeny žádné výsledky"
+      showing_count: "Zobrazeno %{count} výsledků celkem"

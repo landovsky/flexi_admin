@@ -1,179 +1,449 @@
 <div class="autocomplete-test-page">
   <h1>Autocomplete Component Tests</h1>
 
-  <%= form_tag(admin_test_autocomplete_submit_path, method: :post, id: 'autocomplete-form', data: { controller: 'form-validation' }) do %>
-    <div class="test-section" data-testid="select-mode">
-      <h2>Select Mode (:select)</h2>
-      <p>Standard autocomplete for selecting a resource. Stores the selected resource's ID in a hidden input field.</p>
+  <%# Bootstrap tab navigation %>
+  <ul class="nav nav-tabs mb-4" id="autocomplete-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="classic-tab" data-bs-toggle="tab"
+              data-bs-target="#classic" type="button" role="tab"
+              aria-controls="classic" aria-selected="true">
+        Classic Modes
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="enhanced-tab" data-bs-toggle="tab"
+              data-bs-target="#enhanced" type="button" role="tab"
+              aria-controls="enhanced" aria-selected="false">
+        ✦ Enhanced Features
+      </button>
+    </li>
+  </ul>
 
-      <div class="form-group mb-3" data-testid="select-enabled">
-        <label>AC-001/AC-002: Enabled (search and select user)</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :select,
-              fields: [:full_name],
-              name: 'supervisor_id',
-              target_controller: 'users',
-              placeholder: 'Search for a user...'
-            ) %>
+  <div class="tab-content" id="autocomplete-tab-content">
+
+    <%# ------------------------------------------------------------------ %>
+    <%# TAB 1 — Classic Modes (original test cases, unchanged)             %>
+    <%# ------------------------------------------------------------------ %>
+    <div class="tab-pane fade show active" id="classic" role="tabpanel" aria-labelledby="classic-tab">
+
+      <%= form_tag(admin_test_autocomplete_submit_path, method: :post, id: 'autocomplete-form', data: { controller: 'form-validation' }) do %>
+
+        <div class="test-section" data-testid="select-mode">
+          <h2>Select Mode (:select)</h2>
+          <p>Standard autocomplete for selecting a resource. Stores the selected resource's ID in a hidden input field.</p>
+
+          <div class="form-group mb-3" data-testid="select-enabled">
+            <label>AC-001/AC-002: Enabled (search and select user)</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :select,
+                  fields: [:full_name],
+                  name: 'supervisor_id',
+                  target_controller: 'users',
+                  placeholder: 'Search for a user...'
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="select-disabled-with-resource">
+            <label>AC-003: Disabled with Resource</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  user,
+                  scope: ::User,
+                  action: :select,
+                  fields: [:full_name],
+                  name: 'disabled_supervisor_id',
+                  disabled: true
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="select-disabled-without-resource">
+            <label>AC-004: Disabled without Resource</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :select,
+                  fields: [:full_name],
+                  name: 'empty_supervisor_id',
+                  disabled: true
+                ) %>
+          </div>
+        </div>
+
+        <div class="test-section" data-testid="show-mode">
+          <h2>Show Mode (:show)</h2>
+          <p>Autocomplete that displays resources for viewing/navigation.</p>
+
+          <div class="form-group mb-3" data-testid="show-enabled">
+            <label>AC-005: Enabled (search and view results)</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :show,
+                  fields: [:full_name],
+                  name: 'show_user_id',
+                  target_controller: 'users',
+                  placeholder: 'Search to view users...'
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="show-disabled-with-resource">
+            <label>AC-007: Disabled with Resource</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  user,
+                  scope: ::User,
+                  action: :show,
+                  fields: [:full_name],
+                  name: 'show_disabled_id',
+                  disabled: true
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="show-disabled-without-resource">
+            <label>AC-008: Disabled without Resource</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :show,
+                  fields: [:full_name],
+                  name: 'show_empty_id',
+                  disabled: true,
+                  disabled_empty_custom_message: 'No user selected'
+                ) %>
+          </div>
+        </div>
+
+        <div class="test-section" data-testid="input-mode">
+          <h2>Input Mode (:input / Datalist)</h2>
+          <p>Text input with suggestions from existing values. Returns plain text values, not resources.</p>
+
+          <div class="form-group mb-3" data-testid="input-enabled">
+            <label>AC-009/AC-010: Enabled (search and select value)</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :input,
+                  fields: [:role],
+                  name: 'role_input',
+                  target_controller: 'users',
+                  placeholder: 'Type to see role suggestions...'
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="input-disabled-with-value">
+            <label>AC-011: Disabled with Value</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :input,
+                  fields: [:role],
+                  name: 'disabled_role',
+                  value: 'admin',
+                  disabled: true
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="input-disabled-without-value">
+            <label>AC-012: Disabled without Value</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :input,
+                  fields: [:role],
+                  name: 'empty_role',
+                  disabled: true
+                ) %>
+          </div>
+        </div>
+
+        <div class="test-section" data-testid="cross-mode">
+          <h2>Cross-Mode Behavior</h2>
+
+          <div class="form-group mb-3" data-testid="custom-scope">
+            <label>AC-015: Custom Scope Support (named scope, admin users only)</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :select,
+                  fields: [:full_name],
+                  custom_scope: :admins,
+                  placeholder: 'Search admin users only...'
+                ) %>
+          </div>
+
+          <div class="form-group mb-3" data-testid="required-field">
+            <label>AC-016: Required Validation</label>
+            <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                  nil,
+                  scope: ::User,
+                  action: :select,
+                  fields: [:full_name],
+                  name: 'required_user_id',
+                  target_controller: 'users',
+                  required: true,
+                  placeholder: 'Required field...'
+                ) %>
+          </div>
+        </div>
+
+        <div class="form-actions mt-4">
+          <%= submit_tag 'Submit Form', class: 'btn btn-primary', id: 'submit-button' %>
+        </div>
+
+      <% end %>
+    </div><%# /tab-pane classic %>
+
+    <%# ------------------------------------------------------------------ %>
+    <%# TAB 2 — Enhanced Features                                          %>
+    <%# ------------------------------------------------------------------ %>
+    <div class="tab-pane fade" id="enhanced" role="tabpanel" aria-labelledby="enhanced-tab">
+
+      <div class="alert alert-info mb-4">
+        <strong>About this tab:</strong> Each example below demonstrates one or more of the new
+        configuration options added to <code>AutocompleteComponent</code>. All options are backward
+        compatible — omitting them preserves the original behaviour exactly.
       </div>
 
-      <div class="form-group mb-3" data-testid="select-disabled-with-resource">
-        <label>AC-003: Disabled with Resource</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              user,
-              scope: ::User,
-              action: :select,
-              fields: [:full_name],
-              name: 'disabled_supervisor_id',
-              disabled: true
-            ) %>
+      <%# ---- Select mode: preload on focus ---- %>
+      <div class="test-section">
+        <h2>ENH-001 — Select Mode: Preload on Focus</h2>
+        <p>
+          <code>mode: :select</code> — clicking into the input immediately fires a request and
+          displays a pre-populated list before the user types anything. The list updates to search
+          results as soon as typing begins.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">mode: :select</span>
+          <span class="badge bg-secondary">preload_count: 5</span>
+        </div>
+        <div class="form-group" data-testid="enh-select-preload">
+          <label>Click into the field — results appear immediately</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'preload_user_id',
+                target_controller: 'users',
+                mode: :select,
+                preload_count: 5,
+                placeholder: 'Click to see suggestions...'
+              ) %>
+        </div>
       </div>
 
-      <div class="form-group mb-3" data-testid="select-disabled-without-resource">
-        <label>AC-004: Disabled without Resource</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :select,
-              fields: [:full_name],
-              name: 'empty_supervisor_id',
-              disabled: true
-            ) %>
-      </div>
-    </div>
-
-    <div class="test-section" data-testid="show-mode">
-      <h2>Show Mode (:show)</h2>
-      <p>Autocomplete that displays resources for viewing/navigation.</p>
-
-      <div class="form-group mb-3" data-testid="show-enabled">
-        <label>AC-005: Enabled (search and view results)</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :show,
-              fields: [:full_name],
-              name: 'show_user_id',
-              target_controller: 'users',
-              placeholder: 'Search to view users...'
-            ) %>
-      </div>
-
-      <div class="form-group mb-3" data-testid="show-disabled-with-resource">
-        <label>AC-007: Disabled with Resource</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              user,
-              scope: ::User,
-              action: :show,
-              fields: [:full_name],
-              name: 'show_disabled_id',
-              disabled: true
-            ) %>
+      <%# ---- Select mode + section labels ---- %>
+      <div class="test-section">
+        <h2>ENH-002 — Section Labels</h2>
+        <p>
+          <code>show_preload_label: true</code> — a labelled header row appears above the
+          pre-loaded list ("Suggested") and switches to "Search results" once the user starts typing.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">mode: :select</span>
+          <span class="badge bg-secondary">show_preload_label: true</span>
+          <span class="badge bg-secondary">preload_count: 8</span>
+        </div>
+        <div class="form-group" data-testid="enh-section-labels">
+          <label>Focus then type — watch the label change</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'labeled_user_id',
+                target_controller: 'users',
+                mode: :select,
+                preload_count: 8,
+                show_preload_label: true,
+                placeholder: 'Focus to see "Suggested" label...'
+              ) %>
+        </div>
       </div>
 
-      <div class="form-group mb-3" data-testid="show-disabled-without-resource">
-        <label>AC-008: Disabled without Resource</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :show,
-              fields: [:full_name],
-              name: 'show_empty_id',
-              disabled: true,
-              disabled_empty_custom_message: 'No user selected'
-            ) %>
-      </div>
-    </div>
-
-    <div class="test-section" data-testid="input-mode">
-      <h2>Input Mode (:input / Datalist)</h2>
-      <p>Text input with suggestions from existing values. Returns plain text values, not resources.</p>
-
-      <div class="form-group mb-3" data-testid="input-enabled">
-        <label>AC-009/AC-010: Enabled (search and select value)</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :input,
-              fields: [:role],
-              name: 'role_input',
-              target_controller: 'users',
-              placeholder: 'Type to see role suggestions...'
-            ) %>
+      <%# ---- Highlight matches ---- %>
+      <div class="test-section">
+        <h2>ENH-003 — Match Highlighting</h2>
+        <p>
+          <code>highlight_matches: true</code> — the portion of each result that matches the typed
+          query is wrapped in a <code>&lt;mark&gt;</code> tag and rendered bold. Matching is
+          case-insensitive and done server-side.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">highlight_matches: true</span>
+        </div>
+        <div class="form-group" data-testid="enh-highlight">
+          <label>Type a few letters — matching text is highlighted</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'highlight_user_id',
+                target_controller: 'users',
+                highlight_matches: true,
+                placeholder: 'Type to see highlighted matches...'
+              ) %>
+        </div>
       </div>
 
-      <div class="form-group mb-3" data-testid="input-disabled-with-value">
-        <label>AC-011: Disabled with Value</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :input,
-              fields: [:role],
-              name: 'disabled_role',
-              value: 'admin',
-              disabled: true
-            ) %>
+      <%# ---- Select mode + highlight ---- %>
+      <div class="test-section">
+        <h2>ENH-004 — Select Mode + Highlighting Combined</h2>
+        <p>
+          Combining <code>mode: :select</code> and <code>highlight_matches: true</code> — pre-loaded
+          results appear on focus, and as the user types the matched portion is highlighted in each
+          result. Results are also ranked so that <em>starts-with</em> matches appear before
+          <em>contains</em> matches.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">mode: :select</span>
+          <span class="badge bg-secondary">highlight_matches: true</span>
+          <span class="badge bg-secondary">show_preload_label: true</span>
+          <span class="badge bg-secondary">preload_count: 6</span>
+        </div>
+        <div class="form-group" data-testid="enh-select-highlight">
+          <label>Focus, then type — ranked and highlighted</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'select_highlight_user_id',
+                target_controller: 'users',
+                mode: :select,
+                preload_count: 6,
+                highlight_matches: true,
+                show_preload_label: true,
+                placeholder: 'Focus or type...'
+              ) %>
+        </div>
       </div>
 
-      <div class="form-group mb-3" data-testid="input-disabled-without-value">
-        <label>AC-012: Disabled without Value</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :input,
-              fields: [:role],
-              name: 'empty_role',
-              disabled: true
-            ) %>
+      <%# ---- Keyboard navigation ---- %>
+      <div class="test-section">
+        <h2>ENH-005 — Keyboard Navigation (Select Mode)</h2>
+        <p>
+          In <code>mode: :select</code> the dropdown supports full keyboard navigation.
+          Mouse hover also updates the highlighted item, keeping keyboard and pointer state in sync.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">mode: :select</span>
+        </div>
+        <div class="alert alert-light border mb-3" style="font-size:0.88rem;">
+          <strong>Keys:</strong>
+          <kbd>↓</kbd> / <kbd>↑</kbd> move highlight &nbsp;·&nbsp;
+          <kbd>Enter</kbd> selects highlighted item &nbsp;·&nbsp;
+          <kbd>Esc</kbd> closes the dropdown
+        </div>
+        <div class="form-group" data-testid="enh-keyboard-nav">
+          <label>Focus and use arrow keys to navigate</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'keyboard_user_id',
+                target_controller: 'users',
+                mode: :select,
+                preload_count: 8,
+                placeholder: 'Focus then navigate with arrow keys...'
+              ) %>
+        </div>
       </div>
-    </div>
 
-    <div class="test-section" data-testid="cross-mode">
-      <h2>Cross-Mode Behavior</h2>
-
-      <div class="form-group mb-3" data-testid="custom-scope">
-        <label>AC-015: Custom Scope Support (named scope, admin users only)</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :select,
-              fields: [:full_name],
-              custom_scope: :admins,
-              placeholder: 'Search admin users only...'
-            ) %>
+      <%# ---- min_chars ---- %>
+      <div class="test-section">
+        <h2>ENH-006 — Minimum Characters Before Search</h2>
+        <p>
+          <code>min_chars: 2</code> — the search query is not fired until the user has typed at
+          least 2 characters. This is useful for large datasets where single-character searches
+          would return too many results to be useful.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">min_chars: 2</span>
+        </div>
+        <div class="form-group" data-testid="enh-min-chars">
+          <label>Nothing happens after 1 character — try typing 2</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'min_chars_user_id',
+                target_controller: 'users',
+                min_chars: 2,
+                placeholder: 'Type 2+ characters to search...'
+              ) %>
+        </div>
       </div>
 
-      <div class="form-group mb-3" data-testid="required-field">
-        <label>AC-016: Required Validation</label>
-        <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
-              nil,
-              scope: ::User,
-              action: :select,
-              fields: [:full_name],
-              name: 'required_user_id',
-              target_controller: 'users',
-              required: true,
-              placeholder: 'Required field...'
-            ) %>
+      <%# ---- result_limit ---- %>
+      <div class="test-section">
+        <h2>ENH-007 — Result Limit</h2>
+        <p>
+          <code>result_limit: 3</code> — the server-side query is limited to 3 records. Use this
+          to keep dropdown lists tight. The default is 100 (preserving original behaviour).
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">result_limit: 3</span>
+          <span class="badge bg-secondary">highlight_matches: true</span>
+        </div>
+        <div class="form-group" data-testid="enh-result-limit">
+          <label>At most 3 results returned</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'limited_user_id',
+                target_controller: 'users',
+                result_limit: 3,
+                highlight_matches: true,
+                placeholder: 'Search — max 3 results...'
+              ) %>
+        </div>
       </div>
-    </div>
 
-    <div class="form-actions mt-4">
-      <%= submit_tag 'Submit Form', class: 'btn btn-primary', id: 'submit-button' %>
-    </div>
-  <% end %>
+      <%# ---- custom debounce ---- %>
+      <div class="test-section">
+        <h2>ENH-008 — Custom Debounce</h2>
+        <p>
+          <code>debounce_ms: 600</code> — the search fires 600ms after the user stops typing,
+          instead of the default 200ms. Useful for expensive queries where you want to reduce
+          server load. Try typing quickly and notice the delayed response.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">debounce_ms: 600</span>
+        </div>
+        <div class="form-group" data-testid="enh-debounce">
+          <label>Type quickly — the search is intentionally delayed</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :select,
+                fields: [:full_name],
+                name: 'debounce_user_id',
+                target_controller: 'users',
+                debounce_ms: 600,
+                placeholder: 'Type fast — 600ms debounce...'
+              ) %>
+        </div>
+      </div>
+
+    </div><%# /tab-pane enhanced %>
+
+  </div><%# /tab-content %>
 </div>
 
 <style>
   .autocomplete-test-page {
-    max-width: 800px;
+    max-width: 860px;
     margin: 0 auto;
     padding: 20px;
   }
   .test-section {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -181,10 +451,12 @@
   .test-section h2 {
     margin-top: 0;
     color: #333;
+    font-size: 1.1rem;
   }
   .test-section p {
-    color: #666;
+    color: #555;
     font-size: 0.9em;
+    margin-bottom: 0.5rem;
   }
   .form-group {
     margin-bottom: 15px;
@@ -193,5 +465,16 @@
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    font-size: 0.88rem;
+  }
+  .option-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .option-badges .badge {
+    font-size: 0.78rem;
+    font-weight: normal;
+    font-family: monospace;
   }
 </style>

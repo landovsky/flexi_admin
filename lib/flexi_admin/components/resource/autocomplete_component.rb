@@ -9,13 +9,19 @@ module FlexiAdmin::Components::Resource
 
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
                 :name, :html_options, :path, :width, :value,
-                :disabled_empty_custom_message, :placeholder
+                :disabled_empty_custom_message, :placeholder,
+                :mode, :preload_count, :result_limit, :min_chars,
+                :debounce_ms, :highlight_matches, :show_preload_label
 
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
                   value: nil, disabled_empty_custom_message: nil,
                   target_controller: nil, placeholder: nil,
-                  custom_scope: nil, **html_options)
+                  custom_scope: nil,
+                  mode: :search, preload_count: 10, result_limit: 100,
+                  min_chars: 1, debounce_ms: 200,
+                  highlight_matches: false, show_preload_label: true,
+                  **html_options)
       @resource = resource
       @scope = scope
       @target_controller = target_controller
@@ -37,15 +43,32 @@ module FlexiAdmin::Components::Resource
       @disabled_empty_custom_message = disabled_empty_custom_message || 'žádný zdroj'
       @placeholder = placeholder || 'hledat'
 
+      @mode = mode
+      @preload_count = preload_count
+      @result_limit = result_limit
+      @min_chars = min_chars
+      @debounce_ms = debounce_ms
+      @highlight_matches = highlight_matches
+      @show_preload_label = show_preload_label
+
       validate_action!
     end
 
     def autocomplete_options
-      base_data = { autocomplete_target: 'input',
-                    action: 'keyup->autocomplete#keyup focusout->autocomplete#onFocusOut',
-                    autocomplete_search_path: get_path,
-                    autocomplete_is_disabled: disabled,
-                    field_type: kind }.merge(html_options)
+      base_data = {
+        autocomplete_target: 'input',
+        action: action_string,
+        autocomplete_search_path: get_path,
+        autocomplete_is_disabled: disabled,
+        autocomplete_mode: mode,
+        autocomplete_preload_count: preload_count,
+        autocomplete_result_limit: result_limit,
+        autocomplete_min_chars: min_chars,
+        autocomplete_debounce_ms: debounce_ms,
+        autocomplete_highlight_matches: highlight_matches,
+        autocomplete_show_preload_label: show_preload_label,
+        field_type: kind
+      }.merge(html_options)
 
       {
         style: 'border-top-right-radius: 0.4rem; border-bottom-right-radius: 0.4rem;',
@@ -64,6 +87,11 @@ module FlexiAdmin::Components::Resource
     end
 
     private
+
+    def action_string
+      base = 'keyup->autocomplete#keyup keydown->autocomplete#keydown focusout->autocomplete#onFocusOut'
+      mode == :select ? "#{base} focus->autocomplete#onFocus" : base
+    end
 
     def icon_class
       case action

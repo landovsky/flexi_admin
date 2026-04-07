@@ -271,6 +271,107 @@
 }
 
 /* ========================================
+   Autocomplete Component
+   ======================================== */
+
+.autocomplete {
+  position: relative;
+}
+
+.autocomplete ul {
+  position: absolute;
+  padding-left: 0;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.autocomplete li {
+  margin: 0;
+  padding: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.autocomplete li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Keyboard / mouse highlight for select mode navigation */
+.autocomplete li.autocomplete-highlighted {
+  background-color: #e8f0fe;
+}
+
+/* Section label rows ("Suggested", "Search results") — not selectable */
+.autocomplete li.autocomplete-section-label {
+  padding: 6px 10px 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: default;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.autocomplete li.autocomplete-section-label:hover {
+  background-color: transparent;
+}
+
+/* Hint rows: result count notice and no-results message */
+.autocomplete li.autocomplete-hint {
+  cursor: default;
+  font-size: 0.85rem;
+}
+
+.autocomplete li.autocomplete-hint:hover {
+  background-color: transparent;
+}
+
+/* Highlight matched substrings returned by the server */
+.autocomplete mark {
+  background-color: #fff3cd;
+  font-weight: 600;
+  padding: 0;
+  border-radius: 2px;
+}
+
+.autocomplete .clear-icon {
+  position: absolute;
+  right: 6px;
+  top: 7px;
+  cursor: pointer;
+  z-index: 22;
+}
+
+.autocomplete .loading-icon {
+  position: absolute;
+  right: 16px;
+  top: 13px;
+  z-index: 22;
+}
+
+.autocomplete .loading-icon .icon {
+  width: 12px;
+  height: 12px;
+  background-color: #3498db;
+  border-radius: 50%;
+  animation: autocomplete-pulse 1.5s infinite;
+}
+
+@keyframes autocomplete-pulse {
+  0%   { transform: scale(0.8); opacity: 1; }
+  50%  { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(0.8); opacity: 1; }
+}
+
+/* ========================================
    Expandable Text Fields
    ======================================== */
 
