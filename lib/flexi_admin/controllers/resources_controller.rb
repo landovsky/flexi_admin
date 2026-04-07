@@ -40,7 +40,7 @@ module FlexiAdmin::Controllers::ResourcesController
     respond_to do |format|
       format.html do
         component_class = namespaced_class('namespace', resource_class.name, "IndexPageComponent")
-        puts "component_class: #{component_class}"
+        puts("component_class: #{component_class}") if defined?(Rails) && Rails.env.development?
         render component_class.new(resources, context_params: context_params,
                                               scope: resource_class.model_name.plural)
       end
