@@ -17,6 +17,13 @@
         ✦ Enhanced Features
       </button>
     </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="datalist-tab" data-bs-toggle="tab"
+              data-bs-target="#datalist-enhanced" type="button" role="tab"
+              aria-controls="datalist-enhanced" aria-selected="false">
+       ✦ Input Mode Examples
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content" id="autocomplete-tab-content">
@@ -199,9 +206,9 @@
     <div class="tab-pane fade" id="enhanced" role="tabpanel" aria-labelledby="enhanced-tab">
 
       <div class="alert alert-info mb-4">
-        <strong>About this tab:</strong> Each example below demonstrates one or more of the new
-        configuration options added to <code>AutocompleteComponent</code>. All options are backward
-        compatible — omitting them preserves the original behaviour exactly.
+        <strong>Jon's Notes:</strong> Each example below demonstrates one or more of the new
+        configuration options added to <code>AutocompleteComponent</code> for resource autocomplete.
+        All options are backward compatible — omitting them preserves the original behaviour exactly.
       </div>
 
       <%# ---- Select mode: preload on focus ---- %>
@@ -432,6 +439,118 @@
       </div>
 
     </div><%# /tab-pane enhanced %>
+
+    <div class="tab-pane fade" id="datalist-enhanced" role="tabpanel" aria-labelledby="datalist-tab">
+
+      <div class="alert alert-info mb-4">
+        <strong>Jon's Notes:</strong> These examples show the current <code>action: :input</code>
+        behaviour. Input mode is a plain-text field with suggestions from existing values; it does
+        not select a resource ID. Disabled input mode currently renders plain text only, and a blank
+        disabled value renders no control at all.
+      </div>
+
+      <div class="test-section">
+        <h2>INP-001 — Plain Text Suggestions</h2>
+        <p>
+          This field suggests existing user names and writes the selected plain text into the input.
+          Use this example to verify the basic input-mode flow without introducing hidden resource-ID
+          selection.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">action: :input</span>
+          <span class="badge bg-secondary">fields: [:full_name]</span>
+        </div>
+        <div class="form-group" data-testid="input-mode-basic-example">
+          <label>Type to search name suggestions</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :input,
+                fields: [:full_name],
+                name: 'role_example_input',
+                target_controller: 'users',
+                placeholder: 'Type to search user names...'
+              ) %>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>INP-002 — Disabled With Value</h2>
+        <p>
+          When input mode is disabled and backed by a resource, the component renders the preserved
+          display value and links to that resource, matching the classic disabled examples.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">action: :input</span>
+          <span class="badge bg-secondary">disabled: true</span>
+          <span class="badge bg-secondary">resource-backed</span>
+        </div>
+        <div class="form-group" data-testid="input-mode-disabled-with-value">
+          <label>Disabled input mode with a linked resource value</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                input_mode_user,
+                scope: ::User,
+                action: :input,
+                fields: [:full_name],
+                name: 'disabled_role_example',
+                target_controller: 'users',
+                value: input_mode_user&.full_name,
+                disabled: true
+              ) %>
+          <div class="form-text text-muted mt-1">Current behavior: linked text when a resource is available.</div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>INP-003 — Disabled Without Value</h2>
+        <p>
+          When input mode is disabled and no value is present, the component renders no field or
+          placeholder. The note below is part of the demo page so the empty state is explicit.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">action: :input</span>
+          <span class="badge bg-secondary">disabled: true</span>
+        </div>
+        <div class="form-group" data-testid="input-mode-disabled-without-value">
+          <label>Disabled input mode without a value</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :input,
+                fields: [:role],
+                name: 'empty_role_example',
+                target_controller: 'users',
+                disabled: true
+              ) %>
+          <div class="form-text text-muted fst-italic mt-1">No field is rendered here in the current implementation.</div>
+        </div>
+      </div>
+
+      <div class="test-section">
+        <h2>INP-004 — Auto-Growing Text Field</h2>
+        <p>
+          Input mode uses an expandable text field. It should rest at the same height as the other
+          autocomplete inputs and grow only when the content wraps.
+        </p>
+        <div class="option-badges mb-2">
+          <span class="badge bg-secondary">action: :input</span>
+          <span class="badge bg-secondary">expandable-field</span>
+        </div>
+        <div class="form-group" data-testid="input-mode-autosize-example">
+          <label>Type or paste a longer value to see the field grow</label>
+          <%= render FlexiAdmin::Components::Resource::AutocompleteComponent.new(
+                nil,
+                scope: ::User,
+                action: :input,
+                fields: [:role],
+                name: 'autosize_role_example',
+                target_controller: 'users',
+                placeholder: 'Type a longer value to test autosizing...'
+              ) %>
+        </div>
+      </div>
+
+    </div><%# /tab-pane datalist-enhanced %>
 
   </div><%# /tab-content %>
 </div>

@@ -5,11 +5,12 @@ module Admin
     class AutocompletePageComponent < ViewComponent::Base
       include FlexiAdmin::Components::Helpers::ResourceHelper
 
-      attr_reader :user, :user_without_supervisor
+      attr_reader :user, :user_without_supervisor, :input_mode_user
 
-      def initialize(user:, user_without_supervisor:)
+      def initialize(user:, user_without_supervisor:, input_mode_user:)
         @user = user
         @user_without_supervisor = user_without_supervisor
+        @input_mode_user = input_mode_user
       end
 
       def resource__path
