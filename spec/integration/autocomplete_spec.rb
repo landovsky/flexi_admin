@@ -146,8 +146,7 @@ RSpec.describe 'Autocomplete Component', type: :feature, js: true do
     end
 
     # AC-010: Input Mode - Icon Differs (alphabet icon instead of search)
-    # Pending: Bootstrap icons may not be loaded in test environment
-    it 'shows alphabet icon for input mode', pending: 'Bootstrap icons not visible in tests' do
+    it 'shows alphabet icon for input mode' do
       visit '/admin/test/autocomplete'
 
       within('[data-testid="input-enabled"]') do

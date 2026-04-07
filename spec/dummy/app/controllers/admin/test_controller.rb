@@ -7,9 +7,11 @@ module Admin
     def autocomplete
       @user = ::User.first
       @user_without_supervisor = ::User.new(full_name: 'New User', email: 'new@test.com')
+      @input_mode_user = ::User.find_by(full_name: 'Jana Nováková') || ::User.first
       render Admin::Test::AutocompletePageComponent.new(
         user: @user,
-        user_without_supervisor: @user_without_supervisor
+        user_without_supervisor: @user_without_supervisor,
+        input_mode_user: @input_mode_user
       )
     end
 

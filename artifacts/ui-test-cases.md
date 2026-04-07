@@ -103,20 +103,23 @@ Autocomplete that displays resources for viewing/navigation. Similar to select b
 ### Action Mode: `:input` (Datalist)
 Text input with suggestions from existing values. Returns plain text values, not resources.
 
+Current shipped note: `:input` remains production-conservative. The dummy app documents the current plain-text behavior, and richer datalist semantics are intentionally not treated as shipped until validated against production usage.
+
 | ID | Test Case | Expected Result | Dummy App | Test Coverage | Delete? |
 | :--- | :--- | :--- | :---: | :---: | :--- |
 | **AC-009** | **Input Mode - Search and Select Value**<br>Type in the autocomplete input, wait for datalist results, click a value. | Input value is set to the clicked text. No hidden ID field populated. | ✅ | ⏸️ Pending | |
 | **AC-010** | **Input Mode - Icon Differs**<br>Render autocomplete with `action: :input`. | Shows alphabet icon (`bi-alphabet`) instead of search icon (`bi-search`). | ✅ | ⏸️ Pending | |
-| **AC-011** | **Input Mode - Disabled with Value**<br>Render autocomplete with `action: :input`, `disabled: true`, and a value. | Shows the plain text value. No input field visible. No link (text only). | ✅ | ✅ | |
+| **AC-011** | **Input Mode - Disabled with Value**<br>Render autocomplete with `action: :input`, `disabled: true`, and a value. | Shows the plain text value. No input field visible. No link by default. | ✅ | ✅ | |
 | **AC-012** | **Input Mode - Disabled without Value**<br>Render autocomplete with `action: :input`, `disabled: true`, and no value. | Shows nothing or empty state. No input field visible. | ✅ | ✅ | |
+| **AC-013** | **Input Mode - Disabled Link Opt-In**<br>Render autocomplete with `action: :input`, `disabled: true`, a resource, and `disabled_display: :link_if_resource`. | Shows a link to the resource using the disabled display value. No input field visible. | ✅ | ✅ | |
 
 ### Cross-Mode Behavior
 | ID | Test Case | Expected Result | Dummy App | Test Coverage | Delete? |
 | :--- | :--- | :--- | :---: | :---: | :--- |
-| **AC-013** | **Debounced Search**<br>Type rapidly in any enabled autocomplete. | Search request fires only after 200ms pause (debounce). Loading icon appears during fetch. | ✅ | ✅ | |
-| **AC-014** | **Results Hide on Blur**<br>Type to show results, then click outside the autocomplete. | Results list hides after ~200ms delay (allows clicking results). | ✅ | ✅ | |
-| **AC-015** | **Custom Scope Support**<br>Render autocomplete with a Proc scope and `target_controller`. | Autocomplete searches using the custom scope. Input name inferred from target_controller. | ✅ | ✅ | |
-| **AC-016** | **Required Validation**<br>Render autocomplete with `required: true`, submit form without selection. | Form validation prevents submission. Invalid feedback appears. | ✅ | ✅ | |
+| **AC-014** | **Debounced Search**<br>Type rapidly in any enabled autocomplete. | Search request fires only after 200ms pause (debounce). Loading icon appears during fetch. | ✅ | ✅ | |
+| **AC-015** | **Results Hide on Blur**<br>Type to show results, then click outside the autocomplete. | Results list hides after ~200ms delay (allows clicking results). | ✅ | ✅ | |
+| **AC-016** | **Custom Scope Support**<br>Render autocomplete with a Proc scope and `target_controller`. | Autocomplete searches using the custom scope. Input name inferred from target_controller. | ✅ | ✅ | |
+| **AC-017** | **Required Validation**<br>Render autocomplete with `required: true`, submit form without selection. | Form validation prevents submission. Invalid feedback appears. | ✅ | ✅ | |
 
 ---
 

@@ -267,18 +267,34 @@ module FlexiAdmin::Controllers::ResourcesController
                    resource_class.with_parent(parent_instance)
                  end
 
-    base_query = base_query.fulltext(params[:q])
+    # Only apply fulltext search when a query is present. When blank (e.g. a
+    # select-mode focus fetch), return the default scoped set so the backend
+    # remains mode-agnostic — it simply handles an empty query gracefully.
+    if params[:q].present?
+      base_query = base_query.fulltext(params[:q])
+    end
+
     base_query = base_query.includes(includes) if includes.present?
     Rails.logger.debug "Autocomplete: included #{includes.present? ? includes : "none"}"
     Rails.logger.debug "Autocomplete: base_query SQL #{base_query.to_sql}"
 
-    results_count = base_query.count
-    results = base_query.limit(100)
-    Rails.logger.debug "Autocomplete: base_query results after fulltext search: #{base_query.count}"
+    # Respect the limit sent by the frontend (driven by result_limit or
+    # preload_count), falling back to 100 to preserve existing behaviour.
+    result_limit = params[:limit].present? ? [params[:limit].to_i, 1].max : 100
 
-    render FlexiAdmin::Components::Shared::Autocomplete::ResultsComponent.new(results:,
-                                                                              results_count:,
-                                                                              context_params:), layout: false
+    results_count = base_query.count
+    results = base_query.limit(result_limit)
+    Rails.logger.debug "Autocomplete: #{results_count} total results, returning up to #{result_limit}"
+
+    render FlexiAdmin::Components::Shared::Autocomplete::ResultsComponent.new(
+      results:,
+      results_count:,
+      context_params:,
+      highlight_query:    params[:q],
+      highlight_matches:  params[:highlight_matches] == "true",
+      is_preloaded:       params[:preloaded] == "true",
+      show_preload_label: params[:show_preload_label] == "true"
+    ), layout: false
   end
 
   def datalist

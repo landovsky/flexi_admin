@@ -1,15 +1,17 @@
-- if results.size.positive?
-  - results.each do |result|
+- if section_label.present?
+  li.autocomplete-section-label = section_label
+
+- if ranked_results.size.positive?
+  - ranked_results.each do |result|
     li [data-action="#{data_action}"
         data-autocomplete-resource-id-value="#{result.try(:id)}"]
       - if action == 'show'
-        /= helpers.link_to main_app.send(path, result.id), class: 'text-primary text-decoration-none' do
         a.text-primary.text-decoration-none href="#{main_app.send(path, result.id)}"
-          = value(result)
+          = highlight(value(result), highlight_query)
       - else
-        = value(result)
-  - if autocomplete? && results_count > 100
-    li.text-muted zobrazeno 10 z #{results_count} výsledků
+        = highlight(value(result), highlight_query)
+  - if autocomplete? && results_count && results_count > ranked_results.size
+    li.autocomplete-hint.text-muted = t('flexi_admin.autocomplete.showing_count', count: results_count)
 
-- if results.empty? && autocomplete?
-  li žádné výsledky hledání
+- if ranked_results.empty? && autocomplete?
+  li.autocomplete-hint = t('flexi_admin.autocomplete.no_results')

@@ -123,7 +123,7 @@ FlexiAdmin includes 18 Stimulus controllers that automatically register when you
 - `autocomplete` - Autocomplete search fields
 - `bulk-action` - Bulk selection with persistence across pagination
 - `button-select` - Custom button selection controls
-- `datalist` - Enhanced datalist inputs
+- `datalist` - Legacy standalone datalist controller; `AutocompleteComponent` `action: :input` uses the shared `autocomplete` flow
 - `delete` - Confirmation dialogs for delete actions
 - `filter-auto-submit` - Auto-submit filters on change
 - `floating-toc` - Floating table of contents navigation
@@ -198,6 +198,8 @@ Controller naming convention: `flexi-admin--[controller-name]`
       action: "input->flexi-admin--autocomplete#search"
     } %>
 ```
+
+`AutocompleteComponent` `action: :input` also uses the shared `autocomplete` controller and renders a plain-text textarea with suggestions from existing values. It does not store a resource ID. When disabled, `:input` remains legacy-safe by default and renders plain text only; opt into a resource link with `disabled_display: :link_if_resource`.
 
 ### Verification
 
