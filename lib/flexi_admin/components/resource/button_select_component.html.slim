@@ -2,11 +2,11 @@ div.button-select data-controller="button-select" data-button-select-disabled-va
   .btn-group
     - if disabled
       button.btn.btn-outline-secondary.text-nowrap data-value=value data-button-select-target="button" disabled=true
-        = value || '-'
+        = value ? label_for(value) : '-'
     - else
       - options.each do |option|
         button.btn.btn-outline-secondary.text-nowrap data-action="click->button-select#select" data-value=option data-button-select-target="button"
-          = option
+          = label_for(option)
   = hidden_field_tag html_options[:name] || attr_name, value, data: { 'button-select-target': 'input' }
   - if form
     .invalid-feedback data-button-select-target="invalid-feedback"
