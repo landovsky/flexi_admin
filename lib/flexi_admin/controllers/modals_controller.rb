@@ -10,6 +10,6 @@ class FlexiAdmin::Controllers::ModalsController < ActionController::Base
 
     context = FlexiAdmin::Models::Resources::Context.from_params(context_params)
 
-    render turbo_stream: turbo_stream.update("modalx_#{context.scope}", component_class.new(context))
+    render turbo_stream: turbo_stream.update("modalx_#{context.scope_id}", component_class.new(context))
   end
 end

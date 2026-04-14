@@ -45,7 +45,7 @@ class FlexiAdmin::Components::Resources::PaginationComponent < FlexiAdmin::Compo
 
   def page_path(page_number)
     params = context.params
-                    .merge(page: page_number, per_page: per_page, frame: context.scope)
+                    .merge(page: page_number, per_page: per_page, frame: context.scope_id)
                     .to_params
 
     resources_path(**params.merge)
@@ -53,7 +53,7 @@ class FlexiAdmin::Components::Resources::PaginationComponent < FlexiAdmin::Compo
 
   def per_page_path(new_per_page)
     params = context.params
-                    .merge(page: 1, per_page: new_per_page, frame: context.scope)
+                    .merge(page: 1, per_page: new_per_page, frame: context.scope_id)
                     .to_params
 
     resources_path(**params.merge)

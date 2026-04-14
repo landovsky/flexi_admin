@@ -4,6 +4,10 @@ module FlexiAdmin::Models::Resources
   class Context
     attr_reader :resources, :scope, :params, :options
 
+    def scope_id
+      scope&.tr('/', '_')
+    end
+
     def initialize(resources, scope, params, options)
       @resources = resources
       @scope = scope

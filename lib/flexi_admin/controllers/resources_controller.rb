@@ -54,7 +54,7 @@ module FlexiAdmin::Controllers::ResourcesController
   end
 
   def reload_frame(scope = nil)
-    scope ||= context_params.reload_frame.presence || context_params.scope.presence || resource_class.model_name.plural
+    scope ||= context_params.reload_frame.presence || context_params.scope&.tr('/', '_') || resource_class.model_name.plural
     render turbo_stream: [
       turbo_stream.append('system', partial: 'shared/reload_frame', locals: { scope: scope, referrer: request.referrer }),
       turbo_stream.append('toasts', partial: 'shared/toasts')

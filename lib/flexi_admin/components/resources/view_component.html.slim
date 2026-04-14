@@ -1,7 +1,7 @@
-turbo-frame [id="#{context.scope}"
+turbo-frame [id="#{context.scope_id}"
              data-controller="bulk-action"
-             data-bulk-action-scope-value="#{context.scope}"]
-  = helpers.turbo_frame_tag "modalx_#{context.scope}", 'data-turbo-temporary': true
+             data-bulk-action-scope-value="#{context.scope_id}"]
+  = helpers.turbo_frame_tag "modalx_#{context.scope_id}", 'data-turbo-temporary': true
   .h2 = title
   .py-2.d-flex.justify-content-between.align-items-center
     .d-flex.gap-2
