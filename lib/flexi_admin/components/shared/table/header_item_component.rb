@@ -40,14 +40,7 @@ class FlexiAdmin::Components::Shared::Table::HeaderItemComponent < FlexiAdmin::C
   end
 
   def justify_class
-    case justify.to_sym
-    when :start
-      "justify-content-start"
-    when :end
-      "justify-content-end"
-    else
-      "justify-content-start"
-    end
+    justify.to_sym == :end ? "text-end" : ""
   end
 
   def sort_icon

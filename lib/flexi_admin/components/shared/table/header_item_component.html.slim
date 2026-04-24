@@ -2,7 +2,7 @@
 div class="#{merged_classes}" data-controller="sorting" data-sorting-sort-path-value="#{sort_path}"
   - if column.sortable?
     a href="#" class="a text-decoration-none text-secondary" data-action="sorting#sort"
-      .d-flex class="#{justify_class}"
+      .d-flex class="#{justify.to_sym == :end ? 'justify-content-end' : 'justify-content-start'}"
         = label
         i.bi.text-primary.opacity-75.ms-2 class="#{sort_icon}"
   - else
