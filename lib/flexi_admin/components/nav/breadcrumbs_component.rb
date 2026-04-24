@@ -78,7 +78,7 @@ module FlexiAdmin::Components::Nav
       end
       candidates.each do |name|
         cls = name.safe_constantize
-        return cls if cls
+        return cls if cls.is_a?(Class) && cls < ActiveRecord::Base
       end
       nil
     end
