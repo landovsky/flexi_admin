@@ -56,6 +56,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "selenium-webdriver"
   spec.add_development_dependency "semantic"
   spec.add_development_dependency "simplecov", "~> 0.22"
+  spec.add_development_dependency "sassc-rails"
   spec.add_development_dependency "sprockets-rails"
   spec.add_development_dependency "sqlite3", "~> 2.0"
   spec.add_development_dependency "puma", "~> 6.0"

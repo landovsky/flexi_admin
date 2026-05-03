@@ -1,0 +1,393 @@
+// ============================================================================
+// Flexi Admin — Base Styles
+// ============================================================================
+// Global element-level styles that apply the design tokens.
+// These provide the polished foundation on top of Bootstrap's reset.
+// ============================================================================
+
+// Google Fonts import — DM Sans for a clean, geometric feel
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+// --------------------------------------------------------------------------
+// Body & root
+// --------------------------------------------------------------------------
+
+body {
+  font-family: var(--fa-font-body);
+  font-size: var(--fa-text-base);
+  line-height: var(--fa-leading-normal);
+  color: var(--fa-text);
+  background-color: var(--fa-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// --------------------------------------------------------------------------
+// Typography
+// --------------------------------------------------------------------------
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--fa-font-heading);
+  font-weight: var(--fa-weight-semibold);
+  line-height: var(--fa-leading-tight);
+  color: var(--fa-text);
+}
+
+h1, .h1 { font-size: var(--fa-text-3xl); }
+h2, .h2 { font-size: var(--fa-text-2xl); }
+h3, .h3 { font-size: var(--fa-text-xl); }
+h4, .h4 { font-size: var(--fa-text-lg); }
+h5, .h5 { font-size: var(--fa-text-base); font-weight: var(--fa-weight-semibold); }
+h6, .h6 { font-size: var(--fa-text-sm); font-weight: var(--fa-weight-semibold); }
+
+small, .small, .text-sm {
+  font-size: var(--fa-text-sm);
+}
+
+.text-muted {
+  color: var(--fa-text-muted) !important;
+}
+
+// --------------------------------------------------------------------------
+// Links
+// --------------------------------------------------------------------------
+
+a {
+  color: var(--fa-primary);
+  text-decoration: none;
+  transition: color var(--fa-transition-fast);
+
+  &:hover {
+    color: var(--fa-primary-hover);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Selection
+// --------------------------------------------------------------------------
+
+::selection {
+  background-color: rgba(var(--fa-primary-rgb), 0.15);
+  color: var(--fa-text);
+}
+
+// --------------------------------------------------------------------------
+// Form controls — refine Bootstrap defaults
+// --------------------------------------------------------------------------
+
+.form-control,
+.form-select {
+  font-size: var(--fa-text-base);
+  border-color: var(--fa-input-border);
+  border-radius: var(--fa-input-radius);
+  background-color: var(--fa-input-bg);
+  transition: border-color var(--fa-transition-fast), box-shadow var(--fa-transition-fast);
+
+  &:focus {
+    border-color: var(--fa-input-focus);
+    box-shadow: 0 0 0 3px rgba(var(--fa-primary-rgb), 0.12);
+  }
+}
+
+.form-check-input:checked {
+  background-color: var(--fa-primary);
+  border-color: var(--fa-primary);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(var(--fa-primary-rgb), 0.12);
+}
+
+// --------------------------------------------------------------------------
+// Buttons — refine transitions and shapes
+// --------------------------------------------------------------------------
+
+.btn {
+  font-size: var(--fa-text-sm);
+  font-weight: var(--fa-weight-medium);
+  border-radius: var(--fa-radius-md);
+  transition: all var(--fa-transition-fast);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--fa-primary);
+  --bs-btn-border-color: var(--fa-primary);
+  --bs-btn-hover-bg: var(--fa-primary-hover);
+  --bs-btn-hover-border-color: var(--fa-primary-hover);
+  --bs-btn-active-bg: var(--fa-primary-hover);
+  --bs-btn-active-border-color: var(--fa-primary-hover);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--fa-primary);
+  --bs-btn-border-color: var(--fa-primary);
+  --bs-btn-hover-bg: var(--fa-primary);
+  --bs-btn-hover-border-color: var(--fa-primary);
+  --bs-btn-active-bg: var(--fa-primary-hover);
+  --bs-btn-active-border-color: var(--fa-primary-hover);
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--fa-text-muted);
+  --bs-btn-border-color: var(--fa-border-strong);
+  --bs-btn-hover-bg: var(--fa-surface-alt);
+  --bs-btn-hover-border-color: var(--fa-border-strong);
+  --bs-btn-hover-color: var(--fa-text);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--fa-danger);
+  --bs-btn-border-color: var(--fa-danger);
+  --bs-btn-hover-bg: var(--fa-danger);
+  --bs-btn-hover-border-color: var(--fa-danger);
+  --bs-btn-active-bg: var(--fa-danger-hover);
+  --bs-btn-active-border-color: var(--fa-danger-hover);
+}
+
+// --------------------------------------------------------------------------
+// Badges
+// --------------------------------------------------------------------------
+
+.badge {
+  font-size: var(--fa-text-xs);
+  font-weight: var(--fa-weight-medium);
+  border-radius: var(--fa-radius-full);
+  letter-spacing: 0.02em;
+}
+
+.badge.bg-primary {
+  background-color: var(--fa-primary) !important;
+}
+
+// --------------------------------------------------------------------------
+// Cards
+// --------------------------------------------------------------------------
+
+.card {
+  border: 1px solid var(--fa-card-border);
+  border-radius: var(--fa-card-radius);
+  box-shadow: var(--fa-card-shadow);
+  background-color: var(--fa-card-bg);
+  transition: box-shadow var(--fa-transition-normal);
+
+  &:hover {
+    box-shadow: var(--fa-shadow-md);
+  }
+}
+
+.card-body {
+  padding: var(--fa-space-4);
+}
+
+.card-title {
+  font-weight: var(--fa-weight-semibold);
+  color: var(--fa-text);
+}
+
+.card-subtitle {
+  color: var(--fa-text-muted);
+  font-size: var(--fa-text-sm);
+}
+
+// --------------------------------------------------------------------------
+// Tables — row styling for flexi-table custom element
+// --------------------------------------------------------------------------
+
+flexi-table {
+  .row {
+    transition: background-color var(--fa-transition-fast);
+
+    &.border-top {
+      border-color: var(--fa-row-border) !important;
+    }
+
+    &:hover:not(.fw-bold) {
+      background-color: var(--fa-row-hover);
+    }
+  }
+}
+
+// --------------------------------------------------------------------------
+// Dropdowns
+// --------------------------------------------------------------------------
+
+.dropdown-menu {
+  border: 1px solid var(--fa-border);
+  border-radius: var(--fa-radius-md);
+  box-shadow: var(--fa-shadow-lg);
+  padding: var(--fa-space-1) 0;
+  font-size: var(--fa-text-sm);
+}
+
+.dropdown-item {
+  padding: var(--fa-space-2) var(--fa-space-3);
+  transition: background-color var(--fa-transition-fast);
+
+  &:hover,
+  &:focus {
+    background-color: var(--fa-surface-alt);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Modals
+// --------------------------------------------------------------------------
+
+.modal-content {
+  border: 1px solid var(--fa-border);
+  border-radius: var(--fa-radius-xl);
+  box-shadow: var(--fa-shadow-xl);
+}
+
+.modal-header {
+  border-bottom-color: var(--fa-border);
+  padding: var(--fa-space-4) var(--fa-space-5);
+}
+
+.modal-body {
+  padding: var(--fa-space-5);
+}
+
+.modal-footer {
+  border-top-color: var(--fa-border);
+  padding: var(--fa-space-3) var(--fa-space-5);
+}
+
+.modal-title {
+  font-weight: var(--fa-weight-semibold);
+}
+
+// --------------------------------------------------------------------------
+// Breadcrumbs
+// --------------------------------------------------------------------------
+
+.breadcrumb {
+  font-size: var(--fa-text-sm);
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--fa-text-subtle);
+  }
+
+  .breadcrumb-item.active {
+    color: var(--fa-text-muted);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Pagination
+// --------------------------------------------------------------------------
+
+.pagination {
+  .page-link {
+    font-size: var(--fa-text-sm);
+    border-color: var(--fa-border);
+    color: var(--fa-text-muted);
+    transition: all var(--fa-transition-fast);
+
+    &:hover {
+      background-color: var(--fa-surface-alt);
+      border-color: var(--fa-border-strong);
+      color: var(--fa-text);
+    }
+  }
+
+  .page-item.active .page-link {
+    background-color: var(--fa-primary);
+    border-color: var(--fa-primary);
+  }
+
+  .page-item.disabled .page-link {
+    color: var(--fa-text-subtle);
+    border-color: var(--fa-border);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Alerts
+// --------------------------------------------------------------------------
+
+.alert-danger {
+  --bs-alert-bg: rgba(var(--fa-danger-rgb), 0.08);
+  --bs-alert-border-color: rgba(var(--fa-danger-rgb), 0.2);
+  --bs-alert-color: var(--fa-danger);
+}
+
+// --------------------------------------------------------------------------
+// Navbar refinements
+// --------------------------------------------------------------------------
+
+.navbar {
+  background-color: var(--fa-navbar-bg) !important;
+  border-bottom: 1px solid var(--fa-navbar-border) !important;
+  min-height: var(--fa-navbar-height);
+  box-shadow: var(--fa-shadow-xs);
+}
+
+.navbar-brand {
+  font-weight: var(--fa-weight-bold);
+  color: var(--fa-text) !important;
+  letter-spacing: -0.02em;
+}
+
+.nav-link {
+  color: var(--fa-text-muted) !important;
+  font-size: var(--fa-text-sm);
+  font-weight: var(--fa-weight-medium);
+  transition: color var(--fa-transition-fast);
+  padding: var(--fa-space-2) var(--fa-space-3) !important;
+  border-radius: var(--fa-radius-md);
+
+  &:hover,
+  &.active {
+    color: var(--fa-text) !important;
+    background-color: var(--fa-surface-alt);
+  }
+}
+
+// --------------------------------------------------------------------------
+// Sticky header (show page)
+// --------------------------------------------------------------------------
+
+.sticky-top {
+  background-color: var(--fa-bg) !important;
+  border-bottom: 1px solid var(--fa-border);
+}
+
+// --------------------------------------------------------------------------
+// Focus ring — consistent across all interactive elements
+// --------------------------------------------------------------------------
+
+*:focus-visible {
+  outline: 2px solid var(--fa-primary);
+  outline-offset: 2px;
+}
+
+// Disable outline for mouse users (Bootstrap handles this, but be explicit)
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// --------------------------------------------------------------------------
+// Scrollbar — subtle on supported browsers
+// --------------------------------------------------------------------------
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--fa-border-strong);
+  border-radius: var(--fa-radius-full);
+
+  &:hover {
+    background-color: var(--fa-text-subtle);
+  }
+}

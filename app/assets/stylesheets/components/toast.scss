@@ -1,4 +1,4 @@
 .slide-out {
-  transition: transform 0.5s ease-out;
+  transition: transform var(--fa-transition-slow);
   transform: translateX(100%);
 }
