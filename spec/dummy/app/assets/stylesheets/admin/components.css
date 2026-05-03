@@ -5,28 +5,28 @@
    ======================================== */
 
 .badge-primary {
-  background-color: #0d6efd;
+  background-color: var(--fa-primary, #4F46E5);
   color: white;
   padding: 0.25em 0.6em;
-  border-radius: 0.25rem;
+  border-radius: var(--fa-radius-full, 9999px);
   font-size: 0.875em;
   font-weight: 600;
 }
 
 .badge-secondary {
-  background-color: #6c757d;
+  background-color: var(--fa-text-muted, #71717A);
   color: white;
   padding: 0.25em 0.6em;
-  border-radius: 0.25rem;
+  border-radius: var(--fa-radius-full, 9999px);
   font-size: 0.875em;
   font-weight: 600;
 }
 
 .badge-success {
-  background-color: #198754;
+  background-color: var(--fa-success, #10B981);
   color: white;
   padding: 0.25em 0.6em;
-  border-radius: 0.25rem;
+  border-radius: var(--fa-radius-full, 9999px);
   font-size: 0.875em;
   font-weight: 600;
 }
@@ -41,13 +41,13 @@
   gap: 1rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 0.375rem;
+  background-color: var(--fa-surface-alt, #F4F4F5);
+  border-radius: var(--fa-radius-md, 0.375rem);
 }
 
 .selection-info {
   font-size: 0.875rem;
-  color: #6c757d;
+  color: var(--fa-text-muted, #71717A);
   font-weight: 500;
 }
 
@@ -65,7 +65,7 @@
   align-items: center;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid var(--fa-border, #E4E4E7);
 }
 
 .pagination {
@@ -102,7 +102,7 @@
   margin-bottom: 0.5rem;
   font-weight: 500;
   font-size: 0.875rem;
-  color: #495057;
+  color: var(--fa-text-muted, #71717A);
 }
 
 .form-actions {
@@ -110,15 +110,15 @@
   display: flex;
   gap: 0.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid var(--fa-border, #E4E4E7);
 }
 
 .form-control.is-invalid {
-  border-color: #dc3545;
+  border-color: var(--fa-danger, #EF4444);
 }
 
 .form-control.is-valid {
-  border-color: #198754;
+  border-color: var(--fa-success, #10B981);
 }
 
 /* ========================================
@@ -135,7 +135,7 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--fa-border, #E4E4E7);
 }
 
 .page-header h1 {
@@ -156,10 +156,10 @@
 }
 
 .info-section {
-  background-color: #fff;
+  background-color: var(--fa-surface, #FFFFFF);
   padding: 1.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #dee2e6;
+  border-radius: var(--fa-radius-lg, 0.5rem);
+  border: 1px solid var(--fa-border, #E4E4E7);
 }
 
 .info-section h3 {
@@ -167,7 +167,7 @@
   font-weight: 600;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--fa-border, #E4E4E7);
 }
 
 .metadata-item {
@@ -178,7 +178,7 @@
 .metadata-item strong {
   display: inline-block;
   min-width: 100px;
-  color: #6c757d;
+  color: var(--fa-text-muted, #71717A);
 }
 
 /* ========================================
@@ -199,8 +199,8 @@
 
 .role-selector .btn.active,
 .type-selector .btn.active {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: var(--fa-primary, #4F46E5);
+  border-color: var(--fa-primary, #4F46E5);
   color: white;
 }
 
@@ -215,8 +215,8 @@
 
 .resources-table th {
   font-weight: 600;
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
+  background-color: var(--fa-surface-alt, #F4F4F5);
+  border-bottom: 2px solid var(--fa-border, #E4E4E7);
 }
 
 .resources-table th[data-sort-column] {
@@ -225,7 +225,7 @@
 }
 
 .resources-table th[data-sort-column]:hover {
-  background-color: #e9ecef;
+  background-color: var(--fa-surface-hover, #ECECED);
 }
 
 .resources-table td {
@@ -328,34 +328,14 @@ textarea.expandable-field {
   padding: 2px 4px;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.15s;
-  color: #6c757d;
+  transition: opacity 150ms ease;
+  color: var(--fa-text-muted, #71717A);
 }
 
 .copy-field-wrapper .copy-field-btn:hover {
-  color: #0d6efd;
+  color: var(--fa-primary, #4F46E5);
 }
 
 .copy-field-wrapper:hover .copy-field-btn {
   opacity: 1;
-}
-
-/* ========================================
-   Utility Classes
-   ======================================== */
-
-.text-muted {
-  color: #6c757d !important;
-}
-
-.text-primary {
-  color: #0d6efd !important;
-}
-
-.text-success {
-  color: #198754 !important;
-}
-
-.text-danger {
-  color: #dc3545 !important;
 }

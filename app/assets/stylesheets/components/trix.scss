@@ -3,24 +3,28 @@
   .collapsed {
     max-height: 80px !important;
     overflow: hidden !important;
-    transition: max-height 0.3s ease, overflow 0.3s ease; // Added transition
+    transition: max-height var(--fa-transition-slow), overflow var(--fa-transition-slow);
   }
 
   .expanded {
     max-height: none !important;
     overflow: visible !important;
-    transition: max-height 0.3s ease, overflow 0.3s ease; // Added transition
+    transition: max-height var(--fa-transition-slow), overflow var(--fa-transition-slow);
   }
 
   .trigger {
     cursor: pointer;
-    font-weight: 600;
-    color: rgba(var(----bs-link-color-rgb), var(----bs-link-opacity, 1));
-    margin-bottom: 10px;
+    font-weight: var(--fa-weight-semibold);
+    color: var(--fa-primary);
+    margin-bottom: var(--fa-space-2);
+    transition: color var(--fa-transition-fast);
+
+    &:hover {
+      color: var(--fa-primary-hover);
+    }
   }
 
   .text {
     cursor: default;
-
   }
 }
