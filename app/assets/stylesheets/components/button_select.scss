@@ -7,8 +7,8 @@
 
       &.disabled {
         @extend .btn-outline-secondary;
-        color: var(--bs-body-color);
-        font-weight: 600;
+        color: var(--fa-text);
+        font-weight: var(--fa-weight-semibold);
       }
     }
 

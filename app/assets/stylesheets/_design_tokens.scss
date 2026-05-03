@@ -1,0 +1,200 @@
+// ============================================================================
+// Flexi Admin — Design Tokens
+// ============================================================================
+// This is the single source of truth for the entire admin visual theme.
+// Change any value here and reload to re-theme the app.
+//
+// All tokens use the --fa- prefix to avoid collisions with Bootstrap's --bs-.
+// Bootstrap CSS variables are overridden at the bottom so that standard
+// Bootstrap components (buttons, modals, badges, etc.) automatically pick
+// up your theme.
+// ============================================================================
+
+:root {
+  // --------------------------------------------------------------------------
+  // Colors
+  // --------------------------------------------------------------------------
+
+  // Primary brand color — used for buttons, links, active states
+  --fa-primary:          #4F46E5;
+  --fa-primary-rgb:      79, 70, 229;
+  --fa-primary-hover:    #4338CA;
+  --fa-primary-light:    #EEF2FF;
+
+  // Accent — used sparingly for highlights, badges, callouts
+  --fa-accent:           #F59E0B;
+  --fa-accent-rgb:       245, 158, 11;
+
+  // Backgrounds
+  --fa-bg:               #FAFAFA;
+  --fa-surface:          #FFFFFF;
+  --fa-surface-alt:      #F4F4F5;
+  --fa-surface-hover:    #ECECED;
+
+  // Text
+  --fa-text:             #18181B;
+  --fa-text-muted:       #71717A;
+  --fa-text-subtle:      #A1A1AA;
+
+  // Borders
+  --fa-border:           #E4E4E7;
+  --fa-border-strong:    #D4D4D8;
+
+  // Semantic colors
+  --fa-danger:           #EF4444;
+  --fa-danger-rgb:       239, 68, 68;
+  --fa-danger-hover:     #DC2626;
+
+  --fa-success:          #10B981;
+  --fa-success-rgb:      16, 185, 129;
+
+  --fa-warning:          #F59E0B;
+  --fa-warning-rgb:      245, 158, 11;
+
+  --fa-info:             #3B82F6;
+  --fa-info-rgb:         59, 130, 246;
+
+  // --------------------------------------------------------------------------
+  // Typography
+  // --------------------------------------------------------------------------
+
+  --fa-font-body:        "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fa-font-heading:     "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fa-font-mono:        "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+
+  --fa-text-xs:          0.75rem;    // 12px
+  --fa-text-sm:          0.8125rem;  // 13px
+  --fa-text-base:        0.875rem;   // 14px — slightly smaller than Bootstrap's 16px default
+  --fa-text-lg:          1rem;       // 16px
+  --fa-text-xl:          1.125rem;   // 18px
+  --fa-text-2xl:         1.375rem;   // 22px
+  --fa-text-3xl:         1.75rem;    // 28px
+
+  --fa-leading-tight:    1.3;
+  --fa-leading-normal:   1.5;
+  --fa-leading-relaxed:  1.65;
+
+  --fa-weight-normal:    400;
+  --fa-weight-medium:    500;
+  --fa-weight-semibold:  600;
+  --fa-weight-bold:      700;
+
+  // --------------------------------------------------------------------------
+  // Spacing scale
+  // --------------------------------------------------------------------------
+
+  --fa-space-1:          0.25rem;   // 4px
+  --fa-space-2:          0.5rem;    // 8px
+  --fa-space-3:          0.75rem;   // 12px
+  --fa-space-4:          1rem;      // 16px
+  --fa-space-5:          1.5rem;    // 24px
+  --fa-space-6:          2rem;      // 32px
+  --fa-space-8:          3rem;      // 48px
+
+  // --------------------------------------------------------------------------
+  // Border radii
+  // --------------------------------------------------------------------------
+
+  --fa-radius-sm:        0.25rem;
+  --fa-radius-md:        0.375rem;
+  --fa-radius-lg:        0.5rem;
+  --fa-radius-xl:        0.75rem;
+  --fa-radius-full:      9999px;
+
+  // --------------------------------------------------------------------------
+  // Shadows
+  // --------------------------------------------------------------------------
+
+  --fa-shadow-xs:        0 1px 2px rgba(0, 0, 0, 0.04);
+  --fa-shadow-sm:        0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --fa-shadow-md:        0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --fa-shadow-lg:        0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --fa-shadow-xl:        0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+
+  // --------------------------------------------------------------------------
+  // Transitions
+  // --------------------------------------------------------------------------
+
+  --fa-transition-fast:    150ms ease;
+  --fa-transition-normal:  250ms ease;
+  --fa-transition-slow:    400ms ease;
+
+  // --------------------------------------------------------------------------
+  // Z-index layers
+  // --------------------------------------------------------------------------
+
+  --fa-z-dropdown:       100;
+  --fa-z-sticky:         200;
+  --fa-z-overlay:        300;
+  --fa-z-modal:          400;
+  --fa-z-toast:          500;
+
+  // --------------------------------------------------------------------------
+  // Component-specific tokens
+  // --------------------------------------------------------------------------
+
+  // Navbar
+  --fa-navbar-bg:        var(--fa-surface);
+  --fa-navbar-border:    var(--fa-border);
+  --fa-navbar-height:    3.5rem;
+
+  // Sidebar (if used)
+  --fa-sidebar-bg:       var(--fa-surface);
+  --fa-sidebar-width:    16rem;
+
+  // Cards & panels
+  --fa-card-bg:          var(--fa-surface);
+  --fa-card-border:      var(--fa-border);
+  --fa-card-shadow:      var(--fa-shadow-sm);
+  --fa-card-radius:      var(--fa-radius-lg);
+
+  // Forms
+  --fa-input-bg:         var(--fa-surface);
+  --fa-input-border:     var(--fa-border-strong);
+  --fa-input-focus:      var(--fa-primary);
+  --fa-input-radius:     var(--fa-radius-md);
+
+  // Tables / list rows
+  --fa-row-hover:        var(--fa-surface-alt);
+  --fa-row-border:       var(--fa-border);
+
+  // --------------------------------------------------------------------------
+  // Bootstrap CSS variable overrides
+  // --------------------------------------------------------------------------
+  // These map our tokens onto Bootstrap's custom properties so that standard
+  // Bootstrap components automatically follow the theme.
+
+  --bs-primary:            var(--fa-primary);
+  --bs-primary-rgb:        var(--fa-primary-rgb);
+
+  --bs-danger:             var(--fa-danger);
+  --bs-danger-rgb:         var(--fa-danger-rgb);
+
+  --bs-success:            var(--fa-success);
+  --bs-success-rgb:        var(--fa-success-rgb);
+
+  --bs-warning:            var(--fa-warning);
+  --bs-warning-rgb:        var(--fa-warning-rgb);
+
+  --bs-info:               var(--fa-info);
+  --bs-info-rgb:           var(--fa-info-rgb);
+
+  --bs-body-bg:            var(--fa-bg);
+  --bs-body-color:         var(--fa-text);
+  --bs-body-font-family:   var(--fa-font-body);
+  --bs-body-font-size:     var(--fa-text-base);
+  --bs-body-line-height:   var(--fa-leading-normal);
+
+  --bs-secondary-color:    var(--fa-text-muted);
+  --bs-tertiary-bg:        var(--fa-surface-alt);
+  --bs-tertiary-color:     var(--fa-text-subtle);
+
+  --bs-border-color:       var(--fa-border);
+  --bs-border-radius:      var(--fa-radius-md);
+  --bs-border-radius-sm:   var(--fa-radius-sm);
+  --bs-border-radius-lg:   var(--fa-radius-lg);
+
+  --bs-link-color:         var(--fa-primary);
+  --bs-link-color-rgb:     var(--fa-primary-rgb);
+  --bs-link-hover-color:   var(--fa-primary-hover);
+}
