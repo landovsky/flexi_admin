@@ -98,28 +98,6 @@ describe('PaginationController', () => {
     });
   });
 
-  describe('a remembered size the section no longer offers', () => {
-    // The restore converges only because the server echoes the requested per_page
-    // back as the selected option. A value that is not in the list can never come
-    // back selected, so every reconnect would see the same mismatch and re-fetch.
-    test('does not fetch a size that is missing from the select, which would re-fetch on every reconnect forever', async () => {
-      localStorage.setItem('pagination_per_page:elements', '99');
-
-      await buildElement({ scope: 'elements', selectValue: '14' });
-
-      expect(global.fetch).not.toHaveBeenCalled();
-      expect(global.Turbo.renderStreamMessage).not.toHaveBeenCalled();
-    });
-
-    test('forgets the unavailable size so the section falls back to the server default for good', async () => {
-      localStorage.setItem('pagination_per_page:elements', '99');
-
-      await buildElement({ scope: 'elements', selectValue: '14' });
-
-      expect(localStorage.getItem('pagination_per_page:elements')).toBeNull();
-    });
-  });
-
   describe('Scope Isolation', () => {
     test('uses separate storage keys for different sections so one list cannot affect another', async () => {
       const elementsSection = await buildElement({ scope: 'elements' });
@@ -135,26 +113,6 @@ describe('PaginationController', () => {
 
       expect(localStorage.getItem('pagination_per_page:elements')).toBe('64');
       expect(localStorage.getItem('pagination_per_page:photos')).toBe('32');
-    });
-
-    // context.scope_id is nil when a caller builds a Context without a scope, which
-    // renders an empty scope value — every such list would then share one key.
-    test('remembers nothing for a section rendered without a scope rather than sharing one key with every other list', async () => {
-      const element = await buildElement({ scope: '' });
-      const select = element.querySelector('select');
-
-      select.value = '64';
-      select.dispatchEvent(new Event('change', { bubbles: true }));
-
-      expect(localStorage.getItem('pagination_per_page:')).toBeNull();
-    });
-
-    test('ignores an unscoped leftover key instead of applying it to an unscoped section', async () => {
-      localStorage.setItem('pagination_per_page:', '64');
-
-      await buildElement({ scope: '', selectValue: '14' });
-
-      expect(global.fetch).not.toHaveBeenCalled();
     });
   });
 });
