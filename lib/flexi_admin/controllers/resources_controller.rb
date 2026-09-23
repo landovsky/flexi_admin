@@ -73,8 +73,46 @@ module FlexiAdmin::Controllers::ResourcesController
     render turbo_stream: turbo_stream.append('system', partial: 'shared/redirect', locals: { path: path })
   end
 
+  # Prefix for the per-scope cookie that remembers a user's page-size choice.
+  PER_PAGE_COOKIE_PREFIX = "fa_per_page_"
+
   def context_params
-    @context_params ||= FlexiAdmin::Models::ContextParams.new(context_permitted_params)
+    @context_params ||= FlexiAdmin::Models::ContextParams.new(remembered_per_page_params)
+  end
+
+  # Admin users work through long lists and were re-picking the same page size
+  # on every visit, because `fa_per_page` only ever lived in the URL. Persist
+  # the choice per scope in a cookie: an explicit `fa_per_page` is recorded,
+  # and a request without one inherits whatever that scope was last set to.
+  def remembered_per_page_params
+    permitted = context_permitted_params
+    cookie_key = per_page_cookie_key
+
+    chosen = permitted[FlexiAdmin::Models::ContextParams::MAP[:per_page]]
+    if chosen.present?
+      cookies[cookie_key] = { value: chosen.to_s, expires: 1.year.from_now } if valid_per_page?(chosen)
+      return permitted
+    end
+
+    remembered = cookies[cookie_key]
+    return permitted unless valid_per_page?(remembered)
+
+    permitted.merge(FlexiAdmin::Models::ContextParams::MAP[:per_page] => remembered)
+  end
+
+  # Keyed by scope where one is given (several scopes can render on one page),
+  # falling back to the controller for a plain index.
+  def per_page_cookie_key
+    scope = params[FlexiAdmin::Models::ContextParams::MAP[:scope]].presence || controller_path
+    "#{PER_PAGE_COOKIE_PREFIX}#{scope.to_s.parameterize(separator: '_')}"
+  end
+
+  # A cookie is user-writable, so never let it widen a query beyond the sizes
+  # the app itself offers.
+  def valid_per_page?(value)
+    return false if value.blank?
+
+    FlexiAdmin::Config.configuration.paginate_per_options.map(&:to_s).include?(value.to_s)
   end
 
   def context_permitted_params
@@ -258,7 +296,7 @@ module FlexiAdmin::Controllers::ResourcesController
     end
   end
 
-  def autocomplete(includes: nil)
+  def autocomplete(includes: nil, joins: nil, order: nil)
     base_query = if context_params.params[:custom_scope].present?
                    Rails.logger.debug "Autocomplete: custom scope: #{context_params.params[:custom_scope]}"
                    apply_named_custom_scope(resource_class.with_parent(parent_instance), context_params.params[:custom_scope])
@@ -267,13 +305,18 @@ module FlexiAdmin::Controllers::ResourcesController
                    resource_class.with_parent(parent_instance)
                  end
 
-    base_query = base_query.fulltext(params[:q])
+    # A focused-but-empty field asks for the default suggestions rather than
+    # running a fulltext search for "".
+    suggesting = params[:q].blank?
+    base_query = base_query.fulltext(params[:q]) unless suggesting
+    base_query = base_query.joins(joins) if joins.present?
     base_query = base_query.includes(includes) if includes.present?
+    base_query = base_query.order(order) if order.present?
     Rails.logger.debug "Autocomplete: included #{includes.present? ? includes : "none"}"
     Rails.logger.debug "Autocomplete: base_query SQL #{base_query.to_sql}"
 
     results_count = base_query.count
-    results = base_query.limit(100)
+    results = base_query.limit(suggesting ? FlexiAdmin::Config.configuration.autocomplete_suggestions : 100)
     Rails.logger.debug "Autocomplete: base_query results after fulltext search: #{base_query.count}"
 
     render FlexiAdmin::Components::Shared::Autocomplete::ResultsComponent.new(results:,
