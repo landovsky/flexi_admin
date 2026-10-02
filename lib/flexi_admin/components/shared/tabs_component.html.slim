@@ -1,0 +1,26 @@
+div.flexi-tabs id=id data-controller=("tabs" if remember?)
+  ul.nav.nav-tabs class=nav_class role="tablist"
+    - tabs.each do |tab|
+      - active = tab.key == active_key
+      li.nav-item role="presentation"
+        button.nav-link [class=('active' if active)
+                         id=tab_dom_id(tab)
+                         type="button"
+                         role="tab"
+                         data-bs-toggle="tab"
+                         data-bs-target="##{pane_dom_id(tab)}"
+                         data-tabs-key-param=tab.key
+                         data-action=("shown.bs.tab->tabs#remember" if remember?)
+                         aria-controls=pane_dom_id(tab)
+                         aria-selected=active.to_s]
+          = tab.label
+          - unless tab.count.nil?
+            span.badge.rounded-pill.text-bg-light.ms-2 = tab.count
+
+  .tab-content
+    - tabs.each do |tab|
+      .tab-pane.fade [class=('show active' if tab.key == active_key)
+                      id=pane_dom_id(tab)
+                      role="tabpanel"
+                      aria-labelledby=tab_dom_id(tab)]
+        = tab
