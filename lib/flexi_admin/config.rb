@@ -4,6 +4,8 @@ module FlexiAdmin
   class Config
     PAGINATE_PER_OPTIONS = [12, 24, 48, 96].freeze
     PAGINATE_PER_DEFAULT = 12
+    # How many rows an autocomplete offers when the field is focused but empty.
+    AUTOCOMPLETE_SUGGESTIONS_DEFAULT = 12
 
     def self.paginate_per_options
       PAGINATE_PER_OPTIONS
@@ -14,11 +16,13 @@ module FlexiAdmin
     end
 
     class Store
-      attr_accessor :namespace, :module_namespace, :paginate_per, :paginate_per_options
+      attr_accessor :namespace, :module_namespace, :paginate_per, :paginate_per_options,
+                    :autocomplete_suggestions
 
       def initialize
         @paginate_per = PAGINATE_PER_DEFAULT
         @paginate_per_options = PAGINATE_PER_OPTIONS
+        @autocomplete_suggestions = AUTOCOMPLETE_SUGGESTIONS_DEFAULT
       end
     end
 

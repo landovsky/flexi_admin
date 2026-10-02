@@ -9,13 +9,13 @@ module FlexiAdmin::Components::Resource
 
     attr_reader :resource, :disabled, :action, :parent, :fields, :required,
                 :name, :html_options, :path, :width, :value,
-                :disabled_empty_custom_message, :placeholder
+                :disabled_empty_custom_message, :placeholder, :priority_value
 
     def initialize(resource = nil, scope:, fields: [:title],
                   action: :select, parent: nil, path: nil,
                   value: nil, disabled_empty_custom_message: nil,
                   target_controller: nil, placeholder: nil,
-                  custom_scope: nil, **html_options)
+                  custom_scope: nil, priority_value: nil, **html_options)
       @resource = resource
       @scope = scope
       @target_controller = target_controller
@@ -25,6 +25,7 @@ module FlexiAdmin::Components::Resource
       @action = action
       @value = value
       @custom_scope = custom_scope&.to_s
+      @priority_value = priority_value
 
       @html_options = html_options
       @width = html_options.delete(:width)
@@ -42,10 +43,16 @@ module FlexiAdmin::Components::Resource
 
     def autocomplete_options
       base_data = { autocomplete_target: 'input',
-                    action: 'keyup->autocomplete#keyup focusout->autocomplete#onFocusOut',
+                    action: 'focus->autocomplete#focus keyup->autocomplete#keyup ' \
+                            'focusout->autocomplete#onFocusOut',
                     autocomplete_search_path: get_path,
                     autocomplete_is_disabled: disabled,
                     field_type: kind }.merge(html_options)
+
+      # An app can mark one record as "the one the user is working on" so the
+      # backend can float it to the top; the value is set client-side because
+      # only the app knows what "current" means (see `ac_priority`).
+      base_data[:autocomplete_priority_value] = priority_value if priority_value.present?
 
       {
         style: 'border-top-right-radius: 0.4rem; border-bottom-right-radius: 0.4rem;',
