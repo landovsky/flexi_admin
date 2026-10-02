@@ -68,10 +68,12 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
         find('[data-controller="sorting"]', text: 'Jméno').find('a').click
       end
 
-      # After sorting, the sort path should toggle to desc
+      # After sorting, the sort path should toggle to desc.
+      # Assert through a retrying matcher: reading the attribute off `find` grabs the
+      # pre-click link, which Turbo replaces a moment later, and races the stream.
       within('flexi-table') do
-        sort_link = find('[data-controller="sorting"]', text: 'Jméno')
-        expect(sort_link['data-sorting-sort-path-value']).to match(/fa_order=desc/)
+        expect(page).to have_css('[data-controller="sorting"][data-sorting-sort-path-value*="fa_order=desc"]',
+                                 text: 'Jméno')
       end
     end
 
@@ -83,9 +85,11 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
         find('[data-controller="sorting"]', text: 'Email').find('a').click
       end
 
+      # Assert through a retrying matcher: reading the attribute off `find` grabs the
+      # pre-click link, which Turbo replaces a moment later, and races the stream.
       within('flexi-table') do
-        sort_link = find('[data-controller="sorting"]', text: 'Email')
-        expect(sort_link['data-sorting-sort-path-value']).to match(/fa_order=desc/)
+        expect(page).to have_css('[data-controller="sorting"][data-sorting-sort-path-value*="fa_order=desc"]',
+                                 text: 'Email')
       end
     end
   end
