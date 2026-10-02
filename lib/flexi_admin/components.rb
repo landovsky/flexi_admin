@@ -74,6 +74,7 @@ require_relative "components/shared/medium_component"
 require_relative "components/shared/table/header_item_component"
 require_relative "components/shared/trix_component"
 require_relative "components/shared/link_component"
+require_relative "components/shared/tabs_component"
 
 # Resources List View Components
 require_relative "components/resources/list_view/cell_component"

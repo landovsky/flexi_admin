@@ -115,7 +115,7 @@ module.exports = {
 
 ### Stimulus Controllers
 
-FlexiAdmin includes 18 Stimulus controllers that automatically register when you import the gem's JavaScript:
+FlexiAdmin includes 19 Stimulus controllers that automatically register when you import the gem's JavaScript:
 
 #### Available Controllers
 
@@ -132,6 +132,7 @@ FlexiAdmin includes 18 Stimulus controllers that automatically register when you
 - `pagination` - Page navigation controls
 - `sorting` - Column sorting
 - `switch-view` - Toggle between list/grid views
+- `tabs` - Keeps the open `TabsComponent` tab in the URL hash
 - `toast` - Toast notification system
 - `trix` - Rich text editor integration
 - `uploads` - File upload handling
@@ -198,6 +199,29 @@ Controller naming convention: `flexi-admin--[controller-name]`
       action: "input->flexi-admin--autocomplete#search"
     } %>
 ```
+
+#### Example: Tabs on a show page
+
+`FlexiAdmin::Components::Shared::TabsComponent` splits a long page into Bootstrap tabs. Every
+pane is rendered up front (no lazy loading), so content behaves exactly as it did on one page.
+The open tab is kept in the URL hash (`/orders/1#kalkulace`), so a reload or a shared link
+reopens it.
+
+```slim
+= render FlexiAdmin::Components::Shared::TabsComponent.new(id: 'order') do |tabs|
+  - tabs.with_tab(key: 'prehled', label: 'Přehled')
+    = render Admin::Order::Show::EditFormComponent.new(resource)
+  - tabs.with_tab(key: 'kalkulace', label: 'Kalkulace', count: calculations.size)
+    = render Admin::OrderCalculation::ResourcesComponent.new(calculations, context_params:, parent: resource)
+```
+
+- `id:` prefixes the DOM ids (`order-tab-<key>`, `order-pane-<key>`). It must be unique on the page.
+- `with_tab(key:, label:, count: nil, active: false)`: `count` renders a badge, and `active: true` opens that tab
+  (the first tab otherwise).
+- `remember: false` turns off the URL-hash memory, for example for a second tab set on the same page.
+- `nav_class:` sets the classes on the `ul.nav-tabs` (default `mb-4`).
+
+Requires Bootstrap 5's JavaScript (`data-bs-toggle="tab"`).
 
 ### Verification
 
