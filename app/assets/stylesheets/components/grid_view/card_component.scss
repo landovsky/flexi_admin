@@ -6,7 +6,7 @@
       position: absolute !important;
       top: 0.4em !important;
       left: 0.7em !important;
-      z-index: 100; // display over image / video
+      z-index: var(--fa-z-dropdown);
 
       input[type="checkbox"] {
         width: 1.1em !important;
@@ -18,7 +18,7 @@
       position: absolute;
       top: 0.4em;
       right: 0.7em;
-      z-index: 100;
+      z-index: var(--fa-z-dropdown);
     }
   }
 }
