@@ -113,6 +113,9 @@ a {
 }
 
 .btn-primary {
+  --bs-btn-color: var(--fa-on-primary);
+  --bs-btn-hover-color: var(--fa-on-primary);
+  --bs-btn-active-color: var(--fa-on-primary);
   --bs-btn-bg: var(--fa-primary);
   --bs-btn-border-color: var(--fa-primary);
   --bs-btn-hover-bg: var(--fa-primary-hover);
@@ -297,6 +300,7 @@ flexi-table {
   .page-item.active .page-link {
     background-color: var(--fa-primary);
     border-color: var(--fa-primary);
+    color: var(--fa-on-primary);
   }
 
   .page-item.disabled .page-link {
