@@ -1,0 +1,6 @@
+/ Minimal index page: title + resources, no filters.
+= render FlexiAdmin::Components::Resources::IndexPageComponent.new(resources, \
+                                           scope: 'comments', \
+                                           title: 'Comments', \
+                                           context_params:) do |c|
+  = render Admin::Comment::ResourcesComponent.new(resources, context_params:)

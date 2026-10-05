@@ -15,10 +15,8 @@ module Admin
     include FlexiAdmin::Controllers::ResourcesController
 
     # The mixin does NOT provide a `new` action — define it manually.
-    # For nested routes, use params[:user_id] since the parent isn't
-    # encoded as fa_parent in standard Rails nested URLs.
     def new
-      @user = parent_instance || ::User.find(params[:user_id])
+      @user = parent_instance
       @comment = @user.comments.build
       render Admin::Comment::NewFormComponent.new(@comment, parent: @user)
     end
@@ -33,10 +31,19 @@ module Admin
       resources = resources.order(created_at: :desc)
       resources = resources.paginate(**context_params.pagination)
 
+      # Record the parent in the context so generated links (sorting, pagination,
+      # view switch) carry fa_parent and resolve to the nested route.
+      context_params.with_parent!(parent_instance) if parent_instance.present?
       render_index(resources)
     end
 
     private
+
+    # Standard Rails nested URLs (/admin/users/:user_id/comments) carry the parent as
+    # :user_id rather than the fa_parent GlobalID the mixin looks for.
+    def parent_instance
+      @parent_instance ||= super || (::User.find(params[:user_id]) if params[:user_id].present?)
+    end
 
     def resource_class
       ::Comment

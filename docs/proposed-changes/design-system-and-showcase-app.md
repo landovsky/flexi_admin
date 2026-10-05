@@ -76,24 +76,30 @@ picker); filter bar, pagination and list columns aligned (dummy's leftover `comp
 removed, `flexi-table` cells `min-width: 0`); checkbox outlines get `--fa-border-control`
 (3.4:1, was 1.27:1); `as: :date` shows dates; `TabsComponent` showcased on the user page.
 
+**Dark theme (2026-10-05).** `:root[data-bs-theme="dark"]` token block (lighter indigo
+primary with dark text on it; every text pair ≥4.5:1, control outlines ≥3:1), `-rgb`
+companions so Bootstrap utilities (`.bg-body`, `.bg-body-tertiary`) follow the tokens,
+`--fa-on-primary` / `--fa-on-danger` wherever text sits on a colored fill, hard-coded
+`bg-white`/`bg-light`/`text-dark` utilities replaced. `Nav::ThemeScriptComponent` (pre-paint,
+localStorage, follows OS on `auto`) + `Nav::ThemeToggleComponent` / `theme` Stimulus
+controller. Verified by full-page screenshots of every dummy page (list, grid, show + both
+tabs, edit, nested comments index, autocomplete, form fields, bulk/filter menus, modal) in
+both themes. Also fixed on the way: nested comments index 500 (missing IndexPageComponent,
+parent from `:user_id`), modal count spacing, dummy test pages' hard-coded colors.
+
 Open findings (not fixed):
 
-1. **No dark theme.** Tokens are a single light `:root` palette and hard-override Bootstrap's
-   `--bs-*` variables, so `data-bs-theme="dark"` only flips a few unthemed Bootstrap bits
-   (e.g. disabled pagination links turn dark grey) — worse than not reacting at all. Needs a
-   `[data-bs-theme="dark"]` (and/or `prefers-color-scheme`) token block.
-2. **Hard-coded Czech UI strings in the gem**: `Akce`, `Uložit`, `Zrušit`, `záznamů`,
+1. **Hard-coded Czech UI strings in the gem**: `Akce`, `Uložit`, `Zrušit`, `záznamů`,
    `vybráno … zrušit výběr`, `vybraných položek`, `Aktivní filtry`. Should go through I18n with
    `en`/`cs` locale files.
-3. **`fa_view` shown as an active filter** ("Aktivní filtry: Fa view: grid") after switching to
+2. **`fa_view` shown as an active filter** ("Aktivní filtry: Fa view: grid") after switching to
    grid view — internal `fa_*` params should be excluded from the filter summary.
-4. **Breadcrumbs**: collection crumb is singular ("User" for `/admin/users`); `Admin` crumb is
+3. **Breadcrumbs**: collection crumb is singular ("User" for `/admin/users`); `Admin` crumb is
    not a link.
-5. **Grid cards** reserve a large empty image area when the resource has no image.
+4. **Grid cards** reserve a large empty image area when the resource has no image.
 
 ## Remaining work
 
-- Dark theme tokens (open finding 1) and gem I18n (open finding 2) — the two biggest gaps
-  before the design system can be called done.
+- Gem I18n (open finding 1) — the biggest remaining gap before the design system is done.
 - PR `feature/design-system` → `main`, release 0.0.8.
 - Housekeeping (separate commit): `spec/dummy_old/`, committed `.gem` file, root status files.

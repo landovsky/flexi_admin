@@ -23,6 +23,9 @@
   <%# Flexi Admin design system %>
   <%= stylesheet_link_tag "flexi_admin", "data-turbo-track": "reload" %>
 
+  <%# Dark/light theme: sets <html data-bs-theme> before first paint (no light flash) %>
+  <%= render FlexiAdmin::Components::Nav::ThemeScriptComponent.new %>
+
   <%# Custom component styles %>
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 
@@ -35,12 +38,15 @@
           crossorigin="anonymous"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand navbar-light bg-light border-bottom mb-3 px-3">
+  <nav class="navbar navbar-expand bg-body border-bottom mb-3 px-3">
     <span class="navbar-brand">FlexiAdmin</span>
     <div class="navbar-nav">
       <%= link_to 'Users', admin_users_path, class: 'nav-link' %>
       <%= link_to 'Autocomplete', admin_test_autocomplete_path, class: 'nav-link' %>
       <%= link_to 'Form Fields', admin_test_form_fields_path, class: 'nav-link' %>
+    </div>
+    <div class="ms-auto">
+      <%= render FlexiAdmin::Components::Nav::ThemeToggleComponent.new %>
     </div>
   </nav>
 

@@ -5,6 +5,22 @@ require 'rails_helper'
 RSpec.describe 'ResourcesController', type: :request do
   let(:user) { create(:user) }
 
+  describe 'GET /admin/users/:user_id/comments' do
+    context 'standard nested URL: the parent arrives as :user_id, not as an fa_parent GlobalID' do
+      it "lists only that user's comments, with links built on the nested route" do
+        Comment.create!(user:, content: 'Mine')
+        Comment.create!(user: create(:user), content: 'Not mine')
+
+        get "/admin/users/#{user.id}/comments"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include('Mine')
+        expect(response.body).not_to include('Not mine')
+        expect(response.body).to include("/admin/users/#{user.id}/comments?")
+      end
+    end
+  end
+
   describe 'GET /admin/users' do
     it 'returns successful response' do
       get '/admin/users'
