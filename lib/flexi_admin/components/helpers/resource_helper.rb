@@ -57,6 +57,8 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
     if route_exists_in_main_app?(path)
       main_app.send(path, resource,
                     params: params)
+    elsif (nested_path, parent_id = nested_route_for_parent(scope_singular, params))
+      main_app.send(nested_path, parent_id, resource, params: params)
     else
       helpers.send(path, resource, params: params)
     end
@@ -72,7 +74,13 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
 
   def resources_path(**params)
     path = namespaced_path("namespace", scope_plural)
-    route_exists_in_main_app?(path) ? main_app.send(path, params: params) : helpers.send(path, params: params)
+    if route_exists_in_main_app?(path)
+      main_app.send(path, params: params)
+    elsif (nested_path, parent_id = nested_route_for_parent(scope_plural, params))
+      main_app.send(nested_path, parent_id, params: params)
+    else
+      helpers.send(path, params: params)
+    end
     # rescue => e
     #   binding.pry if Rails.env.development?
   end
@@ -127,6 +135,26 @@ module FlexiAdmin::Components::Helpers::ResourceHelper
 
       raise "Scope is not defined"
     end
+  end
+
+  # Host apps that nest routes (resources :users { resources :comments }) have no flat
+  # admin_comments_path. When the list is rendered with a parent, fall back to the nested
+  # route (admin_user_comments_path) using the parent id parsed from its GlobalID.
+  def nested_route_for_parent(segment, params)
+    gid = parent_global_id(params)
+    return if gid.nil?
+
+    path = namespaced_path("namespace", gid.model_name.underscore, segment)
+    [path, gid.model_id] if route_exists_in_main_app?(path)
+  end
+
+  def parent_global_id(params)
+    encoded = params.with_indifferent_access[:fa_parent]
+    encoded ||= context.parent if respond_to?(:context) && context.respond_to?(:parent)
+    return if encoded.blank?
+    return encoded.to_global_id if encoded.respond_to?(:to_global_id)
+
+    GlobalID.parse(URI.decode_www_form_component(encoded.to_s))
   end
 
   def paginate(resource, per_page: WillPaginate.per_page)
