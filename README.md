@@ -24,6 +24,14 @@ Add to `app/assets/stylesheets/application.scss`:
 @import "flexi_admin.scss";
 ```
 
+FlexiAdmin builds on Bootstrap 5 and uses Bootstrap Icons (`bi-*`) for its edit/delete,
+view-switch and row-action buttons. Load both in your layout, e.g.:
+
+```html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+```
+
 ### JavaScript Integration
 
 FlexiAdmin works with modern JavaScript bundlers. Choose your bundler below:

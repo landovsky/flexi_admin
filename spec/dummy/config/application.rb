@@ -5,6 +5,8 @@ require 'active_record/railtie'
 require 'action_controller/railtie'
 require 'action_view/railtie'
 require 'sprockets/railtie'
+# Normally pulled in by ActiveJob; without it config.global_id.app is never applied.
+require 'global_id/railtie'
 
 Bundler.require(*Rails.groups)
 require 'flexi_admin'
@@ -33,7 +35,6 @@ module Dummy
     config.eager_load_paths << "#{dummy_root}/app/components"
 
     # Configure GlobalID
-    config.global_id = ActiveSupport::OrderedOptions.new
     config.global_id.app = 'dummy'
 
     # I18n configuration
