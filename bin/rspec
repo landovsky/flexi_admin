@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Run the suite with a predictable environment.
+#
+# - RUBYOPT is cleared: a globally preloaded file (e.g. -r~/.ruby_net_http_fix) activates
+#   gem versions before Bundler and fails with "already activated net-protocol".
+# - SE_CHROMEDRIVER points Selenium at a working chromedriver when one is installed as a
+#   snap (/snap/bin/chromium.chromedriver), since snap wrappers break when symlinked.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+unset RUBYOPT
+
+if [[ -z "${SE_CHROMEDRIVER:-}" && -x /snap/bin/chromium.chromedriver ]]; then
+  export SE_CHROMEDRIVER=/snap/bin/chromium.chromedriver
+fi
+
+if [[ ! -s spec/dummy/app/assets/builds/application.js ]]; then
+  (cd spec/dummy && npm install --silent && npm run build --silent)
+fi
+
+exec bundle exec rspec "$@"

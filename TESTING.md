@@ -15,9 +15,19 @@ The test suite covers:
 
 ### Ruby/Rails Tests
 
+Prefer `bin/rspec` over `bundle exec rspec`. The wrapper:
+
+- clears `RUBYOPT` — a globally preloaded file (e.g. `-r~/.ruby_net_http_fix`) activates gem
+  versions before Bundler and fails with `already activated net-protocol`;
+- sets `SE_CHROMEDRIVER` to `/snap/bin/chromium.chromedriver` when Chromium is a snap
+  (a plain symlink to a snap wrapper named `chromedriver` never starts the driver);
+- builds `spec/dummy` JS assets if they are missing (JS specs fail silently without them).
+
+After pulling gem JavaScript changes, rebuild: `(cd spec/dummy && npm run build)`.
+
 ```bash
 # Run all RSpec tests
-bundle exec rspec
+bin/rspec
 
 # Run with documentation output
 bundle exec rspec --format documentation
