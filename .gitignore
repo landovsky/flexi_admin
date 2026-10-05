@@ -83,3 +83,4 @@ spec/dummy/log/*.log
 spec/dummy/tmp/
 spec/dummy/storage/
 spec/dummy/public/assets/
+.worktrees/
