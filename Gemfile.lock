@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    flexi_admin (0.0.6)
+    flexi_admin (0.0.7)
       actionview (>= 7.1, < 9)
       activesupport (>= 7.1, < 9)
       gemini-ai
