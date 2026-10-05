@@ -204,8 +204,9 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
 
       within('[data-testid="button-select-basic"]') do
         # Find buttons
-        admin_btn = find('button', text: 'Admin')
-        user_btn = find('button', text: 'User')
+        # exact_text + data-value: a stringified ["Admin", "admin"] pair must not pass
+        admin_btn = find('button[data-value="admin"]', exact_text: 'Admin')
+        user_btn = find('button[data-value="user"]', exact_text: 'User')
 
         # Click admin
         admin_btn.click

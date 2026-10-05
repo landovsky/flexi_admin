@@ -24,6 +24,18 @@ RSpec.describe FlexiAdmin::Components::Resource::ButtonSelectComponent, type: :c
     end
   end
 
+  describe 'with select_field-style [label, value] pairs' do
+    let(:options) { [%w[Admin admin], %w[Internal internal]] }
+
+    it 'shows the label and stores the value, instead of rendering the stringified array' do
+      render_inline(described_class.new(user, :role, options, form: nil))
+
+      expect(page).to have_css("button[data-value='admin']", exact_text: 'Admin')
+      expect(page).to have_css("button[data-value='internal']", exact_text: 'Internal')
+      expect(page).to have_no_text('["Admin"')
+    end
+  end
+
   describe 'with labels' do
     let(:labels) { { 'admin' => 'Administrátor', 'internal' => 'Interní', 'external' => 'Externí' } }
 
