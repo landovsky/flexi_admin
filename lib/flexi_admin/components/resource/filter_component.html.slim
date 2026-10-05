@@ -41,7 +41,9 @@
           .flex-shrink-0(style="min-width: 180px;")
             - select_classes = ['form-select']
             - select_classes << 'is-active' if filter[:current_value].present?
-            label.form-label.mb-0 = custom_label
-            = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), class: select_classes.join(' '), include_blank: true, onchange: 'this.form.submit();'
+            / Label doubles as the blank option (like the multi-select's button text), so every
+            / control in the bar has the same height and sits on one line.
+            label.visually-hidden for="filter_#{filter[:name]}" = custom_label
+            = select_tag filter[:name], options_for_select(filter[:options].map { |o| [o[:label], o[:value]] }, filter[:current_value]), id: "filter_#{filter[:name]}", class: select_classes.join(' '), include_blank: custom_label, onchange: 'this.form.submit();'
       .d-flex.gap-2
         = button_tag t('flexi_admin.filters.cancel', default: 'Zrušit'), type: 'button', class: 'btn btn-outline-secondary', onclick: "window.location = window.location.pathname;"

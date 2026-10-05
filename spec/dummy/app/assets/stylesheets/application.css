@@ -1,7 +1,4 @@
 /*
- * This is the main application stylesheet for the FlexiAdmin dummy app.
- * It uses Bootstrap 5 for base styling and adds custom component styles.
+ * Dummy app stylesheet. Intentionally (nearly) empty: the showcase should render with
+ * flexi_admin's own styles only, so what you see here is what host apps get.
  */
-
-/* Import component styles */
-@import "admin/components.css";

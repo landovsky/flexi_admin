@@ -91,6 +91,12 @@ a {
   }
 }
 
+// Checkbox/radio outline is the control's only visible boundary, so it needs ≥3:1 contrast;
+// the general --fa-border (≈1.3:1) left unchecked boxes nearly invisible.
+.form-check-input {
+  border-color: var(--fa-border-control);
+}
+
 .form-check-input:checked {
   background-color: var(--fa-primary);
   border-color: var(--fa-primary);
@@ -209,6 +215,13 @@ flexi-table {
 
     &:hover:not(.fw-bold) {
       background-color: var(--fa-row-hover);
+    }
+
+    // Rows are independent flex containers; with the default min-width:auto a long value
+    // widens its cell and shifts every column after it. Pin cells to their share and wrap.
+    > .col {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
   }
 }
