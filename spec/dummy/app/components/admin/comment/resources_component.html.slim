@@ -1,0 +1,4 @@
+/ Minimal nested resource view — just list, no bulk actions
+= render FlexiAdmin::Components::Resources::ViewComponent.new(context) do |c|
+  - c.with_views do
+    = render Admin::Comment::View::ListViewComponent.new(context)

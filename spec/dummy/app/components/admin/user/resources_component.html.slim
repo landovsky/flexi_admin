@@ -1,11 +1,35 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Resources Component Template
+/ ============================================================================
+/ This template composes the view area:
+/   1. ViewComponent wrapper (manages Turbo frame for sorting/pagination)
+/   2. Actions slot — view switcher + bulk action buttons
+/   3. Views slot — the actual list/grid view components
+/
+/ Bulk actions use the SelectComponent dropdown with action buttons inside.
+/ Each action references a BulkAction::ModalComponent subclass.
+/ ============================================================================
+
 = render FlexiAdmin::Components::Resources::ViewComponent.new(context) do |c|
+
+  / --- Actions toolbar ---
   - c.with_actions do
+    / View switcher (list/grid toggle) — only shown when views has 2+ entries
     = render FlexiAdmin::Components::Resources::SwitchViewComponent.new(context)
+
+    / Bulk action dropdown — groups action buttons in a select menu
     = render FlexiAdmin::Components::Actions::SelectComponent.new(context:) do |select|
+
+      / selection_dependent: true  => button disabled until rows are selected
+      / selection_dependent: false => button always enabled (operates on all/filtered)
       - select.with_action do
         = action Admin::User::BulkAction::DeleteModalComponent, selection_dependent: true
       - select.with_action do
         = action Admin::User::BulkAction::ExportModalComponent, selection_dependent: false
 
+  / --- Views ---
+  / Render both list and grid views. Only one renders based on context.params.current_view.
+  / The component's render? method handles view switching automatically.
   - c.with_views do
     = render Admin::User::View::ListViewComponent.new(context)
+    = render Admin::User::View::GridViewComponent.new(context)

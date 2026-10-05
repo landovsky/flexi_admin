@@ -1,0 +1,41 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Show Page Template
+/ ============================================================================
+/ The show page uses FlexiAdmin::Components::Resource::ViewComponent as wrapper.
+/ It provides:
+/   - Title (from resource.title)
+/   - Edit/Delete buttons (with Stimulus controllers)
+/   - Form slot (edit form, rendered in disabled mode by default)
+/   - Actions slot (custom action buttons)
+/   - Content area (everything after the slots — nested resources go here)
+/
+/ The edit button triggers form#enable Stimulus action to toggle edit mode.
+/ ============================================================================
+
+= render FlexiAdmin::Components::Resource::ViewComponent.new(context,
+    delete_confirm_message: 'Are you sure? This action cannot be undone.') do |c|
+
+  / --- Edit form slot ---
+  / Rendered in read-only (disabled) mode by default.
+  / The edit button toggles it to editable via Stimulus.
+  - c.with_form do
+    = render Admin::User::Show::EditFormComponent.new(resource, disabled: disabled)
+
+  / --- Custom actions slot (optional) ---
+  / Add action buttons that appear next to the edit/delete buttons.
+  - c.with_actions do
+    = render FlexiAdmin::Components::Actions::SelectComponent.new(scope: 'users') do |select|
+      - select.with_action do
+        = action Admin::User::BulkAction::ResetModalComponent, selection_dependent: false
+
+  / --- Nested resources ---
+  / Everything after the slots is rendered below the form.
+  / Use ResourcesComponent with parent: to enable nested CRUD.
+  .d-flex.flex-column.gap-4
+
+    / Nested comments list with parent context
+    div
+      h2 Comments
+      = render Admin::Comment::ResourcesComponent.new(comments,
+                                                       context_params:,
+                                                       parent: resource)

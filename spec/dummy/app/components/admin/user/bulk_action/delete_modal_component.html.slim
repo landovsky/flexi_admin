@@ -1,8 +1,18 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Bulk Action Modal Template — Delete
+/ ============================================================================
+/ modal(context) renders the modal dialog wrapper (header, footer, buttons).
+/ Inside, use the form DSL for any inputs the action needs.
+/
+/ span.count is auto-populated by the bulk-action Stimulus controller
+/ with the number of selected items.
+/ ============================================================================
+
 = modal(context) do |m|
   = form do
     p.text-danger
-      | Opravdu chcete smazat
+      | Are you sure you want to delete
       |
       span.count.fw-bold
       |
-      | uživatele? Tato akce je nevratná.
+      | users? This action cannot be undone.

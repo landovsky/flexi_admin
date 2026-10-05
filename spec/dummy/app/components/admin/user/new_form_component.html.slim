@@ -1,0 +1,13 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: New Form Template
+/ ============================================================================
+/ The new form is rendered by the controller's `new` action.
+/ It uses the same form DSL as the edit form, but POSTs to the create action.
+/ ============================================================================
+
+= form url: admin_users_path, method: :post do
+  = text_field 'user[full_name]', label: 'Full Name', value: -> { resource.full_name }, required: true
+  = text_field 'user[email]', label: 'Email', value: -> { resource.email }, required: true
+  = text_field 'user[phone]', label: 'Phone', value: -> { resource.phone }
+  = text_field 'user[personal_number]', label: 'Personal Number', value: -> { resource.personal_number }
+  = submit

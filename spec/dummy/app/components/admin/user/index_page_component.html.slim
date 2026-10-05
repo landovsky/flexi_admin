@@ -1,11 +1,37 @@
-= render FlexiAdmin::Components::Resources::IndexPageComponent.new(resources,
-                                           scope: 'users',
-                                           title: 'Uživatelé',
-                                           context_params:) do |c|
-  - c.with_filter
-    = render FlexiAdmin::Components::Resource::FilterComponent.new(filter_options: { role: { options: [['user', 'User'], ['admin', 'Admin']], multiple: false } },
-                                                                   params:,
-                                                                   search_field: text_field_tag('q', params[:q], placeholder: 'jméno, email', class: 'form-control'),
-                                                                   field_labels: { "q" => "Hledat", "role" => "Role" })
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Index Page Template
+/ ============================================================================
+/ The IndexPageComponent wraps:
+/   1. Title + subtitle
+/   2. Filter slot (search + dropdown filters)
+/   3. ResourcesComponent (list/grid views + bulk actions)
+/
+/ The template re-instantiates the gem's IndexPageComponent with config params.
+/ This "double render" pattern exists so the app controls slot content.
+/ ============================================================================
 
+= render FlexiAdmin::Components::Resources::IndexPageComponent.new(resources, \
+                                           scope: 'users', \
+                                           title: 'Users', \
+                                           subtitle: 'Manage user accounts', \
+                                           context_params:) do |c|
+
+  / --- Filter slot ---
+  / FilterComponent provides search + dropdown filters. Turbo-powered (no full reload).
+  /
+  / filter_options: hash of { param_name => { options: [[value, label], ...], multiple: bool } }
+  / search_field:   any input tag — its value is submitted as params[:q]
+  / field_labels:   display labels for filter dropdowns and search
+  - c.with_filter
+    = render FlexiAdmin::Components::Resource::FilterComponent.new( \
+        filter_options: { \
+          role: { options: [['user', 'User'], ['admin', 'Admin']], multiple: false }, \
+          user_type: { options: [['internal', 'Internal'], ['external', 'External']], multiple: true } \
+        }, \
+        params:, \
+        search_field: text_field_tag('q', params[:q], placeholder: 'search by name or email...', class: 'form-control'), \
+        field_labels: { "q" => "Search", "role" => "Role", "user_type" => "Type" })
+
+  / --- Resources slot ---
+  / ResourcesComponent manages list/grid view switching, bulk actions, and pagination.
   = render Admin::User::ResourcesComponent.new(resources, context_params:)

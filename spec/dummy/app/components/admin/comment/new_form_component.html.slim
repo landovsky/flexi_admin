@@ -1,0 +1,5 @@
+= form url: admin_user_comments_path(parent), method: :post do
+  - if parent
+    = hidden_field 'fa_parent', value: parent.to_global_id.to_s
+  = text_field 'comment[content]', label: 'Content', value: -> { resource.content }
+  button.btn.btn-primary type="submit" Create

@@ -1,8 +1,59 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: List View Template
+/ ============================================================================
+/ The list_view block defines table columns. Available DSL:
+/
+/   selectable                           — adds checkbox column for bulk actions
+/   column :attr, label: '...', ...      — define a table column
+/
+/ Column options:
+/   label:    'Header'                   — column header text
+/   sortable: true                       — sort by attribute name
+/   sortable: 'other_table.column'       — sort by a different column
+/   width:    3                          — Bootstrap grid width (1-12)
+/   as:       :date                      — value formatter (:text, :date, :navigation)
+/   justify:  :end                       — text alignment (:start, :end, :center)
+/
+/ Column block receives each resource for custom rendering.
+/ Use navigate_to(text, resource) to create a link to the show page.
+/ ============================================================================
+
 = list_view do
+
+  / Enable row selection checkboxes (required for selection_dependent bulk actions)
   - selectable
-  - column :full_name, label: 'Jméno', sortable: true do |user|
+
+  / --- Clickable name column with sorting ---
+  - column :full_name, label: 'Name', sortable: true do |user|
     - navigate_to user.full_name || '-', user
-  - column :email, label: 'Email', sortable: true do |user|
-    - navigate_to user.email, user
-  - column :phone, label: 'Telefon'
-  - column :role, label: 'Role'
+
+  / --- Simple sortable column ---
+  - column :email, label: 'Email', sortable: true
+
+  / --- Plain column (no sorting) ---
+  - column :phone, label: 'Phone'
+
+  / --- Custom rendered column using helper method ---
+  - column :role, label: 'Role', sortable: true do |user|
+    = role_badge(user.role)
+
+  / --- Date formatter ---
+  / as: :date uses I18n.l for locale-aware formatting (requires locale config).
+  / Use a custom block when I18n locales are not configured:
+  - column :created_at, label: 'Created', sortable: true do |user|
+    = user.created_at&.strftime('%Y-%m-%d')
+
+  / --- Column with custom block and width ---
+  - column :sign_in_count, label: 'Logins', width: 1, justify: :end do |user|
+    = user.sign_in_count || 0
+
+  / --- Row-level actions dropdown ---
+  / actions_dropdown groups multiple action buttons in a dropdown menu per row.
+  / Use with_dropdown_action slot + action_button(item, Modal, dropdown: true).
+  / For a single action without dropdown, use action_button(item, ModalComponent).
+  - column :actions, label: '', width: 1 do |user|
+    = actions_dropdown(user) do |dropdown|
+      - dropdown.with_dropdown_action do
+        = action_button(user, Admin::User::BulkAction::ResetModalComponent, dropdown: true)
+      - dropdown.with_dropdown_action do
+        = action_button(user, Admin::User::BulkAction::DeleteModalComponent, dropdown: true)

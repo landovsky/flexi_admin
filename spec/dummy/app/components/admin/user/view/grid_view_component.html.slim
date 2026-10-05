@@ -1,0 +1,27 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Grid View Template
+/ ============================================================================
+/ The grid_view block defines card content. Available DSL:
+/
+/   image  :attr, ...    — card image (expects ActiveStorage attachment)
+/   header :attr, ...    — card subtitle (small, muted text above title)
+/   title  :attr, ...    — card title (clickable link to show page)
+/   description :attr    — card body text
+/   quick_action { }     — custom action overlay on card
+/
+/ Each method accepts:
+/   - An attribute name (called on resource)
+/   - as: :text/:date formatter
+/   - A block for custom rendering (receives resource)
+/ ============================================================================
+
+= grid_view do
+
+  / --- Card header (subtitle above title) ---
+  - header :role, as: :text
+
+  / --- Card title (becomes a link to show page via navigate_to) ---
+  - title :full_name
+
+  / --- Card description ---
+  - description :email, as: :text

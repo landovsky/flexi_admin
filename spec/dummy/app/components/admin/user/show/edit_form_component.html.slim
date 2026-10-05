@@ -1,0 +1,69 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Edit Form Template
+/ ============================================================================
+/ The form DSL (from FormMixin) provides:
+/
+/   form(url:, method:, css_class:, label_col:, field_col:)
+/     — Wraps fields in a form element with Turbo/Stimulus wiring
+/
+/   Field types:
+/     text_field      :attr, label:, value:, required:, disabled:, expandable:
+/     number_field    :attr, label:, value:, step:
+/     date_field      :attr, label:, value:
+/     datetime_field  :attr, label:, value:
+/     text_area_field :attr, label:, value:
+/     html_field      :attr, label:, value:          — Trix WYSIWYG editor
+/     select_field    :attr, label:, options:, value:
+/     button_select_field :attr, label:, options:, value:  — button toggle group
+/     checkbox_field  :attr, label:, checked:
+/     hidden_field    :attr, value:
+/     custom_field    ComponentInstance, label:       — any ViewComponent
+/
+/   Layout:
+/     header 'Title', description: '...'             — section divider
+/     columns { column { ... } }                     — multi-column layout
+/     submit 'Label', cancel_button: true, icon: '...'
+/
+/   Value parameter:
+/     value: -> { resource.attr }                    — lambda (deferred evaluation)
+/     value: 'static'                                — static value
+/     (omit for auto-resolve from resource attribute)
+/
+/ ============================================================================
+
+= form url: resource_path(resource), method: :patch do
+
+  / --- Section header ---
+  = header 'Basic Information'
+
+  / --- Required text field ---
+  = text_field 'user[full_name]', label: 'Full Name', value: -> { user.full_name }, required: true
+
+  / --- Multi-column layout ---
+  = columns do
+    = column do
+      = text_field 'user[email]', label: 'Email', value: -> { user.email }, required: true
+      = text_field 'user[phone]', label: 'Phone', value: -> { user.phone }
+    = column do
+      = text_field 'user[personal_number]', label: 'Personal Number', value: -> { user.personal_number }
+      = date_field 'user[created_at]', label: 'Created At', value: -> { user.created_at&.to_date }
+
+  / --- Section header with description ---
+  = header 'Role & Access', description: 'Configure user permissions and type'
+
+  / --- Select field (dropdown) ---
+  = select_field 'user[role]', label: 'Role', options: role_options, value: -> { user.role }
+
+  / --- Button select field (toggle buttons) ---
+  = button_select_field 'user[user_type]', label: 'User Type', options: type_options, value: -> { user.user_type }
+
+  / --- Number field ---
+  = number_field 'user[sign_in_count]', label: 'Sign-in Count', value: -> { user.sign_in_count }, step: 1
+
+  / --- Datetime field ---
+  = datetime_field 'user[last_sign_in_at]', label: 'Last Sign-in', value: -> { user.last_sign_in_at }
+
+  / --- Submit button with options ---
+  / cancel_button: true adds a cancel link next to submit
+  / icon: 'bootstrap-icon-name' adds an icon to the button
+  = submit 'Save', cancel_button: true, icon: 'check-lg' unless disabled

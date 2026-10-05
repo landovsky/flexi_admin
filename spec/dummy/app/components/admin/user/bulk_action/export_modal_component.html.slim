@@ -1,3 +1,10 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Bulk Action Modal Template — Export with form fields
+/ ============================================================================
+/ Modal templates can include form fields using either the FlexiAdmin form DSL
+/ or raw HTML form elements. Field values are submitted as params to the Processor.
+/ ============================================================================
+
 = modal(context) do |m|
   = form do
     p
@@ -5,9 +12,11 @@
       |
       span.count.fw-bold
       |
-      | uživatelů do CSV.
+      | users to a file.
+
+    / Use standard HTML form elements or the FlexiAdmin form DSL
     .form-group
-      label.form-label Formát
+      label.form-label Format
       select.form-select name="format"
         option value="csv" CSV
         option value="xlsx" Excel (XLSX)

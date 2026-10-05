@@ -1,0 +1,15 @@
+/ ============================================================================
+/ FLEXI ADMIN EXAMPLE: Bulk Action Modal Template — Reset
+/ ============================================================================
+/ Simple confirmation modal with no extra form fields.
+/ The reload: :page in the Processor result triggers a full page refresh.
+/ ============================================================================
+
+= modal(context) do |m|
+  = form do
+    p
+      | Reset sign-in data for
+      |
+      span.count.fw-bold
+      |
+      | users?
