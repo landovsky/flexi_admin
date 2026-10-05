@@ -29,7 +29,7 @@ module FlexiAdmin::Components::Resources
          (context.views.first == "list" && context.params.current_view.blank?)
         "active"
       else
-        "bg-white text-dark"
+        "bg-body text-body"
       end
     end
 
@@ -38,7 +38,7 @@ module FlexiAdmin::Components::Resources
          (context.views.first == "grid" && context.params.current_view.blank?)
         "active"
       else
-        "bg-white text-dark"
+        "bg-body text-body"
       end
     end
   end

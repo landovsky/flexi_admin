@@ -15,7 +15,7 @@ div.flexi-tabs id=id data-controller=("tabs" if remember?)
                          aria-selected=active.to_s]
           = tab.label
           - unless tab.count.nil?
-            span.badge.rounded-pill.text-bg-light.ms-2 = tab.count
+            span.badge.rounded-pill.bg-body-tertiary.text-body-secondary.ms-2 = tab.count
 
   .tab-content
     - tabs.each do |tab|

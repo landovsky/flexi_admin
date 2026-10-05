@@ -132,6 +132,8 @@ a {
 
 .btn-outline-primary {
   --bs-btn-color: var(--fa-primary);
+  --bs-btn-hover-color: var(--fa-on-primary);
+  --bs-btn-active-color: var(--fa-on-primary);
   --bs-btn-border-color: var(--fa-primary);
   --bs-btn-hover-bg: var(--fa-primary);
   --bs-btn-hover-border-color: var(--fa-primary);
@@ -145,10 +147,27 @@ a {
   --bs-btn-hover-bg: var(--fa-surface-alt);
   --bs-btn-hover-border-color: var(--fa-border-strong);
   --bs-btn-hover-color: var(--fa-text);
+  --bs-btn-active-bg: var(--fa-surface-hover);
+  --bs-btn-active-border-color: var(--fa-border-strong);
+  --bs-btn-active-color: var(--fa-text);
+}
+
+.btn-danger {
+  --bs-btn-color: var(--fa-on-danger);
+  --bs-btn-bg: var(--fa-danger);
+  --bs-btn-border-color: var(--fa-danger);
+  --bs-btn-hover-color: var(--fa-on-danger);
+  --bs-btn-hover-bg: var(--fa-danger-hover);
+  --bs-btn-hover-border-color: var(--fa-danger-hover);
+  --bs-btn-active-color: var(--fa-on-danger);
+  --bs-btn-active-bg: var(--fa-danger-hover);
+  --bs-btn-active-border-color: var(--fa-danger-hover);
 }
 
 .btn-outline-danger {
   --bs-btn-color: var(--fa-danger);
+  --bs-btn-hover-color: var(--fa-on-danger);
+  --bs-btn-active-color: var(--fa-on-danger);
   --bs-btn-border-color: var(--fa-danger);
   --bs-btn-hover-bg: var(--fa-danger);
   --bs-btn-hover-border-color: var(--fa-danger);
@@ -169,6 +188,7 @@ a {
 
 .badge.bg-primary {
   background-color: var(--fa-primary) !important;
+  color: var(--fa-on-primary);
 }
 
 // --------------------------------------------------------------------------

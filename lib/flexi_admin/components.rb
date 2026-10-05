@@ -38,6 +38,8 @@ require_relative "components/resource/form_mixin"
 # Nav Components
 require_relative "components/nav/floating_toc_component"
 require_relative "components/nav/breadcrumbs_component"
+require_relative "components/nav/theme_script_component"
+require_relative "components/nav/theme_toggle_component"
 
 # Action Components
 require_relative "components/actions/checkbox_component"

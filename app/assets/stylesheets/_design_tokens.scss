@@ -28,12 +28,16 @@
 
   // Backgrounds
   --fa-bg:               #FAFAFA;
+  --fa-bg-rgb:           250, 250, 250;
   --fa-surface:          #FFFFFF;
+  --fa-surface-rgb:      255, 255, 255;
   --fa-surface-alt:      #F4F4F5;
+  --fa-surface-alt-rgb:  244, 244, 245;
   --fa-surface-hover:    #ECECED;
 
   // Text
   --fa-text:             #18181B;
+  --fa-text-rgb:         24, 24, 27;
   --fa-text-muted:       #71717A;
   --fa-text-subtle:      #A1A1AA;
 
@@ -46,6 +50,7 @@
   --fa-danger:           #EF4444;
   --fa-danger-rgb:       239, 68, 68;
   --fa-danger-hover:     #DC2626;
+  --fa-on-danger:        #FFFFFF;   // text/icons placed on a danger background
 
   --fa-success:          #10B981;
   --fa-success-rgb:      16, 185, 129;
@@ -199,4 +204,79 @@
   --bs-link-color:         var(--fa-primary);
   --bs-link-color-rgb:     var(--fa-primary-rgb);
   --bs-link-hover-color:   var(--fa-primary-hover);
+
+  --bs-emphasis-color:     var(--fa-text);
+  // Bootstrap utilities (.bg-body, .bg-body-tertiary, .text-body…) read the -rgb variants;
+  // without these they keep Bootstrap's own palette (blue-grey in dark mode).
+  --bs-body-bg-rgb:        var(--fa-bg-rgb);
+  --bs-body-color-rgb:     var(--fa-text-rgb);
+  --bs-emphasis-color-rgb: var(--fa-text-rgb);
+  --bs-secondary-bg-rgb:   var(--fa-surface-alt-rgb);
+  --bs-tertiary-bg-rgb:    var(--fa-surface-alt-rgb);
+  --bs-secondary-bg:       var(--fa-surface-alt);   // disabled inputs, secondary surfaces
+  --bs-border-color-translucent: var(--fa-border);
+}
+
+// ============================================================================
+// Dark theme
+// ============================================================================
+// Activated by <html data-bs-theme="dark"> — the same switch Bootstrap 5.3 uses, so
+// Bootstrap's own components (dropdowns, modals, select arrows, close buttons) flip too.
+// Only color tokens change; the --bs-* mappings above resolve against these values.
+// Use the `flexi_admin_theme_script` helper to set the attribute from the user's saved
+// choice or OS preference before first paint.
+//
+// Primary is a lighter indigo here: no single indigo carries both white button text and
+// readable links on a near-black background, so text on primary flips to dark.
+// All text pairs below meet WCAG AA (≥4.5:1); control outlines meet 1.4.11 (≥3:1).
+// ============================================================================
+
+:root[data-bs-theme="dark"] {
+  color-scheme: dark;   // native controls: date pickers, scrollbars, autofill
+
+  --fa-primary:          #818CF8;
+  --fa-primary-rgb:      129, 140, 248;
+  --fa-primary-hover:    #A5B4FC;
+  --fa-primary-light:    #1E1B4B;
+  --fa-on-primary:       #111114;
+
+  --fa-accent:           #FBBF24;
+  --fa-accent-rgb:       251, 191, 36;
+
+  --fa-bg:               #111114;
+  --fa-bg-rgb:           17, 17, 20;
+  --fa-surface:          #1A1A1E;
+  --fa-surface-rgb:      26, 26, 30;
+  --fa-surface-alt:      #26262B;
+  --fa-surface-alt-rgb:  38, 38, 43;
+  --fa-surface-hover:    #2E2E34;
+
+  --fa-text:             #F4F4F5;
+  --fa-text-rgb:         244, 244, 245;
+  --fa-text-muted:       #A1A1AA;
+  --fa-text-subtle:      #8B8B94;
+
+  --fa-border:           #2E2E34;
+  --fa-border-strong:    #3F3F46;
+  --fa-border-control:   #7A7A84;
+
+  --fa-danger:           #F87171;
+  --fa-danger-rgb:       248, 113, 113;
+  --fa-danger-hover:     #FCA5A5;
+  --fa-on-danger:        #111114;
+
+  --fa-success:          #34D399;
+  --fa-success-rgb:      52, 211, 153;
+
+  --fa-warning:          #FBBF24;
+  --fa-warning-rgb:      251, 191, 36;
+
+  --fa-info:             #60A5FA;
+  --fa-info-rgb:         96, 165, 250;
+
+  --fa-shadow-xs:        0 1px 2px rgba(0, 0, 0, 0.4);
+  --fa-shadow-sm:        0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --fa-shadow-md:        0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --fa-shadow-lg:        0 10px 15px -3px rgba(0, 0, 0, 0.55), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --fa-shadow-xl:        0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }

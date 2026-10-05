@@ -16,9 +16,9 @@
             - new_params.delete(k) if new_params[k].empty?
           - else
             - new_params.delete(k)
-          span.badge.bg-primary.text-white.mx-1
+          span.badge.bg-primary.mx-1
             = "#{field_labels[k] || k.humanize}: #{label}"
-            = link_to helpers.url_for(params: new_params), class: 'text-white ms-1', title: "Odebrat filtr" do
+            = link_to helpers.url_for(params: new_params), class: "text-reset ms-1", title: "Odebrat filtr" do
               i.bi.bi-x
   .form-bar.w-100
     = form_with url: '', method: :get, local: true, html: { class: 'd-flex align-items-center flex-row flex-wrap gap-2 w-100 filter-bar', style: '', data: { controller: 'filter-auto-submit' } } do

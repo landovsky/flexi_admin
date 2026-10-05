@@ -32,6 +32,22 @@ view-switch and row-action buttons. Load both in your layout, e.g.:
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 ```
 
+### Dark theme
+
+Light and dark palettes ship as design tokens (`_design_tokens.scss`). Dark mode is switched
+by `<html data-bs-theme="dark">` — the same attribute Bootstrap 5.3 uses, so Bootstrap's own
+components follow. Add the pre-paint script to your layout's `<head>` (after stylesheets) and,
+optionally, the toggle wherever you want it:
+
+```erb
+<%= render FlexiAdmin::Components::Nav::ThemeScriptComponent.new %>   <%# in <head> %>
+<%= render FlexiAdmin::Components::Nav::ThemeToggleComponent.new %>   <%# e.g. navbar %>
+```
+
+The choice (`auto` / `light` / `dark`) is stored in `localStorage`; `auto` (default) follows
+the OS setting. Use `ThemeScriptComponent.new(default: "light")` to ignore the OS until the
+user picks. To re-theme, override `--fa-*` tokens on `:root` and on `:root[data-bs-theme="dark"]`.
+
 ### JavaScript Integration
 
 FlexiAdmin works with modern JavaScript bundlers. Choose your bundler below:
