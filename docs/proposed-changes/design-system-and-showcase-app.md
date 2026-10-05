@@ -71,6 +71,11 @@ Fixed during the review:
 | Show page 500 in development: `GlobalID.app` unset | dummy requires `global_id/railtie` (tests masked it by setting `GlobalID.app` in `rails_helper`) |
 | `button_select_field` demo passed `[label, value]` pairs | plain values + `labels:` |
 
+Fixed in a follow-up round (user-reported): `datetime_field` now `datetime-local` (native
+picker); filter bar, pagination and list columns aligned (dummy's leftover `components.css`
+removed, `flexi-table` cells `min-width: 0`); checkbox outlines get `--fa-border-control`
+(3.4:1, was 1.27:1); `as: :date` shows dates; `TabsComponent` showcased on the user page.
+
 Open findings (not fixed):
 
 1. **No dark theme.** Tokens are a single light `:root` palette and hard-override Bootstrap's
@@ -82,14 +87,9 @@ Open findings (not fixed):
    `en`/`cs` locale files.
 3. **`fa_view` shown as an active filter** ("Aktivní filtry: Fa view: grid") after switching to
    grid view — internal `fa_*` params should be excluded from the filter summary.
-4. **List rows misalign** when content widths differ (rows with a phone number shift the
-   Role/Created columns) — `flexi-table` rows are independent flex rows, not a grid.
-5. **`datetime_field` renders a text input** with `2026-09-11 04:16:25 UTC`, truncated by the
-   input width.
-6. **Breadcrumbs**: collection crumb is singular ("User" for `/admin/users`); `Admin` crumb is
+4. **Breadcrumbs**: collection crumb is singular ("User" for `/admin/users`); `Admin` crumb is
    not a link.
-7. **Grid cards** reserve a large empty image area when the resource has no image.
-8. Role filter `<select>` has a blank default option with no placeholder text.
+5. **Grid cards** reserve a large empty image area when the resource has no image.
 
 ## Remaining work
 
