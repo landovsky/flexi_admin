@@ -64,6 +64,17 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
     end
   end
 
+  describe 'Custom column blocks' do
+    context 'a Slim column block that writes output with = instead of returning it' do
+      it 'renders the output inside its table cell rather than leaking it above the table' do
+        visit '/admin/users'
+
+        expect(page).to have_css('flexi-table .badge', text: 'admin')
+        expect(page).to have_no_css('.badge:not(flexi-table .badge)')
+      end
+    end
+  end
+
   describe 'Sorting' do
     # UL-006: Sort by Full Name
     it 'sorts users by full name' do

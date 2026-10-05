@@ -74,8 +74,19 @@ module FlexiAdmin::Components::Resources
       options[:formatter] = format(options[:as] || :text)
 
       Column.new(attribute,
-                block || proc { |resource| resource.send(attribute) },
+                block ? capturing(block) : proc { |resource| resource.send(attribute) },
                 options.presence || {})
+    end
+
+    # A column block may return the cell value (`- navigate_to ...`) or write it to the
+    # template (`= role_badge(...)`). Capture both, so written output lands in the cell
+    # instead of leaking into the template above the table.
+    def capturing(block)
+      proc do |resource|
+        result = nil
+        captured = capture { result = block.call(resource) }
+        captured.presence || result
+      end
     end
   end
 end
