@@ -71,13 +71,6 @@ yarn-debug.log*
 .envrc
 .rspec_status
 
-# Ignore beads
-.beads/export-state*
-.beads/issues.jsonl
-
-# bv (beads viewer) local config and caches
-.bv/
-
 # esbuild output directories
 spec/dummy/app/assets/builds/
 spec/dummy/node_modules/

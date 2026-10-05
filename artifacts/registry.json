@@ -29,8 +29,7 @@
       "testing": "RSpec + Capybara + Selenium, DatabaseCleaner with truncation for JS tests, file-based SQLite (NOT :memory:)",
       "javascript": "esbuild with watch mode (context + watch), Stimulus controllers",
       "components": "ViewComponent chain: IndexPage → Resources → ListView, Slim templates delegate to gem",
-      "params": "Search: q, Sort: fa_sort/fa_order, Pagination: fa_page/fa_per_page",
-      "task_tracking": "Beads (bd) for all issue tracking"
+      "params": "Search: q, Sort: fa_sort/fa_order, Pagination: fa_page/fa_per_page"
     }
   }
 }

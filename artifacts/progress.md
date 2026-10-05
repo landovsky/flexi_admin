@@ -13,7 +13,6 @@ This document summarizes development progress over the past 4 months, covering m
 ### Testing & Documentation Setup (Feb 2, 2026)
 - **UI Test Cases**: Comprehensive UI test case documentation created
 - **Claude Integration**: Set up Claude AI tooling for development assistance
-- **Beads Setup**: Integrated Beads issue tracking system with Git workflow
 - **Test Coverage Strategy**: Established end-to-end testing strategy and context documentation
 
 ### Bulk Action Selection Persistence (January 24, 2026)
@@ -150,7 +149,6 @@ This document summarizes development progress over the past 4 months, covering m
 
 ### Developer Experience
 ✅ Claude AI integration for development assistance
-✅ Beads issue tracking integration
 ✅ Comprehensive test documentation
 ✅ Improved component organization
 ✅ Better nested model support
@@ -205,7 +203,6 @@ This document summarizes development progress over the past 4 months, covering m
 - Autocomplete behavior
 
 ### Development Tools Added
-- `.beads/` - Issue tracking integration
 - `.claude/` - AI assistance configuration
 - Test artifacts and documentation
 - Lessons learned documentation
@@ -228,7 +225,6 @@ Based on commit patterns, potential areas for continued focus:
 - Active development branch: `epic/end-to-end-tests-vol2`
 - Main integration branch: `main`
 - Development workflow now includes Claude AI assistance
-- Issue tracking migrated to Beads system
 - Strong focus on UX improvements and bug fixes in recent months
 
 ---

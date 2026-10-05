@@ -4,28 +4,6 @@
 
 **FlexiAdmin** is a Rails engine providing an admin interface framework with ViewComponent-based architecture, Stimulus controllers, and Turbo Stream integration. The `spec/dummy` app serves as both a test harness and reference implementation.
 
-## Task Management
-
-This project uses **bd** (beads) for issue tracking. Run `bd onboard` to get started.
-
-### Quick Reference
-
-```bash
-bd ready              # Find available work
-bd show <id>          # View issue details
-bd update <id> --status in_progress  # Claim work
-bd close <id>         # Complete work
-bd sync               # Sync with git
-```
-
-### Workflow
-
-1. Check `bd ready` for available issues (no blockers)
-2. Claim with `bd update <id> --status in_progress`
-3. Complete work and commit changes
-4. Close with `bd close <id> --reason="description"`
-5. Run `bd sync` before ending session
-
 ## Artifacts Registry
 
 This project maintains a registry of documentation artifacts at **`artifacts/registry.json`**.
@@ -136,8 +114,7 @@ flexi_admin_/
 2. Commit frequently with descriptive messages
 3. Use conventional commit format: `feat:`, `fix:`, `chore:`, etc.
 4. Add `Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>` to commit messages
-5. Run `bd sync` to sync beads with git
-6. Push to remote regularly
+5. Push to remote regularly
 
 ## Common Tasks
 
@@ -199,9 +176,7 @@ Before saying "done" or "complete":
 ```
 [ ] git status              # Check what changed
 [ ] git add <files>         # Stage code changes
-[ ] bd sync                 # Commit beads changes
 [ ] git commit -m "..."     # Commit code with Co-Authored-By
-[ ] bd sync                 # Commit any new beads changes
 [ ] git push                # Push to remote
 ```
 
