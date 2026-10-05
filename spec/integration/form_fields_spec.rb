@@ -267,12 +267,14 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
 
   describe 'Datetime Fields' do
     # FF-027: Datetime Field - Selection
-    it 'shows datetime field with datetime value' do
-      visit '/admin/test/form_fields'
+    context 'type="datetime" is obsolete and browsers render it as plain text with no picker' do
+      it 'renders a datetime-local input whose value the native picker can parse' do
+        visit '/admin/test/form_fields'
 
-      within('[data-testid="datetime-basic"]') do
-        input = find('input[type="datetime"]') rescue find('input[type="datetime-local"]')
-        expect(input.value).to be_present
+        within('[data-testid="datetime-basic"]') do
+          input = find('input[type="datetime-local"]')
+          expect(input.value).to match(/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\z/)
+        end
       end
     end
 
@@ -281,7 +283,7 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
       visit '/admin/test/form_fields'
 
       within('[data-testid="datetime-disabled"]') do
-        input = find('input[type="datetime"]') rescue find('input[type="datetime-local"]')
+        input = find('input[type="datetime-local"]')
         expect(input[:disabled]).to eq('true')
       end
     end

@@ -118,8 +118,12 @@ module FlexiAdmin::Components::Resource
       inline ? field_wrapper : render_form_row(attr_name, field_wrapper, label:, required: html_options[:required])
     end
 
+    # type="datetime" is obsolete and renders as a plain text input; datetime-local gives the
+    # native picker but only accepts values formatted as YYYY-MM-DDTHH:MM.
     def datetime_field(attr_name, label: nil, value: nil, **html_options)
-      field = render_standard_field(:datetime, attr_name, value, html_options.merge(style: 'max-width: 180px;'))
+      raw = value.is_a?(Proc) ? value.call : resource.try(attr_name) || value
+      local_value = raw.respond_to?(:strftime) ? raw.strftime('%Y-%m-%dT%H:%M') : raw
+      field = render_standard_field(:'datetime-local', attr_name, -> { local_value }, html_options.merge(style: 'max-width: 240px;'))
       field_wrapper = render_field_wrapper(field, attr_name)
 
       inline ? field_wrapper : render_form_row(attr_name, field_wrapper, label:, required: html_options[:required])
