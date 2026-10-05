@@ -49,9 +49,29 @@ RSpec.describe 'User Detail Page', type: :feature, js: true do
       it "renders the parent's children via the nested route instead of crashing on a missing flat route" do
         visit "/admin/users/#{user.id}"
 
-        expect(page).to have_css('h2', text: 'Comments')
+        expect(page).to have_css('#user-tab-comments .badge', text: '1')
         expect(page).to have_content('Belongs to Test User')
         expect(page).not_to have_content('Belongs to someone else')
+        # as: :date on a timestamp column shows the date, not the full time format
+        expect(page).to have_css('#user-pane-comments flexi-table', text: own_comment.created_at.to_date.iso8601)
+        expect(page).to have_no_css('#user-pane-comments flexi-table', text: '+0000')
+      end
+    end
+  end
+
+  describe 'Tabs' do
+    context 'the open tab lives in the URL hash so a reload or shared link lands on the same section' do
+      it 'reopens the Activity tab after a reload' do
+        visit "/admin/users/#{user.id}"
+        expect(page).to have_css('#user-pane-comments.active')
+
+        click_button 'Activity'
+        expect(page).to have_css('#user-pane-activity.active', text: 'Sign-ins')
+        expect(page).to have_current_path(/#activity\z/, url: true)
+
+        page.driver.browser.navigate.refresh
+        expect(page).to have_css('#user-pane-activity.active')
+        expect(page).to have_no_css('#user-pane-comments.active')
       end
     end
   end

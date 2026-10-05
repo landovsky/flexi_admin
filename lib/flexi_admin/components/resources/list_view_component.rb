@@ -46,16 +46,6 @@ module FlexiAdmin::Components::Resources
         (context.views.first == 'list' && context.params.current_view.blank?)
     end
 
-    def as_text(value)
-      value.to_s
-    end
-
-    def as_date(value, format: nil)
-      return if value.blank?
-
-      I18n.l(value, format:)
-    end
-
     def list_view
       yield
 

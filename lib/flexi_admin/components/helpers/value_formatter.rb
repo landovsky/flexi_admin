@@ -6,9 +6,12 @@ module FlexiAdmin::Components::Helpers::ValueFormatter
     value.to_s
   end
 
+  # Times/datetimes are reduced to their date: `as: :date` on a created_at column should read
+  # 2026-10-05, not the locale's full time format.
   def as_date(value, format: nil)
     return nil if value.blank?
 
+    value = value.to_date if value.respond_to?(:to_date) && !value.is_a?(String)
     I18n.l(value, format:)
   end
 

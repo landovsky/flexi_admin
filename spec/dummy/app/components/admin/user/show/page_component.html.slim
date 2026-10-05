@@ -28,14 +28,26 @@
       - select.with_action do
         = action Admin::User::BulkAction::ResetModalComponent, selection_dependent: false
 
-  / --- Nested resources ---
-  / Everything after the slots is rendered below the form.
-  / Use ResourcesComponent with parent: to enable nested CRUD.
-  .d-flex.flex-column.gap-4
+  / --- Tabs below the form ---
+  / TabsComponent splits a long page into Bootstrap tabs. Every pane is rendered up front;
+  / the open tab is kept in the URL hash (#comments), so reload or a shared link reopens it.
+  /   with_tab(key:, label:, count: nil, active: false)  — count renders a badge
+  /   TabsComponent.new(id:, remember: true, nav_class: 'mb-4')
+  = render FlexiAdmin::Components::Shared::TabsComponent.new(id: 'user') do |tabs|
 
-    / Nested comments list with parent context
-    div
-      h2 Comments
+    / Nested resources: ResourcesComponent with parent: enables nested CRUD.
+    - tabs.with_tab(key: 'comments', label: 'Comments', count: user.comments.size)
       = render Admin::Comment::ResourcesComponent.new(comments,
                                                        context_params:,
                                                        parent: resource)
+
+    - tabs.with_tab(key: 'activity', label: 'Activity')
+      dl.row.mb-0
+        dt.col-sm-3 Created
+        dd.col-sm-9 = l(user.created_at, format: :long)
+        dt.col-sm-3 Last updated
+        dd.col-sm-9 = l(user.updated_at, format: :long)
+        dt.col-sm-3 Last sign-in
+        dd.col-sm-9 = user.last_sign_in_at ? l(user.last_sign_in_at, format: :long) : 'Never'
+        dt.col-sm-3 Sign-ins
+        dd.col-sm-9 = user.sign_in_count.to_i
