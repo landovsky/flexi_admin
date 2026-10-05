@@ -103,6 +103,6 @@ RSpec.configure do |config|
   # Load I18n with flexi_admin locales
   flexi_admin_root = File.expand_path('../..', __dir__)
   I18n.load_path += Dir[File.join(flexi_admin_root, 'config', 'locales', '*.yml')]
-  I18n.default_locale = :cs
-  I18n.available_locales = [:cs, :en]
+  I18n.default_locale = :en
+  I18n.available_locales = [:en, :cs]
 end

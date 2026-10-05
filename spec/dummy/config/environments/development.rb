@@ -5,52 +5,38 @@ require 'active_support/core_ext/integer/time'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.hosts ||= []
-  config.hosts << 'hp-ubuntu.skunk-escalator.ts.net:3999'
+  # Allow serving the showcase over Tailscale (see QUICKSTART.md).
+  config.hosts << 'hp-ubuntu.skunk-escalator.ts.net'
 
-  # Turn false under Spring and add config.action_view.cache_template_loading = true.
-  config.cache_classes = true
+  # Reload code on every request so component/template edits show up without restarts.
+  config.enable_reloading = true
+  config.eager_load = false
 
-  # Eager loading loads your whole application. When running a single test locally,
-  # this probably isn't necessary. It's a good idea to do in a continuous integration
-  # system, or in some way before deploying your code.
-  config.eager_load = ENV['CI'].present?
-
-  # Configure public file server for tests with Cache-Control for performance.
-  config.public_file_server.enabled = true
-  config.public_file_server.headers = {
-    'Cache-Control' => "public, max-age=#{1.hour.to_i}"
-  }
-
-  # Show full error reports and disable caching.
+  # Show full error reports.
   config.consider_all_requests_local = true
-  config.action_controller.perform_caching = false
-  config.cache_store = :null_store
+  config.server_timing = true
 
-  # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = :none
+  # Caching off by default; toggle with `bin/rails dev:cache`.
+  if Rails.root.join('tmp/caching-dev.txt').exist?
+    config.action_controller.perform_caching = true
+    config.cache_store = :memory_store
+  else
+    config.action_controller.perform_caching = false
+    config.cache_store = :null_store
+  end
 
-  # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
-
-  # Disable CSRF token verification for tests
-  config.action_controller.perform_caching = false
-
-  # Store uploaded files on the local file system in a temporary directory.
-  config.active_storage.service = :test if config.respond_to?(:active_storage)
-
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
-
-  # Raise exceptions for disallowed deprecations.
+  # Print deprecation notices to the Rails logger.
+  config.active_support.deprecation = :log
   config.active_support.disallowed_deprecation = :raise
-
-  # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
 
-  # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
+  # Raise an error on page load if there are pending migrations.
+  config.active_record.migration_error = :page_load
+  config.active_record.verbose_query_logs = true
+
+  # Suppress logger output for asset requests.
+  config.assets.quiet = true
 
   # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  config.action_view.annotate_rendered_view_with_filenames = true
 end

@@ -22,8 +22,13 @@ module Admin
           [%w[User user], %w[Admin admin]]
         end
 
+        # button_select_field takes plain values; display text comes from labels:
         def type_options
-          [%w[Internal internal], %w[External external]]
+          %w[internal external]
+        end
+
+        def type_labels
+          { 'internal' => 'Internal', 'external' => 'External' }
         end
       end
     end

@@ -10,6 +10,12 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
     create_list(:user, 20)  # Create enough users for pagination
   end
 
+  # Every row has its own actions dropdown, so a bare '.dropdown' is ambiguous.
+  # The toolbar's bulk-action menu is the SelectComponent's direct .dropdown child.
+  def bulk_actions_menu
+    find('div[data-bulk-action-scope-value] > .dropdown')
+  end
+
   describe 'Search & Filter' do
     # UL-001: Search by Full Name
     it 'searches users by full name' do
@@ -65,7 +71,7 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
 
       # Click the sortable column header (Turbo Stream replaces frame, URL doesn't change)
       within('flexi-table') do
-        find('[data-controller="sorting"]', text: 'Jméno').find('a').click
+        find('[data-controller="sorting"]', text: 'Name').find('a').click
       end
 
       # After sorting, the sort path should toggle to desc.
@@ -73,7 +79,7 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       # pre-click link, which Turbo replaces a moment later, and races the stream.
       within('flexi-table') do
         expect(page).to have_css('[data-controller="sorting"][data-sorting-sort-path-value*="fa_order=desc"]',
-                                 text: 'Jméno')
+                                 text: 'Name')
       end
     end
 
@@ -170,14 +176,14 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       checkboxes[1].click
 
       # Open actions dropdown and click Delete
-      within('.dropdown') do
+      within(bulk_actions_menu) do
         click_button 'Akce'
-        click_button 'Smazat'
+        click_button 'Delete'
       end
 
       # Modal should appear with count
       expect(page).to have_css('.modal.show')
-      expect(page).to have_content('Opravdu chcete smazat')
+      expect(page).to have_content('Are you sure you want to delete')
       within('.modal') do
         # Count in message body
         expect(all('span.count').first.text).to eq('2')
@@ -203,12 +209,12 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       visit '/admin/users'
 
       # Open actions dropdown
-      within('.dropdown') do
+      within(bulk_actions_menu) do
         click_button 'Akce'
       end
 
       # Delete button should be disabled (has .disabled class)
-      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      delete_button = bulk_actions_menu.find('.dropdown-item.bulk-action', text: 'Delete')
       expect(delete_button[:class]).to include('disabled')
     end
 
@@ -217,12 +223,12 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       visit '/admin/users'
 
       # Open actions dropdown without selecting anything
-      within('.dropdown') do
+      within(bulk_actions_menu) do
         click_button 'Akce'
       end
 
       # Export button should NOT be disabled
-      export_button = find('.dropdown-item.bulk-action', text: 'Exportovat')
+      export_button = bulk_actions_menu.find('.dropdown-item.bulk-action', text: 'Export')
       expect(export_button[:class]).not_to include('disabled')
     end
 
@@ -231,10 +237,10 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       visit '/admin/users'
 
       # Initially disabled
-      within('.dropdown') do
+      within(bulk_actions_menu) do
         click_button 'Akce'
       end
-      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      delete_button = bulk_actions_menu.find('.dropdown-item.bulk-action', text: 'Delete')
       expect(delete_button[:class]).to include('disabled')
 
       # Close dropdown and select a user
@@ -243,10 +249,10 @@ RSpec.describe 'Users List Page', type: :feature, js: true do
       checkboxes.first.click
 
       # Re-open dropdown - Delete should now be enabled
-      within('.dropdown') do
+      within(bulk_actions_menu) do
         click_button 'Akce'
       end
-      delete_button = find('.dropdown-item.bulk-action', text: 'Smazat')
+      delete_button = bulk_actions_menu.find('.dropdown-item.bulk-action', text: 'Delete')
       expect(delete_button[:class]).not_to include('disabled')
     end
 

@@ -37,7 +37,7 @@ module Dummy
     config.global_id.app = 'dummy'
 
     # I18n configuration
-    config.i18n.default_locale = :cs
-    config.i18n.available_locales = [:cs, :en]
+    config.i18n.default_locale = :en
+    config.i18n.available_locales = [:en, :cs]
   end
 end

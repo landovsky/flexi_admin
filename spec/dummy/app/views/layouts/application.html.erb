@@ -47,6 +47,9 @@
 
     <div id="system"></div>
 
+    <%# Breadcrumbs inferred from the URL (e.g. Admin / Users / Jane Doe) %>
+    <%= render FlexiAdmin::Components::Nav::BreadcrumbsComponent.new(path: request.path) %>
+
     <%= yield %>
   </div>
 </body>

@@ -2,128 +2,112 @@
 
 require 'rails_helper'
 
+# Exercises the gem's real show page (Resource::ViewComponent + FormMixin edit form),
+# as rendered by the spec/dummy showcase app.
 RSpec.describe 'User Detail Page', type: :feature, js: true do
   let(:user) { create(:user, full_name: 'Test User', email: 'test@example.com', role: 'user', user_type: 'internal') }
 
-  describe 'Navigation & Layout' do
-    # UD-001: Breadcrumb Navigation
-    it 'navigates back to users list via breadcrumb' do
-      visit "/admin/users/#{user.id}"
+  def enable_editing
+    find('[data-controller="form"][data-action="click->form#enable"]').click
+    expect(page).to have_field('user[full_name]', disabled: false)
+  end
 
-      within('nav.breadcrumb') do
-        click_link 'Uživatel'
+  describe 'Navigation' do
+    context 'breadcrumbs are inferred from the URL, so every detail page gets a way back for free' do
+      it 'returns to the users list from the collection crumb' do
+        visit "/admin/users/#{user.id}"
+
+        within('nav.breadcrumbs') do
+          expect(page).to have_css('.breadcrumb-item.active', text: 'Test User')
+          click_link 'User'
+        end
+
+        expect(page).to have_css('flexi-table')
+        expect(page).to have_content('Manage user accounts')
       end
-
-      expect(page).to have_content('Uživatelé')
-      expect(page).to have_css('flexi-table')
-    end
-
-    # UD-002: Back Link
-    it 'returns to list page when clicking back button' do
-      visit "/admin/users/#{user.id}"
-
-      within('.header-actions') do
-        click_link 'Back'
-      end
-
-      expect(page).to have_content('Uživatelé')
-      expect(page).to have_css('flexi-table')
     end
   end
 
-  describe 'Data Display & Interaction' do
-    # UD-003: View Key Information
-    it 'displays all read-only user information' do
-      user.update!(last_sign_in_at: 10.minutes.ago)
-      visit "/admin/users/#{user.id}"
+  describe 'Read-only display' do
+    context 'the edit form doubles as the detail view, rendered disabled until the user opts in' do
+      it 'shows the record in disabled fields grouped by form section headers' do
+        visit "/admin/users/#{user.id}"
 
-      expect(page).to have_content(user.full_name)
-      expect(page).to have_field('user[email]', with: user.email, disabled: true)
-      expect(page).to have_content('Basic Information')
-      expect(page).to have_content('Role & Type')
-      expect(page).to have_content('Metadata')
-    end
-
-    # UD-004: Edit Text Fields (after enabling edit mode)
-    it 'allows editing of user fields after clicking Edit' do
-      visit "/admin/users/#{user.id}"
-
-      # Fields start disabled
-      expect(page).to have_field('user[full_name]', disabled: true)
-
-      # Enable edit mode
-      click_button 'Edit'
-
-      # Fields should now be editable
-      expect(page).to have_field('user[full_name]', disabled: false)
-
-      fill_in 'user[full_name]', with: 'Updated Name'
-      expect(page).to have_field('user[full_name]', with: 'Updated Name')
-    end
-
-    # UD-005: Change Role
-    it 'changes user role via multi-button selector' do
-      visit "/admin/users/#{user.id}"
-
-      within('.role-selector') do
-        click_button 'admin'
+        expect(page).to have_css('h1', text: 'Test User')
+        expect(page).to have_field('user[email]', with: 'test@example.com', disabled: true)
+        expect(page).to have_content('Basic Information')
+        expect(page).to have_content('Role & Access')
       end
-
-      expect(page).to have_css('.role-selector .btn.active', text: 'admin')
-    end
-
-    # UD-006: Change Type
-    it 'changes user type via multi-button selector' do
-      visit "/admin/users/#{user.id}"
-
-      within('.type-selector') do
-        click_button 'external'
-      end
-
-      expect(page).to have_css('.type-selector .btn.active', text: 'external')
     end
   end
 
-  describe 'Actions' do
-    # UD-008: Edit Mode Toggle
-    it 'enables and disables editing when clicking Edit/Cancel' do
-      visit "/admin/users/#{user.id}"
+  describe 'Nested resources' do
+    context 'a list rendered with parent: on a host app that only defines nested routes' do
+      let!(:own_comment) { Comment.create!(user:, content: 'Belongs to Test User') }
+      let!(:foreign_comment) { Comment.create!(user: create(:user), content: 'Belongs to someone else') }
 
-      # Initially disabled
-      expect(page).to have_field('user[full_name]', disabled: true)
+      it "renders the parent's children via the nested route instead of crashing on a missing flat route" do
+        visit "/admin/users/#{user.id}"
 
-      # Click Edit to enable
-      click_button 'Edit'
-      expect(page).to have_field('user[full_name]', disabled: false)
-      expect(page).to have_button('Cancel')
+        expect(page).to have_css('h2', text: 'Comments')
+        expect(page).to have_content('Belongs to Test User')
+        expect(page).not_to have_content('Belongs to someone else')
+      end
+    end
+  end
 
-      # Click Cancel to disable again
-      click_button 'Cancel'
-      expect(page).to have_field('user[full_name]', disabled: true)
-      expect(page).to have_button('Edit')
+  describe 'Editing' do
+    context 'edit mode is toggled server-side so the form re-renders with fresh data' do
+      it 'enables fields when the pencil is clicked and disables them again on cancel' do
+        visit "/admin/users/#{user.id}"
+        expect(page).to have_field('user[full_name]', disabled: true)
+
+        enable_editing
+        fill_in 'user[full_name]', with: 'Updated Name'
+        expect(page).to have_field('user[full_name]', with: 'Updated Name')
+
+        find('button[data-action="click->form#disable"]').click
+        expect(page).to have_field('user[full_name]', disabled: true)
+      end
+
+      it 'persists a role change made through the select field' do
+        visit "/admin/users/#{user.id}"
+        enable_editing
+
+        select 'Admin', from: 'user[role]'
+        click_button 'Save'
+
+        expect(page).to have_field('user[role]', disabled: true, with: 'admin', wait: 5)
+        expect(user.reload.role).to eq('admin')
+      end
     end
 
-    # UD-009: Delete User
-    it 'deletes user after confirmation and redirects to index' do
-      user_id = user.id
-      visit "/admin/users/#{user_id}"
+    context 'button select stores plain values while showing human labels' do
+      it 'marks the clicked option as selected and writes its value to the hidden input' do
+        visit "/admin/users/#{user.id}"
+        enable_editing
 
-      # Verify user exists before deletion
-      expect(User.find_by(id: user_id)).not_to be_nil
+        within('.button-select') { click_button 'External' }
 
-      # Remove turbo confirm to bypass dialog, then submit via requestSubmit so Turbo processes it
-      page.execute_script(<<~JS)
-        var form = document.querySelector('form[action*="/admin/users/#{user_id}"][method="post"] input[name="_method"][value="delete"]').closest('form');
-        delete form.dataset.turboConfirm;
-        form.requestSubmit();
-      JS
+        expect(page).to have_css('.button-select .btn.selected', text: 'External')
+        expect(find('input[name="user[user_type]"]', visible: false).value).to eq('external')
+      end
+    end
+  end
 
-      # Wait for redirect to index page
-      expect(page).to have_css('flexi-table', wait: 10)
-      expect(page).to have_content('Uživatelé')
+  describe 'Deleting' do
+    context 'deletion is irreversible, so it sits behind a confirmation dialog' do
+      it 'removes the user and lands back on the index after confirming' do
+        user_id = user.id
+        visit "/admin/users/#{user_id}"
 
-      # User should be deleted from the database
-      expect(User.find_by(id: user_id)).to be_nil
+        accept_confirm do
+          find('[data-controller="delete"]').click
+        end
+
+        expect(page).to have_css('flexi-table', wait: 10)
+        expect(User.find_by(id: user_id)).to be_nil
+      end
     end
   end
 end
