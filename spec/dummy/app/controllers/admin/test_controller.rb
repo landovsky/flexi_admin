@@ -34,6 +34,12 @@ module Admin
       redirect_to admin_test_form_fields_path, notice: "Form submitted with params: #{params.except(:authenticity_token, :controller, :action).to_unsafe_h}"
     end
 
+    # A detail page hosting a resource list, like an order showing its items:
+    # the host paginates with the `paginate` helper, not the list's controller.
+    def embedded_list
+      render Admin::Test::EmbeddedListPageComponent.new(context_params:, host_per_page: params[:host_per_page]&.to_i)
+    end
+
     private
 
     def resource_class
