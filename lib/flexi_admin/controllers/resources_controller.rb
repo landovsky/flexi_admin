@@ -73,9 +73,6 @@ module FlexiAdmin::Controllers::ResourcesController
     render turbo_stream: turbo_stream.append('system', partial: 'shared/redirect', locals: { path: path })
   end
 
-  # Prefix for the per-scope cookie that remembers a user's page-size choice.
-  PER_PAGE_COOKIE_PREFIX = "fa_per_page_"
-
   def context_params
     @context_params ||= FlexiAdmin::Models::ContextParams.new(remembered_per_page_params)
   end
@@ -86,33 +83,29 @@ module FlexiAdmin::Controllers::ResourcesController
   # and a request without one inherits whatever that scope was last set to.
   def remembered_per_page_params
     permitted = context_permitted_params
-    cookie_key = per_page_cookie_key
+    cookie_key = FlexiAdmin::Models::PerPageMemory.cookie_key(per_page_scope)
 
     chosen = permitted[FlexiAdmin::Models::ContextParams::MAP[:per_page]]
     if chosen.present?
-      cookies[cookie_key] = { value: chosen.to_s, expires: 1.year.from_now } if valid_per_page?(chosen)
+      if FlexiAdmin::Models::PerPageMemory.valid?(chosen)
+        cookies[cookie_key] = { value: chosen.to_s, expires: 1.year.from_now }
+      end
       return permitted
     end
 
     remembered = cookies[cookie_key]
-    return permitted unless valid_per_page?(remembered)
+    return permitted unless FlexiAdmin::Models::PerPageMemory.valid?(remembered)
 
     permitted.merge(FlexiAdmin::Models::ContextParams::MAP[:per_page] => remembered)
   end
 
-  # Keyed by scope where one is given (several scopes can render on one page),
-  # falling back to the controller for a plain index.
-  def per_page_cookie_key
-    scope = params[FlexiAdmin::Models::ContextParams::MAP[:scope]].presence || controller_path
-    "#{PER_PAGE_COOKIE_PREFIX}#{scope.to_s.parameterize(separator: '_')}"
-  end
-
-  # A cookie is user-writable, so never let it widen a query beyond the sizes
-  # the app itself offers.
-  def valid_per_page?(value)
-    return false if value.blank?
-
-    FlexiAdmin::Config.configuration.paginate_per_options.map(&:to_s).include?(value.to_s)
+  # The list's own scope where the request names one (the selector, pager and
+  # view switch all do). A plain reload of an index names none, so fall back to
+  # the controller name — by convention the scope its resources component
+  # declares — rather than the namespaced path, or the choice made inside the
+  # list and the reload of the page would read two different cookies.
+  def per_page_scope
+    params[FlexiAdmin::Models::ContextParams::MAP[:scope]].presence || controller_name
   end
 
   def context_permitted_params

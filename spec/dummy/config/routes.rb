@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     # Test pages for component testing
     get 'test/autocomplete', to: 'test#autocomplete', as: :test_autocomplete
     post 'test/autocomplete_submit', to: 'test#autocomplete_submit', as: :test_autocomplete_submit
+    get 'test/embedded_list', to: 'test#embedded_list', as: :test_embedded_list
     get 'test/form_fields', to: 'test#form_fields', as: :test_form_fields
     post 'test/form_fields_submit', to: 'test#form_fields_submit', as: :test_form_fields_submit
   end

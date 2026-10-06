@@ -9,6 +9,7 @@ end
 
 # Core
 require_relative "models/context_params"
+require_relative "models/per_page_memory"
 require_relative "models/struct"
 require_relative "models/toast"
 
