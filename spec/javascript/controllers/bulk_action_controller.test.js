@@ -6,6 +6,12 @@
 
 import { Application } from '@hotwired/stimulus';
 import BulkActionController from '../../../lib/flexi_admin/javascript/controllers/bulk_action_controller';
+import { fetchTurboContent } from '../../../lib/flexi_admin/javascript/utils';
+
+jest.mock('../../../lib/flexi_admin/javascript/utils', () => ({
+  ...jest.requireActual('../../../lib/flexi_admin/javascript/utils'),
+  fetchTurboContent: jest.fn(),
+}));
 
 describe('BulkActionController', () => {
   let application;
@@ -218,6 +224,41 @@ describe('BulkActionController', () => {
       element.remove();
 
       expect(eventListenerCount()).toBe(true);
+    });
+  });
+
+  // The URL lives on the bound <button>/<a>; the icon inside it has no data attributes.
+  // Reading event.target sent fetch(undefined) → "<page>/undefined" and a dead first click.
+  // The actions are invoked on a real bubbling click (target = icon, currentTarget = button),
+  // independent of Stimulus connecting the controller in jsdom.
+  describe('Clicking the icon inside an action button', () => {
+    const clickIconInside = (html, handler) => {
+      const host = document.createElement('div');
+      host.innerHTML = html;
+      document.body.appendChild(host);
+      const bound = host.firstElementChild;
+      bound.addEventListener('click', handler);
+      bound.querySelector('i.bi').click();
+    };
+
+    test('opens the modal from the button URL, not undefined', () => {
+      clickIconInside(
+        `<button data-url-with-id="/modals?kind=new-element"><i class="bi bi-plus"></i> Nový prvek</button>`,
+        (event) => BulkActionController.prototype.requestModal.call({}, event),
+      );
+
+      expect(fetchTurboContent).toHaveBeenCalledWith(expect.anything(), '/modals?kind=new-element');
+    });
+
+    test('navigates with selected ids to the link base URL, not "undefined?..."', () => {
+      window.Turbo = { visit: jest.fn() };
+
+      clickIconInside(
+        `<a href="#" data-base-url="/expenses/new" data-param-name="order_item_ids[]"><i class="bi bi-cash"></i> Přidat náklady</a>`,
+        (event) => BulkActionController.prototype.navigateWithSelectedIds.call({ selectedIds: ['1'] }, event),
+      );
+
+      expect(window.Turbo.visit).toHaveBeenCalledWith('/expenses/new?order_item_ids%5B%5D=1');
     });
   });
 });
