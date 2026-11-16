@@ -285,7 +285,7 @@ module FlexiAdmin::Components::Resource
         list_path = resources_list_path
         return unless list_path
 
-        return content_tag(:a, 'Zrušit', href: list_path, class: 'btn btn-outline-secondary')
+        return cancel_link(list_path)
       end
 
       content_tag(:button, 'Zrušit', class: 'btn btn-outline-secondary',
@@ -294,6 +294,17 @@ module FlexiAdmin::Components::Resource
                                              action: 'click->form#disable',
                                              'form-resource-path-value': cancel_button_url ||
                                                                          edit_resource_path(resource, fa_form_disabled: true) })
+    end
+
+    # An <a> has no disabled attribute, so a disabled form gets Bootstrap's disabled-link treatment
+    # (no href, not focusable, announced as disabled) to match the disabled <button> variant.
+    def cancel_link(path)
+      if disabled
+        content_tag(:a, 'Zrušit', class: 'btn btn-outline-secondary disabled', role: 'link',
+                                  'aria-disabled': 'true', tabindex: '-1')
+      else
+        content_tag(:a, 'Zrušit', href: path, class: 'btn btn-outline-secondary')
+      end
     end
 
     def resource_persisted?

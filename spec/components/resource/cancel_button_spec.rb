@@ -39,6 +39,15 @@ RSpec.describe 'FormMixin#submit Cancel button', type: :component do
       expect(page).to have_no_css('[data-controller=form]')
     end
 
+    it 'is inert while the form is disabled, like the button variant, so Cancel cannot leave mid-submit' do
+      component = component_class.new(User.new, disabled: true)
+      component.submit_options = {}
+      render_inline(component)
+
+      expect(page).to have_css("a.btn.disabled[aria-disabled='true'][tabindex='-1']", text: 'Zrušit')
+      expect(page).to have_no_css('a[href]', text: 'Zrušit')
+    end
+
     it 'still honours a cancel_button_url the host gave (hriste sends inspections back to the playground)' do
       render_submit(User.new, cancel_button_url: '/admin/comments')
 
