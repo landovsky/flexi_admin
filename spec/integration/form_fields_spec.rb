@@ -342,8 +342,8 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
       visit '/admin/test/form_fields'
 
       within('[data-testid="submit-basic"]') do
-        submit = find('input[type="submit"]')
-        expect(submit.value).to include('FF-039')
+        submit = find('button[type="submit"]')
+        expect(submit.text).to include('FF-039')
         expect(submit[:class]).to include('btn-primary')
       end
     end
@@ -353,7 +353,7 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
       visit '/admin/test/form_fields'
 
       within('[data-testid="submit-with-cancel"]') do
-        expect(page).to have_css('input[type="submit"]')
+        expect(page).to have_css('button[type="submit"]')
         expect(page).to have_css('button', text: 'Zrušit')
       end
     end
@@ -363,7 +363,7 @@ RSpec.describe 'Form Fields Component', type: :feature, js: true do
       visit '/admin/test/form_fields?disabled=true'
 
       within('[data-testid="submit-basic"]') do
-        submit = find('input[type="submit"]')
+        submit = find('button[type="submit"]')
         expect(submit[:disabled]).to eq('true')
       end
     end

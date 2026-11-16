@@ -40,6 +40,32 @@ module Admin
       render Admin::Test::EmbeddedListPageComponent.new(context_params:, host_per_page: params[:host_per_page]&.to_i)
     end
 
+    def submit_button
+      render Admin::Test::SubmitDemoPageComponent.new
+    end
+
+    # Answers the way the gem's ResourcesController does, picked by params[:outcome].
+    def submit_button_submit
+      sleep(params[:delay].to_f.clamp(0, 10))
+      count = session[:submit_demo_count] = session[:submit_demo_count].to_i + 1
+      counter = turbo_stream.update('submit-count', count.to_s)
+      form_params = params.permit(:name, :outcome, :delay)
+
+      case params[:outcome]
+      when 'validation'
+        fa_submit_result(:error)
+        render turbo_stream: [counter, turbo_stream.replace('form_frame', Admin::Test::SubmitDemoFormComponent.new(
+          params_in: form_params, error: 'Název je obsazený (demo validační chyba)'
+        ))]
+      when 'http_422'
+        flash.now[:error] = FlexiAdmin::Models::Toast.new('Demo: server odpověděl 422')
+        render turbo_stream: [counter, append_toasts], status: :unprocessable_entity
+      else
+        fa_submit_result(:success)
+        render turbo_stream: [counter, turbo_stream.replace('form_frame', Admin::Test::SubmitDemoFormComponent.new(params_in: form_params))]
+      end
+    end
+
     private
 
     def resource_class

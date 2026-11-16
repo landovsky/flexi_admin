@@ -6,6 +6,9 @@ module FlexiAdmin
     PAGINATE_PER_DEFAULT = 12
     # How many rows an autocomplete offers when the field is focused but empty.
     AUTOCOMPLETE_SUGGESTIONS_DEFAULT = 12
+    # Submit buttons lock, spin while saving and then show ✓ / ✕ (submit_button_controller.js).
+    # Set to false to get the plain pre-0.0.8 <input type="submit"> everywhere.
+    SUBMIT_BUTTON_STATES_DEFAULT = true
 
     def self.paginate_per_options
       PAGINATE_PER_OPTIONS
@@ -17,12 +20,13 @@ module FlexiAdmin
 
     class Store
       attr_accessor :namespace, :module_namespace, :paginate_per, :paginate_per_options,
-                    :autocomplete_suggestions
+                    :autocomplete_suggestions, :submit_button_states
 
       def initialize
         @paginate_per = PAGINATE_PER_DEFAULT
         @paginate_per_options = PAGINATE_PER_OPTIONS
         @autocomplete_suggestions = AUTOCOMPLETE_SUGGESTIONS_DEFAULT
+        @submit_button_states = SUBMIT_BUTTON_STATES_DEFAULT
       end
     end
 

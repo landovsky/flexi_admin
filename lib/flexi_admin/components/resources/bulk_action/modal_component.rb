@@ -48,6 +48,13 @@ module FlexiAdmin::Components::Resources::BulkAction
       to_s.underscore.gsub('/', '-')
     end
 
+    # Lock / spinner / result on "Spustit". Opt out per modal with `modal(context, submit_state: false)`.
+    def submit_state?
+      return context.options[:submit_state] if context.options.key?(:submit_state)
+
+      FlexiAdmin::Config.configuration.submit_button_states
+    end
+
     def add_context_options(context)
       # Means it's been already added by the parent component
       return if context.options[:title].present?
