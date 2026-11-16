@@ -39,5 +39,10 @@ module Dummy
     # I18n configuration
     config.i18n.default_locale = :cs
     config.i18n.available_locales = [:cs, :en]
+
+    # Previewing the mock app from another machine (e.g. Tailscale Serve on *.ts.net):
+    #   DUMMY_ALLOWED_HOSTS=hp-ubuntu.skunk-escalator.ts.net bin/rails server -p 9999
+    # (full name: a leading-dot entry like .ts.net matches only one subdomain level)
+    ENV.fetch('DUMMY_ALLOWED_HOSTS', '').split(',').map(&:strip).reject(&:empty?).each { |host| config.hosts << host }
   end
 end

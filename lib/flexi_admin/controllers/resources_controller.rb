@@ -4,6 +4,12 @@ module FlexiAdmin::Controllers::ResourcesController
   extend ActiveSupport::Concern
 
   DEFAULT_CONTROLLER_PARAMS_KEYS = %i[controller action subdomain commit button].freeze
+
+  # Tells submit_button_controller.js how a form submission went, because a validation failure is
+  # answered with 200 + a re-rendered form and the HTTP status alone would read as success.
+  SUBMIT_RESULT_HEADER = "X-FlexiAdmin-Submit-Result"
+  # Bulk-action processor results that mean "it did not work" (they double as toast/flash types).
+  FAILED_TOAST_TYPES = %i[error alert danger].freeze
   # rescue_from RuntimeError, with: :handle_runtime_error
 
   included do
@@ -152,6 +158,7 @@ module FlexiAdmin::Controllers::ResourcesController
       result = create_service.run(resource_class:, params: resource_params)
     end
 
+    fa_submit_result(result.valid? ? :success : :error)
     if result.valid?
       namespace = FlexiAdmin::Config.configuration.namespace
       path_segments = namespace.present? ? [namespace.to_sym, result.resource] : [result.resource]
@@ -205,6 +212,7 @@ module FlexiAdmin::Controllers::ResourcesController
       result = update_service.run(resource: @resource, params: resource_params)
     end
 
+    fa_submit_result(result.valid? ? :success : :error)
     if result.valid?
       render_edit_resource_form(disabled: disabled?(true))
     else
@@ -275,6 +283,7 @@ module FlexiAdmin::Controllers::ResourcesController
     end
 
     result = bulk_processor.perform
+    fa_submit_result(FAILED_TOAST_TYPES.include?(result.result&.to_sym) ? :error : :success)
 
     redirect_to_path result.path and return if result.result == :redirect
 
@@ -329,6 +338,12 @@ module FlexiAdmin::Controllers::ResourcesController
   end
 
   private
+
+  # Call from custom actions whose outcome the HTTP status does not express (e.g. 200 with errors).
+  # Without it the submit button falls back to the status: 2xx = ✓, anything else = ✕.
+  def fa_submit_result(result)
+    response.set_header(SUBMIT_RESULT_HEADER, result.to_s == "success" ? "success" : "error")
+  end
 
   def parent_instance
     @parent_instance ||= locate_resource(context_params.parent)

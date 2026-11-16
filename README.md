@@ -131,6 +131,7 @@ FlexiAdmin includes 19 Stimulus controllers that automatically register when you
 - `form-validation` - Client-side form validation
 - `pagination` - Page navigation controls
 - `sorting` - Column sorting
+- `submit-button` - Locks a submit button while saving, then shows ✓ / ✕ until the form is touched
 - `switch-view` - Toggle between list/grid views
 - `tabs` - Keeps the open `TabsComponent` tab in the URL hash
 - `toast` - Toast notification system
@@ -222,6 +223,41 @@ reopens it.
 - `nav_class:` sets the classes on the `ul.nav-tabs` (default `mb-4`).
 
 Requires Bootstrap 5's JavaScript (`data-bs-toggle="tab"`).
+
+#### Submit button: lock, spinner, result
+
+`submit` in forms and the bulk-action modal's "Spustit" button use the `submit-button` controller:
+
+1. On submit the button locks (disabled, `aria-busy`), and a second submit of that form is
+   dropped before it reaches Turbo. This covers double-clicks, Enter in a field and repeated
+   `requestSubmit()` calls.
+2. While the request runs, a spinner replaces the icon.
+3. When the response arrives, the spinner becomes ✓ (`btn-success`) or ✕ (`btn-danger`). That stays
+   until any field of the form fires `input` or `change`.
+
+What counts as ✕: the `X-FlexiAdmin-Submit-Result` response header wins when present.
+`ResourcesController#create`, `#update` and `#bulk_action` set it. It is needed because a
+validation failure comes back as 200 plus a re-rendered form. Without the header, any non-2xx
+status, a network failure or a Turbo error counts as ✕. In custom actions, call
+`fa_submit_result(:error)` or answer with 422.
+
+```erb
+<%= submit 'Uložit' %>                                <%# on by default %>
+<%= submit 'Uložit', submit_state: false %>           <%# legacy <input type="submit"> %>
+<button type="submit" data-controller="submit-button">Odeslat</button>   <%# any other form %>
+```
+
+- Global opt-out: `FlexiAdmin::Config.configure { |c| c.submit_button_states = false }`.
+  For a single modal, use `modal(context, submit_state: false)`.
+- With states on, `submit` renders a `<button type="submit" name="commit" value="…">` instead of
+  `<input type="submit">`, so `params[:commit]` stays the same. Test selectors that look for
+  `input[type=submit]` need to change.
+- Tunables (data attributes on the button): `-handoff-ms-value` (2000) is how long a result waits for the
+  re-rendered form to pick it up. `-native-unlock-ms-value` (10000) unlocks non-Turbo submits that never
+  leave the page (downloads). `-form-value` is a selector for a button outside its form, and
+  `data-submit-button-success-class` / `-error-class` override the colours.
+- Uses Bootstrap's `spinner-border` and the Bootstrap Icons `bi-check-lg` / `bi-x-lg`.
+- Try it in the dummy app at `/admin/test/submit_button`, or on the Users list under Akce → Test submitu.
 
 ### Verification
 

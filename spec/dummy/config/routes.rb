@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     get 'test/embedded_list', to: 'test#embedded_list', as: :test_embedded_list
     get 'test/form_fields', to: 'test#form_fields', as: :test_form_fields
     post 'test/form_fields_submit', to: 'test#form_fields_submit', as: :test_form_fields_submit
+    get 'test/submit_button', to: 'test#submit_button', as: :test_submit_button
+    post 'test/submit_button_submit', to: 'test#submit_button_submit', as: :test_submit_button_submit
   end
 
   # Ignore favicon requests from Chrome

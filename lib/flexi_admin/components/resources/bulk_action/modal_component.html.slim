@@ -15,9 +15,12 @@ div.modal.fade id="#{context.options[:modal_id]}" tabindex="-1"
           - unless context.options[:skip_confirmation_buttons]
             div.modal-footer.d-flex.justify-content-between.align-items-center
               .d-flex.justify-content-start.gap-3
+                / The button sits outside the <form>; submit-button finds it via the enclosing .modal
                 button.btn.btn-primary [type="submit"
-                                        data-action="click->bulk-action#submitForm"]
-                  | Spustit
+                                        data-action="click->bulk-action#submitForm"
+                                        data-controller=(submit_state? ? 'submit-button' : nil)]
+                  span.fa-submit-indicator data-submit-button-target="indicator"
+                  span.fa-submit-label Spustit
                 button.btn.btn-secondary [type="button"
                                           data-bs-dismiss="modal"]
                   | Zrušit

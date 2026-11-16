@@ -25,6 +25,18 @@ module Admin
       render_index(resources)
     end
 
+    # Demo hooks for the submit-button modal (SubmitDemoModalComponent): a delay so the spinner is
+    # visible, and a 422 branch to show the HTTP-status fallback with the modal left open.
+    def bulk_action
+      sleep(params[:demo_delay].to_f.clamp(0, 10)) if params[:demo_delay].present?
+      if params[:demo_outcome] == 'http_422'
+        flash.now[:error] = FlexiAdmin::Models::Toast.new('Demo: server odpověděl 422')
+        return render(turbo_stream: append_toasts, status: :unprocessable_entity)
+      end
+
+      super
+    end
+
     private
 
     def resource_class

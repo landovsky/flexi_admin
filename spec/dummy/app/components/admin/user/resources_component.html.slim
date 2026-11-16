@@ -6,6 +6,8 @@
         = action Admin::User::BulkAction::DeleteModalComponent, selection_dependent: true
       - select.with_action do
         = action Admin::User::BulkAction::ExportModalComponent, selection_dependent: false
+      - select.with_action do
+        = action Admin::User::BulkAction::SubmitDemoModalComponent, selection_dependent: false
 
   - c.with_views do
     = render Admin::User::View::ListViewComponent.new(context)

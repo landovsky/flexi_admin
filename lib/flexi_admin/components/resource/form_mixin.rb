@@ -158,8 +158,14 @@ module FlexiAdmin::Components::Resource
       render_custom_field(view_component_instance, label, html_options, value)
     end
 
-    def submit(label = 'Uložit', cancel_button: true, cancel_button_url: nil, icon: nil, classes: '')
-      submit_button = if icon.present?
+    # submit_state: lock on submit, spinner while saving, then ✓ / ✕ until the form is touched
+    # (submit_button_controller.js). Defaults to config.submit_button_states; pass false for the
+    # legacy <input type="submit">.
+    def submit(label = 'Uložit', cancel_button: true, cancel_button_url: nil, icon: nil, classes: '',
+               submit_state: FlexiAdmin::Config.configuration.submit_button_states)
+      submit_button = if submit_state
+        stateful_submit_button(label, icon:, classes:)
+      elsif icon.present?
         helpers.content_tag(:button, class: 'btn btn-primary ' + classes, disabled: disabled) do
           content = []
           content << helpers.content_tag(:i, '', class: "bi bi-#{icon} me-2")
@@ -182,6 +188,21 @@ module FlexiAdmin::Components::Resource
       content_tag(:div, class: 'form-row d-flex gap-3') do
         concat submit_button
         concat cancel_btn if cancel_button
+      end
+    end
+
+    # A <button> (not <input>) so the controller can swap the indicator in front of the label.
+    # name/value match submit_tag, so params[:commit] stays the same for hosts that read it.
+    def stateful_submit_button(label, icon: nil, classes: '')
+      indicator = icon.present? ? helpers.content_tag(:i, '', class: "bi bi-#{icon} me-2") : ''.html_safe
+
+      helpers.content_tag(:button, type: 'submit', name: 'commit', value: label,
+                                   class: 'btn btn-primary ' + classes, disabled:,
+                                   data: { controller: 'submit-button' }) do
+        helpers.safe_join([
+          helpers.content_tag(:span, indicator, class: 'fa-submit-indicator', data: { 'submit-button-target': 'indicator' }),
+          helpers.content_tag(:span, label, class: 'fa-submit-label')
+        ])
       end
     end
 
