@@ -176,18 +176,11 @@ module FlexiAdmin::Components::Resource
         helpers.submit_tag(label, class: 'btn btn-primary ' + classes, disabled:)
       end
 
-      if cancel_button
-        cancel_btn_path = cancel_button_url || edit_resource_path(resource, fa_form_disabled: true)
-        cancel_btn = content_tag(:button, 'Zrušit', class: 'btn btn-outline-secondary',
-                                                    disabled:,
-                                                    data: { controller: 'form',
-                                                            action: 'click->form#disable',
-                                                            'form-resource-path-value': cancel_btn_path })
-      end
+      cancel_btn = render_cancel_button(cancel_button_url) if cancel_button
 
       content_tag(:div, class: 'form-row d-flex gap-3') do
         concat submit_button
-        concat cancel_btn if cancel_button
+        concat cancel_btn if cancel_btn
       end
     end
 
@@ -282,6 +275,47 @@ module FlexiAdmin::Components::Resource
     end
 
     private
+
+    # Cancel on a saved record swaps the form back to its read-only version (form#disable fetches the
+    # edit path as a turbo-stream). An unsaved record (new form, or the new form re-rendered after a
+    # failed validation) has no edit path, so Cancel leaves for the resource list instead; without a
+    # list route there is nowhere sensible to go and Cancel is omitted rather than crashing the render.
+    def render_cancel_button(cancel_button_url)
+      if cancel_button_url.nil? && !resource_persisted?
+        list_path = resources_list_path
+        return unless list_path
+
+        return cancel_link(list_path)
+      end
+
+      content_tag(:button, 'Zrušit', class: 'btn btn-outline-secondary',
+                                     disabled:,
+                                     data: { controller: 'form',
+                                             action: 'click->form#disable',
+                                             'form-resource-path-value': cancel_button_url ||
+                                                                         edit_resource_path(resource, fa_form_disabled: true) })
+    end
+
+    # An <a> has no disabled attribute, so a disabled form gets Bootstrap's disabled-link treatment
+    # (no href, not focusable, announced as disabled) to match the disabled <button> variant.
+    def cancel_link(path)
+      if disabled
+        content_tag(:a, 'Zrušit', class: 'btn btn-outline-secondary disabled', role: 'link',
+                                  'aria-disabled': 'true', tabindex: '-1')
+      else
+        content_tag(:a, 'Zrušit', href: path, class: 'btn btn-outline-secondary')
+      end
+    end
+
+    def resource_persisted?
+      !resource.respond_to?(:persisted?) || resource.persisted?
+    end
+
+    def resources_list_path
+      resources_path
+    rescue NoMethodError, ActionController::UrlGenerationError
+      nil
+    end
 
     def render_expandable_field(attr_name, value, html_options)
       val, input_classes, resolved_disabled = resolve_field_attrs(attr_name, value, html_options, extra_class: 'expandable-field')
